@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>08 Catalan Numbers and Lattice Paths</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>08 Catalan Numbers and Lattice Paths</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Catalan numbers count parenthesizations, triangulations, Dyck paths, and many other recursively decomposable structures. The reflection principle is the key technique for counting paths that stay on one side of a diagonal. Exam questions usually ask for Catalan C_n or for a reflection-principle count.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Basic counting and combinations from <a href="02-basic-counting.html">page 02</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>Consider monotone paths from (0,0) to (n,n) using steps east and north. Total paths are C(2n,n). "Good" paths never rise above the diagonal y=x. The first bad path touches the line y=x+1; reflect the rest of the path across that line to get a path to (n-1,n+1). This bijection counts bad paths as C(2n,n-1). The picture shows a good path and a reflected bad path.</p>
+<svg width="260" height="140" viewBox="0 0 260 140" aria-label="Lattice path picture">
+  <line x1="20" y1="120" x2="140" y2="0" stroke="#333" stroke-dasharray="4,4"/>
+  <polyline points="20,120 60,120 60,80 100,80 100,40 140,40 140,0" fill="none" stroke="#1f6feb" stroke-width="2"/>
+  <text x="160" y="70" font-size="12">good path</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Monotone lattice path:</strong> path from (0,0) to (a,b) using east and north steps.</p>
+  <p><strong>Catalan number:</strong> C_n = (1/(n+1)) C(2n,n).</p>
+  <p><strong>Bad path:</strong> path from (0,0) to (n,n) that at some point has y > x (goes above diagonal).</p>
+  <p><strong>Reflection principle:</strong> reflect part of a path after first crossing a boundary to count bad paths.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: number of monotone paths</h3>
+<p>Paths from (0,0) to (a,b) = C(a+b,a). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> A path has a+b steps, of which a are east; choose their positions. ∎</p>
+
+<h3>Theorem: Catalan number</h3>
+<p>C_n = C(2n,n) - C(2n,n-1) = (1/(n+1)) C(2n,n). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Total paths from (0,0) to (n,n) is C(2n,n). Bad paths first touch y=x+1; reflect the suffix after that touch across y=x+1, giving a bijection to paths from (0,0) to (n-1,n+1), counted by C(2n,n-1). Subtract. Simplify: C(2n,n)-C(2n,n-1)=C(2n,n)/(n+1). ∎</p>
+
+<h3>Theorem: reflection principle (general)</h3>
+<p>Paths from (0,0) to (n,n) that touch or cross y=x+1 are in bijection with paths from (0,0) to (n-1,n+1).</p>
+<p><em>Proof.</em> Reflect the portion after the first touch of y=x+1. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>C_3 = C(6,3)-C(6,2)=20-15=5.</p>
+
+<h3>Example 2</h3>
+<p>Number of monotone paths from (0,0) to (3,5) = C(8,3)=56.</p>
+
+<h3>Example 3</h3>
+<p>Bad paths for n=6: C(12,5)=792. Good (Catalan) paths: C_6=132.</p>
+
+<h3>Example 4</h3>
+<p>Paths from (0,0) to (6,6) that cross the diagonal exactly once (change sides) = 330 (Python verified).</p>
+
+<h3>Example 5</h3>
+<p>Parenthesizations of 4 factors: C_3=5.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Catalan and path counter.</p>
+<div class="card">
+  <label>n <input id="catN" type="number" value="6" oninput="calcCat()"></label>
+  <p id="catResult"></p>
+  <label>a <input id="aPath" type="number" value="3" oninput="calcPath()"></label>
+  <label>b <input id="bPath" type="number" value="5" oninput="calcPath()"></label>
+  <p id="pathResult"></p>
+</div>
+<script>
+function C(n,r){if(r<0||r>n)return 0;var res=1;for(var i=1;i<=r;i++)res=res*(n-r+i)/i;return Math.round(res);}
+function calcCat(){var n=+document.getElementById('catN').value;document.getElementById('catResult').textContent='C_'+n+' = C(2n,n)-C(2n,n-1) = '+ (C(2*n,n)-C(2*n,n-1));}
+function calcPath(){var a=+document.getElementById('aPath').value;var b=+document.getElementById('bPath').value;document.getElementById('pathResult').textContent='Paths = C(a+b,a) = '+C(a+b,a);}
+calcCat();calcPath();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Confusing "touch diagonal" with "cross diagonal" (change sides).</li>
+  <li>Using C(2n,n) instead of Catalan for good paths.</li>
+  <li>Reflecting across the wrong line (y=x vs y=x+1).</li>
+  <li>Forgetting the 1/(n+1) factor in Catalan.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q26. Number of monotone paths from (0,0) to (6,6) crossing the diagonal exactly once.</summary>
+<p>Solution: changing sides of the diagonal exactly once gives 330. Python verification: 330. (If "touch the diagonal at one interior point" is intended, the count is 168.)</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. C_4?</summary><p>14.</p></details>
+<details><summary>2. Paths from (0,0) to (2,4)?</summary><p>C(6,2)=15.</p></details>
+<details><summary>3. Bad paths for n=4?</summary><p>C(8,3)=56.</p></details>
+<details><summary>4. Parenthesizations of 5 factors?</summary><p>C_4=14.</p></details>
+<details><summary>5. Good paths for n=3?</summary><p>C_3=5.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Total paths (a,b): C(a+b,a).</p>
+  <p>Catalan: C_n=C(2n,n)-C(2n,n-1)=C(2n,n)/(n+1).</p>
+  <p>Bad paths: C(2n,n-1).</p>
+  <p>Reflection across y=x+1.</p>
+  <p>Parenthesizations of n+1 factors: C_n.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="07-integer-partitions.html">← Prev: 07 Integer Partitions</a> | <a href="09-pigeonhole.html">Next: 09 Pigeonhole →</a></p>
+<div id="vis-main"></div>
+<script src="vis-08.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

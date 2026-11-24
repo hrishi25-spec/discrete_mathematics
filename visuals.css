@@ -1,0 +1,90 @@
+/* Shared visual helpers for exam-prep pages. */
+:root {
+  --vis-node: #1f6feb;
+  --vis-node-text: #ffffff;
+  --vis-edge: #59636e;
+  --vis-good: #2da44e;
+  --vis-bad: #d73a49;
+  --vis-warn: #bf8700;
+  --vis-neutral: #8c959f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --vis-node: #58a6ff;
+    --vis-edge: #9da7b3;
+    --vis-good: #3fb950;
+    --vis-bad: #f85149;
+    --vis-warn: #d29922;
+    --vis-neutral: #6e7681;
+  }
+}
+
+.vis-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.vis-caption {
+  font-size: .95rem;
+  color: var(--muted);
+  margin: .5rem 0;
+}
+
+.vis-caption strong { color: var(--text); }
+
+.vis-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  margin: .5rem 0;
+}
+
+.vis-controls button {
+  min-width: 2.5rem;
+}
+
+.vis-svg {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.vis-stepper-status {
+  font-size: .9rem;
+  color: var(--muted);
+  margin-left: .5rem;
+}
+
+.vis-tooltip {
+  position: absolute;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .35rem .5rem;
+  font-size: .85rem;
+  pointer-events: none;
+  z-index: 30;
+  display: none;
+}
+
+.vis-focus:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 360px) {
+  .vis-controls button { font-size: .85rem; padding: .35rem .5rem; }
+}
+
+@media print {
+  .vis-controls { display: none !important; }
+  .vis-dynamic { display: none !important; }
+  .vis-static { display: block !important; }
+}

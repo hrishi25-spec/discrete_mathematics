@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exam Revision</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>Exam Revision</h1>
+
+<h2>1. Formula sheet: Counting</h2>
+<div class="card">
+  <p>Subsets: 2^n. Permutations: n!. Ordered selections: n!/(n-r)!.</p>
+  <p>Combinations: C(n,r). Redundant permutations: n^r. Redundant combinations: C(n+r-1,r).</p>
+  <p>Circular arrangements: (n-1)!. Surjections: Sur(n,k)=Σ (-1)^i C(k,i)(k-i)^n=k!S(n,k).</p>
+  <p>Derangements: D_n=n!Σ (-1)^i/i!. Stirling: S(n,k)=kS(n-1,k)+S(n-1,k-1).</p>
+  <p>Partitions into at most k parts: p_k(n). Bell number B_n=Σ S(n,k).</p>
+</div>
+
+<h2>2. Formula sheet: Recurrences, Generating Functions, Partitions</h2>
+<div class="card">
+  <p>Homogeneous distinct roots: α_1 r_1^n+α_2 r_2^n. Repeated root: (α_1+α_2 n)r_0^n.</p>
+  <p>Non-homogeneous: homogeneous + particular; resonance multiply by n^m.</p>
+  <p>Fibonacci: F_n=Binet formula; G(x)=x/(1-x-x^2).</p>
+  <p>Compositions into r parts: C(n-1,r-1); GF x^r/(1-x)^r.</p>
+  <p>Redundant combinations GF: 1/(1-x)^n; coeff C(n+r-1,r).</p>
+  <p>Partitions: P(n,k)=P(n-1,k-1)+P(n-k,k); p_o=p_d; self-conjugate=distinct odd.</p>
+  <p>Catalan: C_n=C(2n,n)-C(2n,n-1)=C(2n,n)/(n+1).</p>
+</div>
+
+<h2>3. Formula sheet: Logic and Proofs</h2>
+<div class="card">
+  <p>P⇒Q false only P true, Q false; contrapositive ¬Q⇒¬P equivalent.</p>
+  <p>De Morgan: ¬∀xP(x)≡∃x¬P(x); ¬∃xP(x)≡∀x¬P(x).</p>
+  <p>PMI: base P(1), step P(k)⇒P(k+1). Strong induction uses all 1≤t&lt;k.</p>
+  <p>Proof methods: direct, contrapositive, contradiction, counterexample, cases, induction.</p>
+</div>
+
+<h2>4. Formula sheet: Graph Theory</h2>
+<div class="card">
+  <p>Handshaking: sum degrees=2|E|; odd-degree vertices even.</p>
+  <p>Components ≥ n-m; connected ⇒ m≥n-1. Min degree ≥(n-1)/2 ⇒ connected.</p>
+  <p>Graph or complement connected. Bipartite iff no odd cycles.</p>
+  <p>Euler circuit: connected + all degrees even. Digraph: d^+=d^-.</p>
+  <p>Trees: n-1 edges; labeled trees n^{n-2}; Prüfer length n-2.</p>
+  <p>MST: Kruskal/Prim correct. Dijkstra: nonnegative weights.</p>
+  <p>Hall: |N(S)|≥|S| for all S⊆X. Gale-Shapley stable.</p>
+  <p>Euler plane: n-e+f=2; planar simple e≤3n-6.</p>
+  <p>Connectivity: κ≤κ'≤δ.</p>
+</div>
+
+<h2>5. Fifteen proof-heavy results (one-line ideas)</h2>
+<ol>
+  <li>Equivalence relation ↔ partition: classes partition A and vice versa.</li>
+  <li>Congruence mod n: divisibility gives reflexivity/symmetry/transitivity.</li>
+  <li>Inclusion-exclusion: element in t sets counted 1 by alternating binomial sum.</li>
+  <li>Surjections: IE over missing values.</li>
+  <li>Derangements: IE over fixed points.</li>
+  <li>Euler totient: IE over prime divisors.</li>
+  <li>Stirling recurrence: cases for the last element.</li>
+  <li>Odd = distinct partitions: generating-function identity.</li>
+  <li>Self-conjugate = distinct odd: fold Ferrers diagram.</li>
+  <li>Catalan: reflection principle bijection.</li>
+  <li>Handshaking lemma: sum degrees is even.</li>
+  <li>Bipartite iff no odd cycles: parity colouring.</li>
+  <li>Euler circuit: induction on cycles.</li>
+  <li>Tree at most one perfect matching: symmetric difference is cycles.</li>
+  <li>5-colour theorem: induction with colour swapping.</li>
+</ol>
+
+<h2>6. Slide errors fixed</h2>
+<table>
+  <thead><tr><th>Error in slides</th><th>Correction</th><th>Page</th></tr></thead>
+  <tbody>
+    <tr><td>Induction "for all k>1"</td><td>k≥1</td><td>05, 10</td></tr>
+    <tr><td>Strong induction "1&lt;t&lt;k"</td><td>1≤t&lt;k</td><td>05, 10</td></tr>
+    <tr><td>AM-GM for "distinct reals"</td><td>requires a,b≥0</td><td>10</td></tr>
+    <tr><td>Q9(a) in questions.pdf: x_i>1</td><td>used x_i≥1 (markdown version)</td><td>04</td></tr>
+    <tr><td>Quantifier slide uses biconditional</td><td>implication is meant</td><td>10</td></tr>
+    <tr><td>Binomial identity skips C(n,2)</td><td>full sum includes C(n,2)</td><td>02</td></tr>
+  </tbody>
+</table>
+
+<h2>7. Footer</h2>
+<p><a href="15-planar-colouring-connectivity.html">← Prev: 15 Planar, Colouring</a> | <a href="index.html">Contents →</a></p>
+<div id="vis-main"></div>
+<script src="vis-16.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

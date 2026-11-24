@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>18 Answer Key</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+  <style>
+    .ak-controls button { margin: .25rem; }
+    @media print { .ak-controls { display: none; } }
+  </style>
+</head>
+<body>
+<main>
+<h1>18 Answer Key</h1>
+<div class="notice">Attempt the questions first.</div>
+<div class="ak-controls">
+  <button onclick="expandAll()">Expand all</button>
+  <button onclick="collapseAll()">Collapse all</button>
+</div>
+
+<h2>01 Sets, relations, equivalence relations, partitions, functions, sequences</h2>
+
+<details id="a1"><summary>Q1</summary><p>Answer: 350. Method: S(7,4)=4 S(6,4)+S(6,3)=4*65+90=350. <a href="17-practice-questions.html#q1">Back to Q1</a></p></details>
+<details id="a2"><summary>Q2</summary><p>False. ≤ is reflexive and transitive but not symmetric. <a href="17-practice-questions.html#q2">Back to Q2</a></p></details>
+<details id="a3"><summary>Q3</summary><p>Outline: If [a]=[b], then a∈[b], so a R b. Conversely if a R b, symmetry/transitivity show [a]⊆[b] and [b]⊆[a]. <a href="17-practice-questions.html#q3">Back to Q3</a></p></details>
+<details id="a4"><summary>Q4</summary><p>Answer: 93. Method: total 3^5=243 minus surjections Sur(5,3)=3^5-3*2^5+3*1^5=150, so 243-150=93. <a href="17-practice-questions.html#q4">Back to Q4</a></p></details>
+
+<h2>02 Basic counting</h2>
+
+<details id="a5"><summary>Q5</summary><p>Answer: 31,878,000. Method: 5 choices for first letter times P(25,5) for remaining 5 positions. <a href="17-practice-questions.html#q5">Back to Q5</a></p></details>
+<details id="a6"><summary>Q6</summary><p>Answer: 495. Method: nondecreasing 4-digit numbers correspond to multisets of size 4 from {1,...,9}: C(9+4-1,4)=C(12,4)=495. <a href="17-practice-questions.html#q6">Back to Q6</a></p></details>
+<details id="a7"><summary>Q7</summary><p>False. Pascal's rule is C(n,r)=C(n-1,r-1)+C(n-1,r). <a href="17-practice-questions.html#q7">Back to Q7</a></p></details>
+<details id="a8"><summary>Q8</summary><p>Outline: induction on n; adding a new element doubles the number of subsets. <a href="17-practice-questions.html#q8">Back to Q8</a></p></details>
+<details id="a9"><summary>Q9</summary><p>Answer: 19,008. Method: choose 5 people C(12,5), arrange around a circle in (5-1)! ways. <a href="17-practice-questions.html#q9">Back to Q9</a></p></details>
+
+<h2>03 Occupancy, Stirling numbers, surjections</h2>
+
+<details id="a10"><summary>Q10</summary><p>Answer: 350. Method: S(7,4)=4*S(6,4)+S(6,3)=4*65+90=350. <a href="17-practice-questions.html#q10">Back to Q10</a></p></details>
+<details id="a11"><summary>Q11</summary><p>Answer: 122. Method: sum_{i=1}^3 S(6,i)=1+31+90=122. <a href="17-practice-questions.html#q11">Back to Q11</a></p></details>
+<details id="a12"><summary>Q12</summary><p>Outline: partition into 2 blocks; one block contains a fixed element, the other is any nonempty subset of the rest: 2^{n-1}-1. <a href="17-practice-questions.html#q12">Back to Q12</a></p></details>
+<details id="a13"><summary>Q13</summary><p>False. Sur(n,k)=k! S(n,k), not S(n,k)/k!. <a href="17-practice-questions.html#q13">Back to Q13</a></p></details>
+
+<h2>04 Inclusion-exclusion</h2>
+
+<details id="a14"><summary>Q14</summary><p>Answer: 80. Method: inclusion-exclusion counts integers 1..300 not divisible by 2,3,or 5. <a href="17-practice-questions.html#q14">Back to Q14</a></p></details>
+<details id="a15"><summary>Q15</summary><p>Answer: 180. Method: inclusion-exclusion with upper bound 6 on each variable. <a href="17-practice-questions.html#q15">Back to Q15</a></p></details>
+<details id="a16"><summary>Q16</summary><p>Outline: among 1..p^k, exactly p^{k-1} are divisible by p, so φ(p^k)=p^k-p^{k-1}. <a href="17-practice-questions.html#q16">Back to Q16</a></p></details>
+<details id="a17"><summary>Q17</summary><p>Answer: 2,943,360. Method: 10! - 2*9! + 8! by inclusion-exclusion over blocks "ab" and "cd". <a href="17-practice-questions.html#q17">Back to Q17</a></p></details>
+<details id="a18"><summary>Q18</summary><p>True. Standard inclusion-exclusion for three sets. <a href="17-practice-questions.html#q18">Back to Q18</a></p></details>
+
+<h2>05 Recurrences</h2>
+
+<details id="a19"><summary>Q19</summary><p>Answer: 238. Method: a_n=3^n-n (particular -n because constant forcing resonates with root 1). <a href="17-practice-questions.html#q19">Back to Q19</a></p></details>
+<details id="a20"><summary>Q20</summary><p>Outline: induction; base n=1; algebraic step using k(k+1)/2. <a href="17-practice-questions.html#q20">Back to Q20</a></p></details>
+<details id="a21"><summary>Q21</summary><p>Answer: 1,393. Method: recurrence a_n=2a_{n-1}+a_{n-2} with a0=1,a1=3. <a href="17-practice-questions.html#q21">Back to Q21</a></p></details>
+<details id="a22"><summary>Q22</summary><p>True. Repeated root gives (A+B n) r^n. <a href="17-practice-questions.html#q22">Back to Q22</a></p></details>
+
+<h2>06 Generating functions</h2>
+
+<details id="a23"><summary>Q23</summary><p>Answer: 120. Method: coefficient of x^7 in (1-x)^(-4) is C(4+7-1,7)=C(10,7)=120. <a href="17-practice-questions.html#q23">Back to Q23</a></p></details>
+<details id="a24"><summary>Q24</summary><p>Answer: (2-x)/((1-x)(1-2x)). Method: G=2+5x+3x(G-2)-2x^2G, solve. <a href="17-practice-questions.html#q24">Back to Q24</a></p></details>
+<details id="a25"><summary>Q25</summary><p>Outline: generalized binomial theorem: (1-x)^(-n)=Σ C(n+r-1,r)x^r. <a href="17-practice-questions.html#q25">Back to Q25</a></p></details>
+
+<h2>07 Integer partitions</h2>
+
+<details id="a26"><summary>Q26</summary><p>Answer: 6. Method: P(9,4)=P(8,3)+P(5,4)=4+2=6. <a href="17-practice-questions.html#q26">Back to Q26</a></p></details>
+<details id="a27"><summary>Q27</summary><p>Answer: 34. Method: sum_{k=1}^4 P(12,k). <a href="17-practice-questions.html#q27">Back to Q27</a></p></details>
+<details id="a28"><summary>Q28</summary><p>Outline: generating functions ∏_{odd}1/(1-x^m)=∏(1+x^m). <a href="17-practice-questions.html#q28">Back to Q28</a></p></details>
+<details id="a29"><summary>Q29</summary><p>True. Conjugate column heights are 3,2,2,1,1. <a href="17-practice-questions.html#q29">Back to Q29</a></p></details>
+
+<h2>08 Catalan numbers and lattice paths</h2>
+
+<details id="a30"><summary>Q30</summary><p>Answer: 792. Method: C(5+7,5)=C(12,5)=792. <a href="17-practice-questions.html#q30">Back to Q30</a></p></details>
+<details id="a31"><summary>Q31</summary><p>Answer: 429. Method: C_7=C(14,7)/8=3432/8=429. <a href="17-practice-questions.html#q31">Back to Q31</a></p></details>
+<details id="a32"><summary>Q32</summary><p>Outline: first bad path touches y=x+1; reflect suffix to path to (n-1,n+1), counted by C(2n,n-1). <a href="17-practice-questions.html#q32">Back to Q32</a></p></details>
+<details id="a33"><summary>Q33</summary><p>True. Catalan C_n. <a href="17-practice-questions.html#q33">Back to Q33</a></p></details>
+
+<h2>09 Pigeonhole principle</h2>
+
+<details id="a34"><summary>Q34</summary><p>Answer: 25. Method: 2*12+1 by generalized pigeonhole. <a href="17-practice-questions.html#q34">Back to Q34</a></p></details>
+<details id="a35"><summary>Q35</summary><p>Outline: 10 numbers, 9 possible tens digits; pigeonhole gives two same tens digit. <a href="17-practice-questions.html#q35">Back to Q35</a></p></details>
+<details id="a36"><summary>Q36</summary><p>True. If no hole had 4, total at most 6*3=18&lt;20. <a href="17-practice-questions.html#q36">Back to Q36</a></p></details>
+
+<h2>10 Logic, proof techniques, induction</h2>
+
+<details id="a37"><summary>Q37</summary><p>Outline: base n=5; if 2^k>k^2 then 2^{k+1}=2*2^k>2k^2≥(k+1)^2 for k≥5. <a href="17-practice-questions.html#q37">Back to Q37</a></p></details>
+<details id="a38"><summary>Q38</summary><p>True. Truth table: implication false only P true, Q false. <a href="17-practice-questions.html#q38">Back to Q38</a></p></details>
+<details id="a39"><summary>Q39</summary><p>Answer: 16. Method: 2^4 possible truth tables on two variables. <a href="17-practice-questions.html#q39">Back to Q39</a></p></details>
+<details id="a40"><summary>Q40</summary><p>Outline: strong induction; prime factorization of composite n=ab with factors smaller than n. <a href="17-practice-questions.html#q40">Back to Q40</a></p></details>
+
+<h2>11 Graph basics</h2>
+
+<details id="a41"><summary>Q41</summary><p>Answer: 1024. Method: C(5,2)=10 possible edges, each present or absent. <a href="17-practice-questions.html#q41">Back to Q41</a></p></details>
+<details id="a42"><summary>Q42</summary><p>Outline: each edge reduces component count by at most 1, starting from n. <a href="17-practice-questions.html#q42">Back to Q42</a></p></details>
+<details id="a43"><summary>Q43</summary><p>True. If both disconnected, cross-component edges make complement connected. <a href="17-practice-questions.html#q43">Back to Q43</a></p></details>
+<details id="a44"><summary>Q44</summary><p>Outline: endpoints of a maximal path in a tree have degree 1. <a href="17-practice-questions.html#q44">Back to Q44</a></p></details>
+
+<h2>12 Bipartite graphs, Eulerian circuits, digraphs, degree sequences</h2>
+
+<details id="a45"><summary>Q45</summary><p>Answer: Yes, graphical. Method: Havel-Hakimi reduces to all zeros. <a href="17-practice-questions.html#q45">Back to Q45</a></p></details>
+<details id="a46"><summary>Q46</summary><p>Outline: take vertex of maximum outdegree; standard king argument. <a href="17-practice-questions.html#q46">Back to Q46</a></p></details>
+<details id="a47"><summary>Q47</summary><p>True. Euler circuit theorem. <a href="17-practice-questions.html#q47">Back to Q47</a></p></details>
+<details id="a48"><summary>Q48</summary><p>Answer: 512. Method: 2^{3^2} choices for 9 ordered pairs. <a href="17-practice-questions.html#q48">Back to Q48</a></p></details>
+
+<h2>13 Trees, Prüfer codes, spanning trees, MST</h2>
+
+<details id="a49"><summary>Q49</summary><p>Answer: 16,807. Method: n^{n-2}=7^5. <a href="17-practice-questions.html#q49">Back to Q49</a></p></details>
+<details id="a50"><summary>Q50</summary><p>Answer: 9. Method: Kruskal/Prim on the given 6-vertex weighted graph. <a href="17-practice-questions.html#q50">Back to Q50</a></p></details>
+<details id="a51"><summary>Q51</summary><p>Outline: colour vertices by parity of distance from a root. <a href="17-practice-questions.html#q51">Back to Q51</a></p></details>
+<details id="a52"><summary>Q52</summary><p>True. A tree on n vertices has n-1 edges. <a href="17-practice-questions.html#q52">Back to Q52</a></p></details>
+
+<h2>14 Matchings</h2>
+
+<details id="a53"><summary>Q53</summary><p>Answer: Yes. Method: matching a-1, b-2, c-3 saturates X. <a href="17-practice-questions.html#q53">Back to Q53</a></p></details>
+<details id="a54"><summary>Q54</summary><p>Outline: if |N(S)|&lt;|S|, the S vertices cannot have distinct neighbours in N(S). <a href="17-practice-questions.html#q54">Back to Q54</a></p></details>
+<details id="a55"><summary>Q55</summary><p>True. Gale-Shapley theorem. <a href="17-practice-questions.html#q55">Back to Q55</a></p></details>
+
+<h2>15 Planar graphs, colouring, connectivity</h2>
+
+<details id="a56"><summary>Q56</summary><p>Answer: 18. Method: 3n-6=3*8-6=18. <a href="17-practice-questions.html#q56">Back to Q56</a></p></details>
+<details id="a57"><summary>Q57</summary><p>Outline: if every vertex had degree at least 6, then 2e≥6n, contradicting e≤3n-6. <a href="17-practice-questions.html#q57">Back to Q57</a></p></details>
+<details id="a58"><summary>Q58</summary><p>False. K5 is non-planar. <a href="17-practice-questions.html#q58">Back to Q58</a></p></details>
+<details id="a59"><summary>Q59</summary><p>Answer: 7. Method: f=2-n+e=2-10+15=7. <a href="17-practice-questions.html#q59">Back to Q59</a></p></details>
+<details id="a60"><summary>Q60</summary><p>Outline: induction on n; remove degree≤5 vertex; colour smaller graph; if 5 colours used on neighbours, use 1-3 or 2-4 path swap. <a href="17-practice-questions.html#q60">Back to Q60</a></p></details>
+
+<div id="vis-main"></div>
+<script src="vis-18.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+<script>
+function expandAll(){var d=document.querySelectorAll('details');for(var i=0;i<d.length;i++)d[i].open=true;}
+function collapseAll(){var d=document.querySelectorAll('details');for(var i=0;i<d.length;i++)d[i].open=false;}
+</script>
+</body>
+</html>

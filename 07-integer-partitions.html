@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>07 Integer Partitions</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>07 Integer Partitions</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Partitions turn "indistinguishable balls into indistinguishable cells" into a rich combinatorial structure. Ferrers diagrams make conjugation, self-conjugate partitions, and the odd=distinct identity visible. The recurrence P(n,k)=P(n-1,k-1)+P(n-k,k) and generating functions are standard exam tools.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Basic counting and stars and bars from <a href="02-basic-counting.html">page 02</a>; generating functions from <a href="06-generating-functions.html">page 06</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A partition of 7 is a way to split 7 into positive parts ignoring order, e.g. 4+2+1. Draw it as rows of boxes: the Ferrers diagram. Reflecting across the diagonal gives the conjugate partition 3+2+1+1. The picture below shows 4+2+1 and its conjugate.</p>
+<svg width="220" height="120" viewBox="0 0 220 120" aria-label="Ferrers diagram and conjugate">
+  <rect x="20" y="20" width="15" height="15" fill="#1f6feb"/>
+  <rect x="35" y="20" width="15" height="15" fill="#1f6feb"/>
+  <rect x="50" y="20" width="15" height="15" fill="#1f6feb"/>
+  <rect x="65" y="20" width="15" height="15" fill="#1f6feb"/>
+  <rect x="20" y="35" width="15" height="15" fill="#1f6feb"/>
+  <rect x="35" y="35" width="15" height="15" fill="#1f6feb"/>
+  <rect x="20" y="50" width="15" height="15" fill="#1f6feb"/>
+  <text x="110" y="45" font-size="14">↔</text>
+  <rect x="130" y="20" width="15" height="15" fill="#d73a49"/>
+  <rect x="145" y="20" width="15" height="15" fill="#d73a49"/>
+  <rect x="160" y="20" width="15" height="15" fill="#d73a49"/>
+  <rect x="130" y="35" width="15" height="15" fill="#d73a49"/>
+  <rect x="145" y="35" width="15" height="15" fill="#d73a49"/>
+  <rect x="130" y="50" width="15" height="15" fill="#d73a49"/>
+  <rect x="130" y="65" width="15" height="15" fill="#d73a49"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>p(n):</strong> number of partitions of n into positive parts, order ignored.</p>
+  <p><strong>P(n,k):</strong> number of partitions of n into exactly k parts.</p>
+  <p><strong>p_k(n):</strong> partitions of n with each part ≤ k (equivalently at most k parts).</p>
+  <p><strong>p_d(n):</strong> partitions into distinct parts.</p>
+  <p><strong>p_o(n):</strong> partitions into odd parts (repetitions allowed).</p>
+  <p><strong>Self-conjugate partition:</strong> equal to its conjugate.</p>
+  <p><strong>Ferrers diagram:</strong> rows of boxes with nonincreasing row lengths.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: recurrence for P(n,k)</h3>
+<p>P(n,k)=P(n-1,k-1)+P(n-k,k). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> A partition of n into k parts either contains a 1 (remove it to get a partition of n-1 into k-1 parts) or has all parts ≥2 (subtract 1 from each part to get a partition of n-k into k parts). ∎</p>
+
+<h3>Theorem: conjugation</h3>
+<p>The number of partitions of n into exactly k parts equals the number of partitions of n whose largest part is k.</p>
+<p><em>Proof.</em> Conjugating a partition swaps rows and columns, so number of parts becomes largest part. ∎</p>
+
+<h3>Theorem: P(n,k)=p_k(n)-p_{k-1}(n)</h3>
+<p>Partitions into exactly k parts equals partitions with parts ≤k minus those with parts ≤k-1.</p>
+<p><em>Proof.</em> Every partition with parts ≤k has some number j≤k of parts; conjugating, largest part ≤k. Subtracting j≤k-1 leaves exactly j=k. ∎</p>
+
+<h3>Theorem: odd equals distinct</h3>
+<p>p_o(n)=p_d(n) for all n. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Generating functions: ∏_{m odd} 1/(1-x^m) = ∏_{m≥1}(1+x^m) because ∏(1-x^{2m})/(1-x^m)=∏(1+x^m). The coefficients are equal. ∎</p>
+<p>An inclusion-exclusion proof is also possible using Euler's pentagonal recurrence; omitted here for brevity.</p>
+
+<h3>Theorem: self-conjugate partitions</h3>
+<p>The number of self-conjugate partitions of n equals the number of partitions of n into distinct odd parts. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Fold the Ferrers diagram along the diagonal; each diagonal hook has odd length, and distinctness follows from the nesting of hooks. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>P(7,4)=P(6,3)+P(3,4)=3+0=3. Partitions: 4+1+1+1, 3+2+1+1, 2+2+2+1.</p>
+
+<h3>Example 2</h3>
+<p>P(7,5)=P(6,4)+P(2,5)=2+0=2. Partitions: 3+1+1+1+1, 2+2+1+1+1.</p>
+
+<h3>Example 3</h3>
+<p>Number of partitions of 11 into at most 5 parts is 37 (sum P(11,j), j=1..5). Python verified.</p>
+
+<h3>Example 4</h3>
+<p>Partitions of 5: 5, 4+1, 3+2, 3+1+1, 2+2+1, 2+1+1+1, 1+1+1+1+1, so p(5)=7.</p>
+
+<h3>Example 5</h3>
+<p>Self-conjugate partitions of 5: (3,1,1), so count 1. Distinct odd partitions of 5: 5, so count 1.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Enter a partition (comma-separated parts) to draw its Ferrers diagram and conjugate.</p>
+<div class="card">
+  <label>Partition <input id="partInput" value="4,2,1" oninput="drawFerrers()"></label>
+  <div id="ferrersOut"></div>
+</div>
+<script>
+function drawFerrers(){
+  var s=document.getElementById('partInput').value;
+  var parts=s.split(',').map(function(x){return parseInt(x.trim(),10);}).filter(function(x){return x>0;});
+  parts.sort(function(a,b){return b-a;});
+  // conjugate
+  var max=parts.length?parts[0]:0;
+  var conj=[];
+  for(var c=1;c<=max;c++){
+    var cnt=0;
+    for(var i=0;i<parts.length;i++) if(parts[i]>=c) cnt++;
+    if(cnt>0) conj.push(cnt);
+  }
+  var html='<p>Partition: '+parts.join('+')+' ; Conjugate: '+conj.join('+')+'</p>';
+  html+='<svg width="260" height="120" viewBox="0 0 260 120">';
+  var x0=10,y0=10;
+  for(var i=0;i<parts.length;i++){
+    for(var j=0;j<parts[i];j++){
+      html+='<rect x="'+(x0+j*16)+'" y="'+(y0+i*16)+'" width="14" height="14" fill="#1f6feb"/>';
+    }
+  }
+  html+='</svg>';
+  document.getElementById('ferrersOut').innerHTML=html;
+}
+drawFerrers();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Confusing partitions (order ignored) with compositions (order counts).</li>
+  <li>Using P(n,k) when empty cells/parts are allowed (use at most k parts).</li>
+  <li>Forgetting conjugation swaps number of parts and largest part.</li>
+  <li>Assuming self-conjugate partitions are rare; count by distinct odd parts.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q10. P(n,k) recurrence; compute P(7,5).</summary>
+<p>Solution: P(7,5)=P(6,4)+P(2,5)=2+0=2. Python verification: 2.</p>
+</details>
+
+<details>
+<summary>Q12. Number of ways to put 11 unlabelled balls into 5 unlabelled cells.</summary>
+<p>Solution: partitions of 11 into at most 5 parts = 37. Python verification: 37.</p>
+</details>
+
+<details>
+<summary>Q22. Prove self-conjugate partitions of n equals partitions into distinct odd parts.</summary>
+<p>Solution: proof by Ferrers diagram folding, as above.</p>
+</details>
+
+<details>
+<summary>Q30. Prove partitions into distinct parts equals partitions into odd parts.</summary>
+<p>Solution: generating function identity, as above.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. p(5)?</summary><p>7.</p></details>
+<details><summary>2. P(6,3)?</summary><p>3.</p></details>
+<details><summary>3. Partitions of 7 into at most 3 parts?</summary><p>P(7,1)+P(7,2)+P(7,3)=1+3+4=8.</p></details>
+<details><summary>4. Conjugate of 5+2+2+1?</summary><p>Conjugate of (5,2,2,1) is (4,3,1,1,1).</p></details>
+<details><summary>5. Self-conjugate partitions of 4?</summary><p>Self-conjugate partition: (2,2). Count 1; distinct odd partitions of 4: 3+1. Count 1.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>P(n,k)=P(n-1,k-1)+P(n-k,k).</p>
+  <p>P(n,k)=p_k(n)-p_{k-1}(n).</p>
+  <p>Conjugation swaps parts and largest part.</p>
+  <p>p_o(n)=p_d(n).</p>
+  <p>Self-conjugate = distinct odd parts.</p>
+  <p>Generating function partitions: ∏ 1/(1-x^m).</p>
+  <p>At most k parts: p_k(n).</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="06-generating-functions.html">← Prev: 06 Generating Functions</a> | <a href="08-catalan-lattice-paths.html">Next: 08 Catalan, Lattice Paths →</a></p>
+<div id="vis-main"></div>
+<script src="vis-07.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

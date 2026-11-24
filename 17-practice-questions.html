@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>17 Practice Questions</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+  <style>
+    .filter-bar button { margin: .25rem; }
+    .qbox { margin: .75rem 0; }
+    .donebox { margin-left: .5rem; }
+    @media print { .filter-bar, .donebox { display: none; } }
+  </style>
+</head>
+<body>
+<main>
+<h1>17 Practice Questions</h1>
+<p>Attempt all questions before opening the answer key.</p>
+<div class="filter-bar">
+  <button onclick="filterTopic('all')">All</button>
+  <button onclick="filterTopic('01')">01 Sets</button>
+  <button onclick="filterTopic('02')">02 Counting</button>
+  <button onclick="filterTopic('03')">03 Occupancy</button>
+  <button onclick="filterTopic('04')">04 IE</button>
+  <button onclick="filterTopic('05')">05 Recurrences</button>
+  <button onclick="filterTopic('06')">06 GF</button>
+  <button onclick="filterTopic('07')">07 Partitions</button>
+  <button onclick="filterTopic('08')">08 Catalan</button>
+  <button onclick="filterTopic('09')">09 Pigeonhole</button>
+  <button onclick="filterTopic('10')">10 Logic</button>
+  <button onclick="filterTopic('11')">11 Graphs</button>
+  <button onclick="filterTopic('12')">12 Bipartite/Euler</button>
+  <button onclick="filterTopic('13')">13 Trees</button>
+  <button onclick="filterTopic('14')">14 Matchings</button>
+  <button onclick="filterTopic('15')">15 Planar</button>
+</div>
+
+<section class="topic" data-topic="01">
+<h2>01 Sets, relations, equivalence relations, partitions, functions, sequences</h2>
+
+<div class="qbox" id="q1"><p>Q1. [3] Let A be a 7-element set. How many equivalence relations on A have exactly 4 equivalence classes?</p><input type="checkbox" class="donebox" data-q="1"></div>
+<div class="qbox" id="q2"><p>Q2. [2] True/False: The relation R on R defined by a R b iff a ≤ b is an equivalence relation.</p><input type="checkbox" class="donebox" data-q="2"></div>
+<div class="qbox" id="q3"><p>Q3. [4] Prove that for an equivalence relation R on A, [a]=[b] iff a R b.</p><input type="checkbox" class="donebox" data-q="3"></div>
+<div class="qbox" id="q4"><p>Q4. [4] How many functions from a 5-element set to a 3-element set are not surjective?</p><input type="checkbox" class="donebox" data-q="4"></div>
+</section>
+
+<section class="topic" data-topic="02">
+<h2>02 Basic counting</h2>
+
+<div class="qbox" id="q5"><p>Q5. [3] How many 6-letter passwords over 26 letters have no repeated letter and first letter a vowel (5 vowels)?</p><input type="checkbox" class="donebox" data-q="5"></div>
+<div class="qbox" id="q6"><p>Q6. [4] How many 4-digit numbers have nondecreasing digits? (Leading zeros not allowed.)</p><input type="checkbox" class="donebox" data-q="6"></div>
+<div class="qbox" id="q7"><p>Q7. [2] True/False: For all n,r, C(n,r)=C(n,r-1)+C(n-1,r-1).</p><input type="checkbox" class="donebox" data-q="7"></div>
+<div class="qbox" id="q8"><p>Q8. [3] Prove by induction that an n-element set has 2^n subsets.</p><input type="checkbox" class="donebox" data-q="8"></div>
+<div class="qbox" id="q9"><p>Q9. [4] How many ways are there to choose 5 people from 12 and arrange them around a circular table?</p><input type="checkbox" class="donebox" data-q="9"></div>
+</section>
+
+<section class="topic" data-topic="03">
+<h2>03 Occupancy, Stirling numbers, surjections</h2>
+
+<div class="qbox" id="q10"><p>Q10. [3] Compute S(7,4).</p><input type="checkbox" class="donebox" data-q="10"></div>
+<div class="qbox" id="q11"><p>Q11. [4] How many ways can 6 distinct balls be placed into 3 identical boxes if empty boxes are allowed?</p><input type="checkbox" class="donebox" data-q="11"></div>
+<div class="qbox" id="q12"><p>Q12. [4] Prove S(n,2)=2^{n-1}-1.</p><input type="checkbox" class="donebox" data-q="12"></div>
+<div class="qbox" id="q13"><p>Q13. [2] True/False: Sur(n,k)=S(n,k)/k!.</p><input type="checkbox" class="donebox" data-q="13"></div>
+</section>
+
+<section class="topic" data-topic="04">
+<h2>04 Inclusion-exclusion</h2>
+
+<div class="qbox" id="q14"><p>Q14. [4] How many integers n with 1≤n≤300 are not divisible by 2, 3, or 5?</p><input type="checkbox" class="donebox" data-q="14"></div>
+<div class="qbox" id="q15"><p>Q15. [5] How many solutions to x1+...+x4=15 with 0≤xi≤6?</p><input type="checkbox" class="donebox" data-q="15"></div>
+<div class="qbox" id="q16"><p>Q16. [4] Prove φ(p^k)=p^k-p^{k-1} for prime p.</p><input type="checkbox" class="donebox" data-q="16"></div>
+<div class="qbox" id="q17"><p>Q17. [4] How many permutations of 10 distinct letters avoid both "ab" and "cd" as contiguous substrings?</p><input type="checkbox" class="donebox" data-q="17"></div>
+<div class="qbox" id="q18"><p>Q18. [2] True/False: For finite sets A,B,C, |A∪B∪C|=|A|+|B|+|C|-|A∩B|-|A∩C|-|B∩C|+|A∩B∩C|.</p><input type="checkbox" class="donebox" data-q="18"></div>
+</section>
+
+<section class="topic" data-topic="05">
+<h2>05 Recurrences</h2>
+
+<div class="qbox" id="q19"><p>Q19. [4] Let a0=1, a1=2 and a_n=4a_{n-1}-3a_{n-2}+2. Find a_5.</p><input type="checkbox" class="donebox" data-q="19"></div>
+<div class="qbox" id="q20"><p>Q20. [4] Prove by induction Σ_{i=1}^n i^2 = n(n+1)(2n+1)/6.</p><input type="checkbox" class="donebox" data-q="20"></div>
+<div class="qbox" id="q21"><p>Q21. [4] Let a0=1, a1=3 and a_n=2a_{n-1}+a_{n-2}. Find a_8.</p><input type="checkbox" class="donebox" data-q="21"></div>
+<div class="qbox" id="q22"><p>Q22. [2] True/False: If the characteristic equation has repeated root r, the general solution is (A+B n) r^n.</p><input type="checkbox" class="donebox" data-q="22"></div>
+</section>
+
+<section class="topic" data-topic="06">
+<h2>06 Generating functions</h2>
+
+<div class="qbox" id="q23"><p>Q23. [3] Find the coefficient of x^7 in (1-x)^(-4).</p><input type="checkbox" class="donebox" data-q="23"></div>
+<div class="qbox" id="q24"><p>Q24. [4] Find the ordinary generating function for the sequence with a0=2, a1=5, a_n=3a_{n-1}-2a_{n-2} (n≥2).</p><input type="checkbox" class="donebox" data-q="24"></div>
+<div class="qbox" id="q25"><p>Q25. [4] Prove the coefficient of x^r in (1-x)^(-n) is C(n+r-1,r).</p><input type="checkbox" class="donebox" data-q="25"></div>
+</section>
+
+<section class="topic" data-topic="07">
+<h2>07 Integer partitions</h2>
+
+<div class="qbox" id="q26"><p>Q26. [3] Compute P(9,4), the number of partitions of 9 into exactly 4 parts.</p><input type="checkbox" class="donebox" data-q="26"></div>
+<div class="qbox" id="q27"><p>Q27. [4] How many partitions of 12 into at most 4 parts are there?</p><input type="checkbox" class="donebox" data-q="27"></div>
+<div class="qbox" id="q28"><p>Q28. [4] Prove the number of partitions into distinct parts equals the number into odd parts.</p><input type="checkbox" class="donebox" data-q="28"></div>
+<div class="qbox" id="q29"><p>Q29. [2] True/False: The conjugate of the partition (5,3,1) is (3,2,2,1,1).</p><input type="checkbox" class="donebox" data-q="29"></div>
+</section>
+
+<section class="topic" data-topic="08">
+<h2>08 Catalan numbers and lattice paths</h2>
+
+<div class="qbox" id="q30"><p>Q30. [3] How many monotone paths are there from (0,0) to (5,7)?</p><input type="checkbox" class="donebox" data-q="30"></div>
+<div class="qbox" id="q31"><p>Q31. [3] Compute the Catalan number C_7.</p><input type="checkbox" class="donebox" data-q="31"></div>
+<div class="qbox" id="q32"><p>Q32. [4] Prove the number of bad paths from (0,0) to (n,n) is C(2n,n-1) by the reflection principle.</p><input type="checkbox" class="donebox" data-q="32"></div>
+<div class="qbox" id="q33"><p>Q33. [2] True/False: Monotone paths from (0,0) to (n,n) that never go above the diagonal are counted by C_n.</p><input type="checkbox" class="donebox" data-q="33"></div>
+</section>
+
+<section class="topic" data-topic="09">
+<h2>09 Pigeonhole principle</h2>
+
+<div class="qbox" id="q34"><p>Q34. [3] What is the smallest number of people needed to guarantee at least 3 share a birth month among 12 months?</p><input type="checkbox" class="donebox" data-q="34"></div>
+<div class="qbox" id="q35"><p>Q35. [3] Prove that among 10 two-digit numbers, two have the same tens digit.</p><input type="checkbox" class="donebox" data-q="35"></div>
+<div class="qbox" id="q36"><p>Q36. [2] True/False: If 20 pigeons are placed in 6 holes, some hole contains at least 4 pigeons.</p><input type="checkbox" class="donebox" data-q="36"></div>
+</section>
+
+<section class="topic" data-topic="10">
+<h2>10 Logic, proof techniques, induction</h2>
+
+<div class="qbox" id="q37"><p>Q37. [4] Prove by induction that 2^n > n^2 for all n≥5.</p><input type="checkbox" class="donebox" data-q="37"></div>
+<div class="qbox" id="q38"><p>Q38. [2] True/False: (P⇒Q) is logically equivalent to (¬P ∨ Q).</p><input type="checkbox" class="donebox" data-q="38"></div>
+<div class="qbox" id="q39"><p>Q39. [2] How many distinct logical operators are there on two propositional variables?</p><input type="checkbox" class="donebox" data-q="39"></div>
+<div class="qbox" id="q40"><p>Q40. [4] Prove every integer n≥2 is a product of primes using strong induction.</p><input type="checkbox" class="donebox" data-q="40"></div>
+</section>
+
+<section class="topic" data-topic="11">
+<h2>11 Graph basics</h2>
+
+<div class="qbox" id="q41"><p>Q41. [3] How many simple graphs are there on 5 labeled vertices?</p><input type="checkbox" class="donebox" data-q="41"></div>
+<div class="qbox" id="q42"><p>Q42. [4] Prove a graph with n vertices and m edges has at least n-m components.</p><input type="checkbox" class="donebox" data-q="42"></div>
+<div class="qbox" id="q43"><p>Q43. [2] True/False: A simple graph and its complement cannot both be disconnected.</p><input type="checkbox" class="donebox" data-q="43"></div>
+<div class="qbox" id="q44"><p>Q44. [4] Prove every tree with at least two vertices has at least two leaves.</p><input type="checkbox" class="donebox" data-q="44"></div>
+</section>
+
+<section class="topic" data-topic="12">
+<h2>12 Bipartite graphs, Eulerian circuits, digraphs, degree sequences</h2>
+
+<div class="qbox" id="q45"><p>Q45. [4] Use Havel-Hakimi to decide whether (5,4,4,3,3,2,1) is graphical.</p><input type="checkbox" class="donebox" data-q="45"></div>
+<div class="qbox" id="q46"><p>Q46. [4] Prove every tournament has a king.</p><input type="checkbox" class="donebox" data-q="46"></div>
+<div class="qbox" id="q47"><p>Q47. [2] True/False: A connected graph whose every vertex has even degree is Eulerian.</p><input type="checkbox" class="donebox" data-q="47"></div>
+<div class="qbox" id="q48"><p>Q48. [3] How many simple digraphs are there on 3 vertices if loops are allowed but each ordered pair is used at most once?</p><input type="checkbox" class="donebox" data-q="48"></div>
+</section>
+
+<section class="topic" data-topic="13">
+<h2>13 Trees, Prüfer codes, spanning trees, MST</h2>
+
+<div class="qbox" id="q49"><p>Q49. [3] How many labeled trees are there on 7 vertices?</p><input type="checkbox" class="donebox" data-q="49"></div>
+<div class="qbox" id="q50"><p>Q50. [5] For the weighted graph with vertices 0..5 and edges 0-1:3, 0-2:1, 1-2:4, 1-3:2, 2-3:5, 2-4:6, 3-4:1, 3-5:2, 4-5:3, find the MST weight.</p><input type="checkbox" class="donebox" data-q="50"></div>
+<div class="qbox" id="q51"><p>Q51. [3] Prove every tree is bipartite.</p><input type="checkbox" class="donebox" data-q="51"></div>
+<div class="qbox" id="q52"><p>Q52. [2] True/False: A tree with 10 vertices has 9 edges.</p><input type="checkbox" class="donebox" data-q="52"></div>
+</section>
+
+<section class="topic" data-topic="14">
+<h2>14 Matchings</h2>
+
+<div class="qbox" id="q53"><p>Q53. [3] Bipartite graph X={a,b,c}, Y={1,2,3}, edges a-1,a-2,b-2,b-3,c-3. Does there exist a matching saturating X?</p><input type="checkbox" class="donebox" data-q="53"></div>
+<div class="qbox" id="q54"><p>Q54. [3] Prove if Hall's condition fails for some S⊆X then no matching saturates X.</p><input type="checkbox" class="donebox" data-q="54"></div>
+<div class="qbox" id="q55"><p>Q55. [2] True/False: Gale-Shapley always terminates with a stable matching.</p><input type="checkbox" class="donebox" data-q="55"></div>
+</section>
+
+<section class="topic" data-topic="15">
+<h2>15 Planar graphs, colouring, connectivity</h2>
+
+<div class="qbox" id="q56"><p>Q56. [2] What is the maximum number of edges in a simple planar graph with 8 vertices?</p><input type="checkbox" class="donebox" data-q="56"></div>
+<div class="qbox" id="q57"><p>Q57. [3] Prove every planar graph has a vertex of degree at most 5.</p><input type="checkbox" class="donebox" data-q="57"></div>
+<div class="qbox" id="q58"><p>Q58. [2] True/False: K5 is planar.</p><input type="checkbox" class="donebox" data-q="58"></div>
+<div class="qbox" id="q59"><p>Q59. [2] For a connected planar graph with n=10 and e=15, how many faces are there?</p><input type="checkbox" class="donebox" data-q="59"></div>
+<div class="qbox" id="q60"><p>Q60. [3] Prove every planar graph is 6-colourable.</p><input type="checkbox" class="donebox" data-q="60"></div>
+</section>
+
+<p><a href="18-answer-key.html">Answer key</a></p>
+
+<div id="vis-main"></div>
+<script src="vis-17.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+<script>
+function filterTopic(t){
+  var secs=document.querySelectorAll('section.topic');
+  for(var i=0;i<secs.length;i++){
+    if(t==='all' || secs[i].getAttribute('data-topic')===t){secs[i].style.display='';}
+    else {secs[i].style.display='none';}
+  }
+}
+function loadDone(){
+  try{
+    var boxes=document.querySelectorAll('.donebox');
+    for(var i=0;i<boxes.length;i++){
+      var q=boxes[i].getAttribute('data-q');
+      if(localStorage.getItem('done-q'+q)==='1') boxes[i].checked=true;
+    }
+  }catch(e){}
+}
+function saveDone(box){
+  try{
+    var q=box.getAttribute('data-q');
+    if(box.checked) localStorage.setItem('done-q'+q,'1');
+    else localStorage.removeItem('done-q'+q);
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded', function(){
+  loadDone();
+  var boxes=document.querySelectorAll('.donebox');
+  for(var i=0;i<boxes.length;i++){
+    boxes[i].addEventListener('change', function(){saveDone(this);});
+  }
+});
+</script>
+</body>
+</html>

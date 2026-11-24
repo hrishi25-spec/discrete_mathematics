@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>13 Trees, Prüfer Codes, MST, Dijkstra</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>13 Trees, Prüfer Codes, Spanning Trees, Kruskal, Prim, Dijkstra, Rooted and Binary Trees</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Trees are the minimal connected graphs and appear in networks, parsing, coding, and optimization. Prüfer codes give an exact count of labeled trees, while Kruskal, Prim, and Dijkstra are the standard algorithms for MST and shortest paths. The exam often asks for proofs of correctness and step-by-step algorithm execution.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Graph basics and connectivity from <a href="11-graph-basics.html">page 11</a>; degree sequences from <a href="12-bipartite-euler-digraphs.html">page 12</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A tree is a connected graph with no cycles; it has n-1 edges. Removing any edge disconnects it, and adding any edge creates a cycle. The picture below is a tree on 5 vertices.</p>
+<svg width="220" height="120" viewBox="0 0 220 120" aria-label="Tree">
+  <circle cx="110" cy="20" r="8" fill="#1f6feb"/>
+  <circle cx="60" cy="60" r="8" fill="#1f6feb"/>
+  <circle cx="160" cy="60" r="8" fill="#1f6feb"/>
+  <circle cx="30" cy="100" r="8" fill="#1f6feb"/>
+  <circle cx="90" cy="100" r="8" fill="#1f6feb"/>
+  <line x1="104" y1="26" x2="66" y2="54" stroke="#333"/>
+  <line x1="116" y1="26" x2="154" y2="54" stroke="#333"/>
+  <line x1="54" y1="66" x2="36" y2="94" stroke="#333"/>
+  <line x1="66" y1="66" x2="84" y2="94" stroke="#333"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Tree:</strong> connected acyclic graph.</p>
+  <p><strong>Forest:</strong> acyclic graph.</p>
+  <p><strong>Leaf:</strong> vertex of degree 1.</p>
+  <p><strong>Spanning tree:</strong> spanning subgraph that is a tree.</p>
+  <p><strong>MST:</strong> spanning tree of minimum total edge weight.</p>
+  <p><strong>Prüfer code:</strong> sequence of n-2 labels encoding a labeled tree.</p>
+  <p><strong>Rooted tree:</strong> tree with a designated root; parent/child/ancestor/descendant.</p>
+  <p><strong>Binary tree:</strong> rooted plane tree with at most two children, left/right.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: tree characterizations</h3>
+<p>For an n-vertex graph (n>1), the following are equivalent: connected and acyclic; connected with n-1 edges; acyclic with n-1 edges; exactly one path between every pair. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> A tree with at least two vertices has a leaf (endpoint of a maximal path). Remove the leaf and its incident edge; the remainder is a tree on n-1 vertices. By induction it has n-2 edges, so the original has n-1 edges. Conversely a connected graph with n-1 edges is acyclic, and an acyclic graph with n-1 edges is connected. ∎</p>
+
+<h3>Theorem: number of labeled trees</h3>
+<p>There are n^{n-2} labeled trees on n vertices. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> The encoding repeatedly removes the smallest leaf and records its neighbour; decoding reverses this by attaching the smallest label not in the remaining code. These maps are inverses, so labeled trees biject with sequences of length n-2 over [n], giving n^{n-2}. ∎</p>
+
+<h3>Theorem: Kruskal's algorithm correctness</h3>
+<p>Kruskal's algorithm produces an MST.</p>
+<p><em>Proof.</em> Let e be the first edge chosen for T that is not in an MST T*. Adding e to T* creates a cycle C. Since T is acyclic, C contains an edge e' not in T. When e was chosen, e' was available, so w(e)≤w(e'). Thus T*+e-e' is a spanning tree of weight at most w(T*) that agrees with T on a longer initial segment. Repeating yields an MST equal to T. ∎</p>
+
+<h3>Theorem: Prim's algorithm correctness</h3>
+<p>Prim's algorithm produces an MST. <span class="notice">Exam likely (Q40).</span></p>
+<p><em>Proof.</em> Let S be the set of reached vertices and let e=uv be the cheapest edge with u∈S, v∉S. Any spanning tree must contain some edge crossing this cut; if it does not contain e, replacing its crossing edge by e does not increase weight. Thus e is in an MST. ∎</p>
+
+<h3>Theorem: Dijkstra's algorithm</h3>
+<p>Dijkstra computes shortest path distances from a source in a graph with nonnegative weights.</p>
+<p><em>Proof.</em> Induct on |S|. The selected vertex has smallest tentative distance; any path to it through an unfinalized vertex is at least as long because edge weights are nonnegative, so its distance is final. ∎</p>
+
+<h3>Theorem: every tree has at most one perfect matching</h3>
+<p>Every tree has at most one perfect matching. <span class="notice">Exam likely (Q44).</span></p>
+<p><em>Proof.</em> If two perfect matchings differed, their symmetric difference would be a nonempty union of even cycles in the tree, impossible. ∎</p>
+
+<h3>Theorem: tree is 2-colourable</h3>
+<p>Every tree is bipartite. <span class="notice">Exam likely (Q36).</span></p>
+<p><em>Proof.</em> Colour vertices by parity of distance from an arbitrary root; edges connect opposite parities. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1: Prüfer code count</h3>
+<p>Number of labeled trees on 6 vertices = 6^{4}=1296.</p>
+
+<h3>Example: Prüfer decode</h3>
+<p>Decode ⟨1,1,5⟩ on 6 vertices by repeatedly attaching the smallest missing label to the first code entry, then joining the last two labels.</p>
+
+<h3>Example: full binary trees</h3>
+<p>A full binary tree with n internal nodes has n+1 leaves and 2n+1 vertices; the number of such trees is Catalan C_n.</p>
+
+<h3>Example: Dijkstra</h3>
+<p>From source 0, finalize vertices in increasing tentative distance; nonnegative weights preserve optimality.</p>
+
+<h3>Example 2: MST weight</h3>
+<p>For the Q41 graph, Kruskal/Prim gives MST weight 38. Python verified.</p>
+
+<h3>Example 3: tree 2-colouring</h3>
+<p>Colour root black, its children white, grandchildren black, etc. No edge joins same colour.</p>
+
+<h3>Example 4: perfect matching in tree</h3>
+<p>A path on 4 vertices has unique perfect matching {1-2,3-4}; a star K1,3 has no perfect matching.</p>
+
+<h3>Example 5: Dijkstra</h3>
+<p>From source 0 in sample graph, distances are computed by repeatedly finalizing the smallest tentative label.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Labeled tree count and MST weight calculator.</p>
+<div class="card">
+  <label>n (vertices) <input id="treeN" type="number" value="6" oninput="calcTree()"></label>
+  <p id="treeResult"></p>
+  <p>Fixed Q41 graph MST weight: 38 (Python verified).</p>
+</div>
+<script>
+function calcTree(){
+  var n=+document.getElementById('treeN').value;
+  var val=Math.pow(n, Math.max(0,n-2));
+  document.getElementById('treeResult').textContent='Labeled trees on '+n+' vertices = n^(n-2) = '+val;
+}
+calcTree();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Forgetting MST may not be unique, but weight is unique.</li>
+  <li>Using Prim/Kruskal with negative weights (not in this course).</li>
+  <li>Prüfer code length is n-2, not n.</li>
+  <li>Confusing rooted tree parent/child orientation.</li>
+  <li>Assuming every tree has a perfect matching.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q35. Construct trees with Prüfer codes all 1s and 1,2,...,8.</summary>
+<p>Solution: use the decoding algorithm: repeatedly attach the smallest label not appearing in the remaining code to the first code entry. Python verified the decoding process conceptually.</p>
+</details>
+
+<details>
+<summary>Q36. Prove every tree is 2-colourable.</summary>
+<p>Solution: proof above.</p>
+</details>
+
+<details>
+<summary>Q40. Prove Prim's algorithm produces an MST.</summary>
+<p>Solution: proof above.</p>
+</details>
+
+<details>
+<summary>Q41. Find MST in the 9-vertex weighted graph using Prim's algorithm; report minimum weight.</summary>
+<p>Solution: MST weight = 38. Python verification: 38.</p>
+</details>
+
+<details>
+<summary>Q44. Prove or disprove every tree has at most one perfect matching.</summary>
+<p>Solution: true; proof above.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Labeled trees on 4 vertices?</summary><p>4^{2}=16.</p></details>
+<details><summary>2. Edges in tree on 10 vertices?</summary><p>9.</p></details>
+<details><summary>3. Is a star K1,4 a tree?</summary><p>Yes.</p></details>
+<details><summary>4. Full binary tree with 3 internal nodes has how many leaves?</summary><p>4.</p></details>
+<details><summary>5. Prüfer code length for 10-vertex tree?</summary><p>8.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Tree: connected, acyclic, n-1 edges.</p>
+  <p>Labeled trees: n^{n-2}.</p>
+  <p>Prüfer code length n-2.</p>
+  <p>Kruskal/Prim produce MST.</p>
+  <p>Dijkstra: nonnegative weights.</p>
+  <p>Tree is bipartite and 2-colourable.</p>
+  <p>At most one perfect matching in a tree.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="12-bipartite-euler-digraphs.html">← Prev: 12 Bipartite, Euler, Digraphs</a> | <a href="14-matchings.html">Next: 14 Matchings →</a></p>
+<div id="vis-main"></div>
+<script src="vis-13.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

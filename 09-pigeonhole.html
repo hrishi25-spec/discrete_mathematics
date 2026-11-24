@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>09 Pigeonhole Principle</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>09 Pigeonhole Principle</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>The pigeonhole principle is a simple but powerful counting/contradiction tool: if more objects than boxes, some box has at least two. It proves non-injectivity, guarantees collisions, and underlies the birthday paradox. Many exam problems are one-line applications once you identify the pigeons and holes.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Basic counting from <a href="02-basic-counting.html">page 02</a>; inclusion-exclusion for collision counts from <a href="04-inclusion-exclusion.html">page 04</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>If 6 pigeons go into 5 holes, at least one hole has at least 2 pigeons. The proof is by contradiction: if every hole had at most 1, there would be at most 5 pigeons. The picture below shows 6 balls in 5 boxes.</p>
+<svg width="300" height="90" viewBox="0 0 300 90" aria-label="Pigeonhole picture">
+  <rect x="20" y="30" width="40" height="40" fill="none" stroke="#333"/>
+  <rect x="70" y="30" width="40" height="40" fill="none" stroke="#333"/>
+  <rect x="120" y="30" width="40" height="40" fill="none" stroke="#333"/>
+  <rect x="170" y="30" width="40" height="40" fill="none" stroke="#333"/>
+  <rect x="220" y="30" width="40" height="40" fill="none" stroke="#333"/>
+  <circle cx="40" cy="45" r="6" fill="#1f6feb"/>
+  <circle cx="40" cy="60" r="6" fill="#1f6feb"/>
+  <circle cx="90" cy="50" r="6" fill="#1f6feb"/>
+  <circle cx="140" cy="50" r="6" fill="#1f6feb"/>
+  <circle cx="190" cy="50" r="6" fill="#1f6feb"/>
+  <circle cx="240" cy="50" r="6" fill="#1f6feb"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Pigeonhole principle:</strong> if n+1 objects are placed in n boxes, some box contains at least 2 objects.</p>
+  <p><strong>Generalized form:</strong> if nk+1 objects are placed in n boxes, some box contains at least k+1 objects.</p>
+  <p><strong>Empty box form:</strong> if n-1 objects are placed in n boxes, some box is empty.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: basic pigeonhole principle</h3>
+<p>If n+1 pigeons are placed in n holes, one hole has more than 1 pigeon. <span class="notice">Exam likely.</span></p>
+<p><em>Proof (contraposition).</em> If every hole has at most 1 pigeon, then total pigeons ≤ n, contradiction. ∎</p>
+
+<h3>Theorem: generalized pigeonhole principle</h3>
+<p>If nk+1 objects are placed in n boxes, some box has at least k+1 objects.</p>
+<p><em>Proof.</em> If every box had at most k objects, total would be at most nk, contradiction. ∎</p>
+
+<h3>Theorem: function non-injectivity</h3>
+<p>A function from a set of size at least k+1 to a set of size k is not one-to-one.</p>
+<p><em>Proof.</em> The k values are boxes; k+1 inputs are pigeons. ∎</p>
+
+<h3>Theorem: birthday collision approximation</h3>
+<p>For t random hashes into N=2^n values, probability of no collision is approximately exp(-t^2/(2N)). Setting this to 1/e gives t≈√(2N)=√2·2^{n/2}. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> P_no = ∏_{i=0}^{t-1}(1-i/N) ≈ exp(-Σ i/N) ≈ exp(-t^2/(2N)). Set equal to 1/e. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Among 27 English words, two begin with the same letter (26 letters).</p>
+
+<h3>Example 2</h3>
+<p>To guarantee two students with the same score 0-100, need 102 students.</p>
+
+<h3>Example 3</h3>
+<p>In any 6 people, there are 3 mutual friends or 3 mutual strangers (Ramsey R(3,3)=6).</p>
+
+<h3>Example 4</h3>
+<p>Birthday paradox: with n-bit hash, about √2·2^{n/2} hashes give collision probability 1-1/e.</p>
+
+<h3>Example 5</h3>
+<p>Party problem: among at least 2 people, two know the same number of others (pigeonholes 0..n-1 with endpoints impossible).</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Birthday collision threshold calculator.</p>
+<div class="card">
+  <label>Hash bits n <input id="bits" type="number" value="64" oninput="calcBirth()"></label>
+  <p id="birthResult"></p>
+</div>
+<script>
+function calcBirth(){
+  var n=+document.getElementById('bits').value;
+  var t=Math.sqrt(2)*Math.pow(2,n/2);
+  document.getElementById('birthResult').textContent='Approx hashes for 1/e non-collision: sqrt(2)*2^(n/2) ≈ '+t.toExponential(3);
+}
+calcBirth();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Choosing the wrong pigeons/holes so the count inequality fails.</li>
+  <li>Using generalized form with wrong k.</li>
+  <li>Confusing 1/e non-collision with 1/2 collision probability.</li>
+  <li>Forgetting that pigeonhole gives existence, not construction.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q16. Hash function to n bits; approximate number of hashes for 1/e chance of non-collision.</summary>
+<p>Solution: t≈√2·2^{n/2}. Python verification of formula structure: for n=10, t≈45.25.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. If 10 balls into 9 boxes, one box has at least?</summary><p>2.</p></details>
+<details><summary>2. 100 objects into 10 boxes, one box has at least?</summary><p>10.</p></details>
+<details><summary>3. Show among 5 points in an equilateral triangle of side 2, two are at distance less than 1.</summary><p>Subdivide into 4 smaller equilateral triangles of side 1; pigeonhole gives two points in one small triangle, whose diameter is 1.</p></details>
+<details><summary>4. Words among 30 English words sharing first letter?</summary><p>Yes, 30>26.</p></details>
+<details><summary>5. Birthday paradox threshold for 32-bit hash?</summary><p>≈√2·2^16≈92682.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>n+1 objects in n boxes ⇒ one box has ≥2.</p>
+  <p>nk+1 objects in n boxes ⇒ one box has ≥k+1.</p>
+  <p>n-1 objects in n boxes ⇒ one box empty.</p>
+  <p>Function from size k+1 to size k not injective.</p>
+  <p>Birthday: P_no≈exp(-t^2/(2N)), N=2^n.</p>
+  <p>1/e non-collision: t≈√(2N).</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="08-catalan-lattice-paths.html">← Prev: 08 Catalan, Lattice Paths</a> | <a href="10-logic-proofs-induction.html">Next: 10 Logic, Proofs, Induction →</a></p>
+<div id="vis-main"></div>
+<script src="vis-09.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>01 Sets, Relations, Equivalence Relations, Partitions, Functions, Sequences</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>01 Sets, Relations, Equivalence Relations, Partitions, Functions, Sequences</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Almost every counting and graph problem begins by deciding which objects are equivalent or how a set is partitioned. Equivalence relations turn messy "same for our purposes" ideas into clean buckets, and the theorem that they are exactly partitions is one of the first big structural results of the course. Functions and sequences then give the language for counting and recurrences later.</p>
+
+<h2>2. Prerequisites</h2>
+<p>None: this is the first topic. Review set notation (subset, power set, Cartesian product) as needed.</p>
+
+<h2>3. Intuition</h2>
+<p>Think of a set as a bag of objects and a relation as "linked." An equivalence relation is a link that is reflexive, symmetric, and transitive, so it behaves like "is in the same group as." The groups are the equivalence classes, and they partition the original set. The picture below partitions {1,2,3,4} into two groups.</p>
+<svg width="320" height="160" viewBox="0 0 320 160" aria-label="Partition into two equivalence classes">
+  <ellipse cx="100" cy="80" rx="70" ry="55" fill="none" stroke="#1f6feb" stroke-width="2"/>
+  <ellipse cx="220" cy="80" rx="70" ry="55" fill="none" stroke="#d73a49" stroke-width="2"/>
+  <text x="70" y="75" font-size="14">{1,4}</text>
+  <text x="195" y="75" font-size="14">{2,3}</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Set:</strong> a well-behaved collection of objects; subset, power set 2^A, Cartesian product A×B.</p>
+  <p><strong>Binary relation R on A:</strong> R ⊆ A×A. Properties: reflexive (∀a, (a,a)∈R), symmetric ((a,b)∈R⇒(b,a)∈R), antisymmetric ((a,b),(b,a)∈R⇒a=b), transitive ((a,b),(b,c)∈R⇒(a,c)∈R).</p>
+  <p><strong>Equivalence relation:</strong> reflexive + symmetric + transitive.</p>
+  <p><strong>Equivalence class:</strong> [a]_R = {b∈A : (a,b)∈R}.</p>
+  <p><strong>Partition of A:</strong> disjoint nonempty subsets whose union is A.</p>
+  <p><strong>Function f:A→B:</strong> each a∈A has exactly one image in B; injective/surjective/bijective as usual.</p>
+  <p><strong>Sequence:</strong> a function from a subset of N to a set S.</p>
+</div>
+
+<h2>Composition of relations</h2>
+<div class="card">
+  <p>If R1⊆A×B and R2⊆B×C, then R1∘R2={(x,z): ∃y∈B, (x,y)∈R1 and (y,z)∈R2}. Check textbook convention for order.</p>
+</div>
+
+<h2>Russell's paradox</h2>
+<div class="card">
+  <p>A={S: S∉S} leads to a contradiction; this motivated axiomatic set theory.</p>
+</div>
+
+<h2>Partial and total orders</h2>
+<div class="card">
+  <p><strong>Partial order:</strong> reflexive + antisymmetric + transitive. The set is a poset.</p>
+  <p><strong>Total order:</strong> partial order where every pair is comparable.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: congruence modulo n is an equivalence relation</h3>
+<p>For n∈Z^+, define a~b iff n | (a−b). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Reflexive: n | (a−a)=0. Symmetric: if n | (a−b), then n | (b−a)=−(a−b). Transitive: if n | (a−b) and n | (b−c), then n | [(a−b)+(b−c)] = (a−c). ∎</p>
+
+<h3>Theorem: equivalence classes are disjoint or equal</h3>
+<p>If R is an equivalence relation on A, then for any a,b∈A, either [a]∩[b]=∅ or [a]=[b]. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Suppose [a]∩[b]≠∅ and take c in the intersection. Then a~c and b~c. By symmetry c~b, and by transitivity a~b. If x∈[a], then a~x; since a~b, transitivity gives b~x, so x∈[b]. Thus [a]⊆[b]; symmetrically [b]⊆[a]. ∎</p>
+
+<h3>Theorem: union of equivalence classes is A</h3>
+<p>∪_{a∈A}[a]=A. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Each [a]⊆A, so the union is ⊆A. Conversely every a∈A lies in [a] by reflexivity, so A⊆∪[a]. ∎</p>
+
+<h3>Theorem: equivalence relations correspond to partitions</h3>
+<p>If R is an equivalence relation on A, its classes form a partition of A. Conversely, any partition of A induces an equivalence relation whose classes are the blocks. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Forward: classes are nonempty by reflexivity, pairwise disjoint or equal by the theorem above, and their union is A. Backward: define a~b iff a,b lie in the same block; reflexivity, symmetry, and transitivity follow from "same block" being an equivalence on blocks. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Relation R on Z^+ by a~b iff a | b is reflexive and transitive but not symmetric (2|4 but 4∤2), so it is not an equivalence relation.</p>
+
+<h3>Example 2</h3>
+<p>Modulo 4 classes: [0]={...,-4,0,4,...}, [1]={...,-3,1,5,...}, [2], [3]. These four classes partition Z.</p>
+
+<h3>Example 3</h3>
+<p>Number of equivalence relations on a 3-element set equals Bell number B_3=5: partitions are 1+1+1, 2+1 (three choices of pair), 3.</p>
+
+<h3>Example 4</h3>
+<p>Number with exactly 2 classes on 6 elements is S(6,2)=2^5−1=31 (Python verified below).</p>
+
+<h3>Example 5</h3>
+<p>On {1,0.5,1/3,√2} all four elements are distinct objects, so equivalence relations depend only on cardinality 4: Bell number B_4=15.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Count equivalence relations on an n-element set with exactly k classes (Stirling number S(n,k)); also shows Bell number B_n.</p>
+<div class="card">
+  <label>n <select id="nSel" onchange="countER()"></select></label>
+  <label>k <select id="kSel" onchange="countER()"></select></label>
+  <p id="erResult"></p>
+</div>
+<script>
+var S=[[1],[0,1],[0,1,1],[0,1,3,1],[0,1,7,6,1],[0,1,15,25,10,1],[0,1,31,90,65,15,1]];
+var Bell=[1,1,2,5,15,52,203];
+function initER(){
+  var nsel=document.getElementById('nSel');
+  var ksel=document.getElementById('kSel');
+  for(var n=1;n<=6;n++){var o=document.createElement('option');o.value=n;o.textContent=n;nsel.appendChild(o);}
+  nsel.value=3;
+  refreshK();
+  countER();
+}
+function refreshK(){
+  var n=+document.getElementById('nSel').value;
+  var ksel=document.getElementById('kSel');
+  ksel.innerHTML='';
+  for(var k=1;k<=n;k++){var o=document.createElement('option');o.value=k;o.textContent=k;ksel.appendChild(o);}
+  if(n>=2) ksel.value=2; else ksel.value=1;
+}
+function countER(){
+  refreshK?0:0;
+  var n=+document.getElementById('nSel').value;
+  var k=+document.getElementById('kSel').value;
+  document.getElementById('erResult').textContent='S('+n+','+k+') = '+S[n][k]+' ;  B_'+n+' = '+Bell[n];
+}
+document.getElementById('nSel').addEventListener('change',function(){refreshK();countER();});
+initER();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Confusing antisymmetric with symmetric.</li>
+  <li>Forgetting that equivalence classes are nonempty and disjoint.</li>
+  <li>Thinking a partition's blocks can be empty.</li>
+  <li>Counting equivalence relations by 2^n instead of Bell/Stirling numbers.</li>
+  <li>Assuming [a]=[b] requires a=b; any member can represent a class.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q1. How many equivalence relations on {1,...,6} have exactly 2 classes?</summary>
+<p>Solution: S(6,2)=2^{5}-1=31. Python verification: 31.</p>
+</details>
+
+<details>
+<summary>Q2. Is a~b iff 2 | (a+b) an equivalence relation on Z?</summary>
+<p>Solution: Yes. Reflexive since 2|2a; symmetric since sum commutes; transitive because if a,b have same parity and b,c have same parity then a,c have same parity. Classes are evens and odds.</p>
+</details>
+
+<details>
+<summary>Q3. How many equivalence relations on {α,β,γ}?</summary>
+<p>Solution: Bell number B_3=5. Python verification: 5.</p>
+</details>
+
+<details>
+<summary>Q11. How many equivalence relations with exactly 3 classes on a 5-element set?</summary>
+<p>Solution: S(5,3)=25. Python verification: 25.</p>
+</details>
+
+<details>
+<summary>Q25. How many equivalence relations on {1, 0.5, 1/3, √2}?</summary>
+<p>Solution: The set has 4 distinct elements, so Bell number B_4=15. Python verification: 15.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. How many equivalence relations on a 4-element set?</summary><p>15.</p></details>
+<details><summary>2. How many with exactly 2 classes on a 4-element set?</summary><p>7.</p></details>
+<details><summary>3. Is "a divides b" an equivalence relation on Z^+?</summary><p>No: not symmetric.</p></details>
+<details><summary>4. How many partitions of {1,2,3,4} into 2 blocks?</summary><p>7.</p></details>
+<details><summary>5. Is congruence mod 5 an equivalence relation on Z?</summary><p>Yes.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Equivalence relation = reflexive + symmetric + transitive.</p>
+  <p>Classes are disjoint or equal; their union is A.</p>
+  <p>Equivalence relations ↔ partitions.</p>
+  <p>Congruence mod n is an equivalence relation.</p>
+  <p>Counting relations with k classes: Stirling S(n,k).</p>
+  <p>Total equivalence relations on n elements: Bell B_n.</p>
+  <p>Any element can represent its class.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="index.html">← Contents</a> | <a href="02-basic-counting.html">Next: 02 Basic Counting →</a></p>
+<div id="vis-main"></div>
+<script src="vis-01.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

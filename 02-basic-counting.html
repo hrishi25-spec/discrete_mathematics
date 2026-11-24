@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02 Basic Counting</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>02 Basic Counting: Sum/Product Rule, Permutations, Combinations, Repetition, Stars and Bars</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Basic counting is the engine behind almost every later topic: partitions, Stirling numbers, derangements, and graph enumeration all start with these rules. The key skill is recognizing whether order matters, whether repetition is allowed, and whether objects or containers are distinguishable. A wrong choice of formula by one word changes the answer by orders of magnitude.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Set notation and basic sets from <a href="01-sets-relations.html">page 01</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>Counting is about independent choices. If a task splits into independent stages, multiply the number of choices at each stage. If it splits into disjoint cases, add the case counts. The picture below shows two independent choices: 3 shirts and 2 pants give 3×2=6 outfits.</p>
+<svg width="300" height="120" viewBox="0 0 300 120" aria-label="Product rule picture">
+  <rect x="20" y="20" width="80" height="30" fill="#dbeafe" stroke="#1f6feb"/>
+  <text x="60" y="40" text-anchor="middle" font-size="12">3 shirts</text>
+  <rect x="20" y="70" width="80" height="30" fill="#dbeafe" stroke="#1f6feb"/>
+  <text x="60" y="90" text-anchor="middle" font-size="12">2 pants</text>
+  <text x="180" y="60" font-size="16">3 × 2 = 6</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Rule of sum:</strong> if X and Y are disjoint events with x and y outcomes, then X or Y has x+y outcomes.</p>
+  <p><strong>Rule of product:</strong> if X and Y are independent stages with x and y outcomes, then X and Y has xy outcomes.</p>
+  <p><strong>Permutation:</strong> ordered arrangement of distinct objects.</p>
+  <p><strong>Combination:</strong> unordered selection of distinct objects.</p>
+  <p><strong>Redundant combination / multiset:</strong> selection with repetition allowed, order irrelevant.</p>
+  <p><strong>Stars and bars:</strong> count nonnegative integer solutions y_1+...+y_n = r.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: number of subsets</h3>
+<p>A set of n elements has 2^n subsets. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Each element is either in or out, giving 2 choices independently; product rule gives 2^n. ∎</p>
+
+<h3>Theorem: permutations of n distinct objects</h3>
+<p>n! = n(n−1)...1. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> First position has n choices, then n−1, etc.; product rule gives n!. ∎</p>
+
+<h3>Theorem: ordered selections of r from n</h3>
+<p>P(n,r)=n!/(n−r)!.</p>
+<p><em>Proof.</em> First r positions have n,n−1,...,n−r+1 choices; product is n!/(n−r)!. ∎</p>
+
+<h3>Theorem: combinations</h3>
+<p>C(n,r)=n!/[r!(n−r)!]. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Each unordered r-set can be ordered in r! ways, so P(n,r)=r! C(n,r). ∎</p>
+
+<h3>Theorem: redundant permutations</h3>
+<p>If order counts and repetition is allowed, number is n^r.</p>
+<p><em>Proof.</em> Each of r positions independently chooses one of n types. ∎</p>
+
+<h3>Theorem: redundant combinations (stars and bars)</h3>
+<p>Number of multisets of size r from n types is C(n+r−1,r). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Let y_i be count of type i. Count nonnegative solutions y_1+...+y_n=r. Place r stars and n−1 bars in r+n−1 positions; choose positions of bars: C(n+r−1,n−1)=C(n+r−1,r). ∎</p>
+
+<h3>Theorem: binomial theorem</h3>
+<p>(x+y)^n = Σ_{k=0}^n C(n,k) x^k y^{n−k}.</p>
+<p><em>Proof.</em> Expanding (x+y)^n chooses x or y from each of n factors; to get x^k y^{n−k} choose which k factors give x: C(n,k) ways. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Number of 3-letter words over 26 letters with repetition allowed: 26^3=17576.</p>
+
+<h3>Example 2</h3>
+<p>Choose a committee of 4 from 10: C(10,4)=210.</p>
+
+<h3>Example 3</h3>
+<p>Number of multisets of 7 fruits from 4 types: C(7+4−1,4−1)=C(10,3)=120.</p>
+
+<h3>Example 4</h3>
+<p>Number of nonnegative solutions to x_1+...+x_5=10 is C(10+5−1,5−1)=C(14,4)=1001.</p>
+
+<h3>Example 5</h3>
+<p>Alternating line of n married couples: arrange men in n! ways and women in n! ways, giving (n!)^2.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Stars-and-bars calculator: number of multisets of size r from n types.</p>
+<div class="card">
+  <label>n (types) <input id="nSB" type="number" value="4" oninput="calcSB()"></label>
+  <label>r (items) <input id="rSB" type="number" value="7" oninput="calcSB()"></label>
+  <p id="sbResult"></p>
+</div>
+<script>
+function C(n,r){if(r<0||r>n)return 0;var res=1;for(var i=1;i<=r;i++){res=res*(n-r+i)/i;}return Math.round(res);}
+function calcSB(){
+  var n=+document.getElementById('nSB').value;
+  var r=+document.getElementById('rSB').value;
+  document.getElementById('sbResult').textContent='C(n+r-1,r) = '+C(n+r-1,r);
+}
+calcSB();
+</script>
+
+<div class="notice"><strong>Slide errors I fixed:</strong> Binomial identity in the notes reads C(n,0)+C(n,1)+C(n,3)+...+C(n,n)=2^n; the full sum includes C(n,2).</div>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Using n^r when order does not matter.</li>
+  <li>Using C(n,r) when repetition is allowed.</li>
+  <li>Forgetting that circular arrangements of n objects are (n−1)!.</li>
+  <li>Confusing C(n+r−1,r) with C(n+r−1,n).</li>
+  <li>Not checking whether containers/objects are distinguishable.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q5. President, VP, secretary, treasurer selected from 11 people; same person may hold more than one office. Count?</summary>
+<p>Solution: 4 independent offices, each 11 choices: 11^4=14641. Python verification: 14641.</p>
+</details>
+
+<details>
+<summary>Q21. Two 4-digit numbers equivalent if one is a digit permutation of the other. How many non-equivalent 4-digit numbers?</summary>
+<p>Solution: equivalence classes correspond to multisets of 4 digits with at least one nonzero. Count = C(10+4−1,4)−1 = C(13,4)−1 = 715−1 = 714. Python verification: 714.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. How many 4-digit PINs?</summary><p>10^4=10000.</p></details>
+<details><summary>2. How many ways to choose 3 from 10?</summary><p>C(10,3)=120.</p></details>
+<details><summary>3. Circular arrangements of 6 people?</summary><p>(6−1)!=120.</p></details>
+<details><summary>4. Multisets of 7 fruits from 4 types?</summary><p>C(10,3)=120.</p></details>
+<details><summary>5. Nonnegative solutions to x1+...+x4=10?</summary><p>C(13,3)=286.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Sum rule: add disjoint cases; product rule: multiply stages.</p>
+  <p>Subsets: 2^n. Permutations: n!. Ordered selections: n!/(n−r)!.</p>
+  <p>Combinations: C(n,r). Redundant permutations: n^r.</p>
+  <p>Redundant combinations: C(n+r−1,r).</p>
+  <p>Circular arrangements: (n−1)!.</p>
+  <p>Binomial theorem: (x+y)^n=Σ C(n,k)x^k y^{n−k}.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="01-sets-relations.html">← Prev: 01 Sets, Relations</a> | <a href="03-occupancy-stirling.html">Next: 03 Occupancy, Stirling →</a></p>
+<div id="vis-main"></div>
+<script src="vis-02.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

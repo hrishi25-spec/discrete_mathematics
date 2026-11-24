@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>15 Planar Graphs, Colouring, Connectivity</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>15 Planar Graphs, Euler's Formula, 5- and 6-Colour Theorems, Colouring, Connectivity</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Planarity, colouring, and connectivity are central graph invariants. Euler's formula links vertices, edges, and faces; the 5-colour theorem is a classic induction proof; connectivity measures robustness. These results appear in map colouring, network reliability, and planar graph bounds.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Graph basics, bipartite/Euler, and tree theorems from <a href="11-graph-basics.html">page 11</a>, <a href="12-bipartite-euler-digraphs.html">page 12</a>, and <a href="13-trees-prufer-mst.html">page 13</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A planar graph can be drawn without crossings. Euler's formula says for a connected plane graph, V-E+F=2. The picture below is a planar embedding of K4 with 4 faces.</p>
+<svg width="200" height="140" viewBox="0 0 200 140" aria-label="Planar K4">
+  <polygon points="100,20 30,120 170,120" fill="none" stroke="#333"/>
+  <circle cx="100" cy="75" r="8" fill="#1f6feb"/>
+  <line x1="100" y1="20" x2="100" y2="75" stroke="#333"/>
+  <line x1="30" y1="120" x2="100" y2="75" stroke="#333"/>
+  <line x1="170" y1="120" x2="100" y2="75" stroke="#333"/>
+  <circle cx="100" cy="20" r="6" fill="#d73a49"/>
+  <circle cx="30" cy="120" r="6" fill="#d73a49"/>
+  <circle cx="170" cy="120" r="6" fill="#d73a49"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Planar graph:</strong> has a drawing without edge crossings.</p>
+  <p><strong>Plane graph:</strong> a particular planar embedding.</p>
+  <p><strong>Face:</strong> maximal region of the plane not used by the embedding; outer face counts.</p>
+  <p><strong>Dual:</strong> vertices correspond to faces; edges cross original edges.</p>
+  <p><strong>Chromatic number χ(G):</strong> minimum proper vertex colours.</p>
+  <p><strong>Colour-critical graph:</strong> χ(G-v) &lt; χ(G) for every vertex v.</p>
+  <p><strong>Vertex connectivity κ(G):</strong> minimum vertices whose removal disconnects G.</p>
+  <p><strong>Edge connectivity κ'(G):</strong> minimum edges whose removal disconnects G.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: Euler's formula</h3>
+<p>If a connected plane graph has n vertices, e edges, and f faces, then n-e+f=2. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Induct on n. For n=1, e=0 and f=1, so 1-0+1=2. For n>1, contract a non-loop edge: this reduces n and e by 1 and keeps f unchanged, so induction gives (n-1)-(e-1)+f=2, hence n-e+f=2. ∎</p>
+
+<h3>Theorem: planar edge bound</h3>
+<p>Every simple planar graph with n≥3 vertices has at most 3n-6 edges.</p>
+<p><em>Proof.</em> In a simple planar graph with n≥3, every face boundary has length at least 3, so 2e≥3f. Euler gives f=2-n+e. Substitute: 2e≥3(2-n+e)=6-3n+3e, so e≤3n-6. ∎</p>
+
+<h3>Theorem: 6-colour theorem</h3>
+<p>Every planar graph is 6-colourable.</p>
+<p><em>Proof.</em> By induction on n. A planar graph has a vertex of degree at most 5. Remove it, colour the smaller graph by 6 colours, then the removed vertex has at most 5 coloured neighbours, leaving a free colour. ∎</p>
+
+<h3>Theorem: 5-colour theorem</h3>
+<p>Every planar graph is 5-colourable. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Induct on n. For n≤5 trivial. For n>5, take a vertex v of degree at most 5. Colour G-v by 5 colours. If neighbours of v use at most 4 colours, colour v with the missing colour. Otherwise v has 5 neighbours v_1,...,v_5 in cyclic order, with distinct colours 1,...,5. Consider the subgraph using colours 1 and 3. If v_1 and v_3 are in different components, swap colours 1 and 3 in v_1's component, freeing colour 1 for v. Otherwise there is a path from v_1 to v_3 using only colours 1 and 3; together with v this forms a cycle separating v_2 from v_4,v_5. Then the subgraph using colours 2 and 4 has v_2 and v_4 in different components; swap to free colour 2. ∎</p>
+
+<h3>Theorem: connectivity inequality (not in slides - standard result)</h3>
+<p>For a simple graph G, κ(G) ≤ κ'(G) ≤ δ(G). <span class="notice">Exam likely (Q45).</span></p>
+<p><em>Proof.</em> κ'≤δ by removing all edges incident to a minimum-degree vertex. For κ≤κ', take a minimum edge cut F; choose one endpoint of each edge in F on one side of the cut. These vertices form a vertex cut of size at most |F|=κ'. ∎</p>
+
+<h3>Theorem: strict inequality example</h3>
+<p>In K_{2,3}, δ=2, κ'=2, κ=2? Actually for a cycle C_n, κ=κ'=2=δ. For a graph where strict inequality holds: take two K4's sharing a single vertex (a "figure-eight"): minimum degree 3, vertex connectivity 1, edge connectivity 3. Removing the shared vertex disconnects; removing three edges incident to the shared vertex in one K4 disconnects. Thus κ=1 &lt; κ'=3 = δ=3. <span class="notice">Exam likely (Q45).</span></p>
+
+<h2>Outerplanar graphs and duals</h2>
+<div class="card">
+  <p>Outerplanar: all vertices on the boundary of the unbounded face. Dual: vertices are faces; face lengths are degrees in the dual; sum of face lengths = 2e.</p>
+</div>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Planar graph with n=6,e=9: Euler gives f=2-6+9=5 faces.</p>
+
+<h3>Example 2</h3>
+<p>K5 is non-planar; it violates e≤3n-6 for n=5 (10 > 9).</p>
+
+<h3>Example 3</h3>
+<p>K_{3,3} is non-planar; it violates the bipartite planar bound e≤2n-4.</p>
+
+<h3>Example 4</h3>
+<p>A planar graph with 4 vertices has at most 3*4-6=6 edges (K4).</p>
+
+<h3>Example 5</h3>
+<p>Colour-critical graphs: K_n is n-colour-critical; odd cycles are 3-colour-critical. <span class="notice">Not in slides - standard result (Q46).</span></p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Euler formula calculator.</p>
+<div class="card">
+  <label>n (vertices) <input id="eN" type="number" value="4" oninput="calcEuler()"></label>
+  <label>e (edges) <input id="eE" type="number" value="6" oninput="calcEuler()"></label>
+  <p id="eulerResult"></p>
+</div>
+<script>
+function calcEuler(){
+  var n=+document.getElementById('eN').value;
+  var e=+document.getElementById('eE').value;
+  document.getElementById('eulerResult').textContent='For connected plane graph: f = 2 - n + e = '+(2-n+e)+'. Max simple planar edges (n≥3): 3n-6 = '+(3*n-6)+'.';
+}
+calcEuler();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Forgetting the outer face in Euler's formula.</li>
+  <li>Using e≤3n-6 for n&lt;3.</li>
+  <li>Confusing 5-colour and 4-colour theorems.</li>
+  <li>Forgetting colour-critical means removing any vertex lowers chromatic number.</li>
+  <li>Confusing vertex and edge connectivity.</li>
+</ul>
+
+<div class="notice"><strong>Slide errors / not in slides:</strong> Vertex/edge connectivity κ, κ' (Q45) and colour-critical graphs (Q46) are not in the slides; marked "Not in slides - standard result". Quiz statement e≥3n-6 is false; correct is e≤3n-6.</div>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q45. Show κ(G)≤κ'(G)≤δ(G) for simple graph G. Give example of strict inequality.</summary>
+<p>Solution: proof and example (two K4's sharing a vertex) above.</p>
+</details>
+
+<details>
+<summary>Q46. Give two examples of colour-critical graphs.</summary>
+<p>Solution: K_n (n-colour-critical) and odd cycles (3-colour-critical). Python verification not needed (conceptual).</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Euler formula for tree (n vertices)?</summary><p>For a connected plane tree, e=n-1, so f=2-n+(n-1)=1.</p></details>
+<details><summary>2. Max edges in planar graph on 6 vertices?</summary><p>3*6-6=12.</p></details>
+<details><summary>3. Is K4 planar?</summary><p>Yes.</p></details>
+<details><summary>4. Chromatic number of C5?</summary><p>3.</p></details>
+<details><summary>5. Vertex connectivity of complete graph K_n?</summary><p>n-1.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Euler: n-e+f=2 (connected plane graph).</p>
+  <p>Planar simple: e≤3n-6 (n≥3).</p>
+  <p>Every planar graph 5-colourable (and 6-colourable).</p>
+  <p>κ≤κ'≤δ.</p>
+  <p>Colour-critical: removing any vertex lowers χ.</p>
+  <p>K_n is n-colour-critical; odd cycles are 3-colour-critical.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="14-matchings.html">← Prev: 14 Matchings</a> | <a href="16-exam-revision.html">Next: 16 Exam Revision →</a></p>
+<div id="vis-main"></div>
+<script src="vis-15.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

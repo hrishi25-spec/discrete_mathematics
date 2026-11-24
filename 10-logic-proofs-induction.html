@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10 Logic, Proofs, Induction</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>10 Logic, Proof Techniques, Induction</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Every theorem in this course is built from definitions and proof techniques. The exam tests whether you can choose the right proof method (direct, contrapositive, contradiction, induction) and avoid invalid induction. The quantifier and induction typos in the slides are classic traps, so they are corrected here.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Set and relation definitions from <a href="01-sets-relations.html">page 01</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>Logic is the grammar of proofs. A proof is a chain from axioms/definitions to the conclusion. Induction is like a ladder: prove the first rung, then show each rung implies the next. The picture below shows the induction ladder.</p>
+<svg width="220" height="120" viewBox="0 0 220 120" aria-label="Induction ladder">
+  <line x1="40" y1="110" x2="40" y2="10" stroke="#333" stroke-width="2"/>
+  <line x1="180" y1="110" x2="180" y2="10" stroke="#333" stroke-width="2"/>
+  <line x1="40" y1="100" x2="180" y2="100" stroke="#333"/>
+  <line x1="40" y1="75" x2="180" y2="75" stroke="#333"/>
+  <line x1="40" y1="50" x2="180" y2="50" stroke="#333"/>
+  <line x1="40" y1="25" x2="180" y2="25" stroke="#333"/>
+  <text x="95" y="15" font-size="12">P(n)</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Proposition:</strong> statement that is true or false.</p>
+  <p><strong>Axiom:</strong> statement assumed true.</p>
+  <p><strong>Theorem/lemma/corollary:</strong> proven statements.</p>
+  <p><strong>Implication P⇒Q:</strong> false only when P true and Q false.</p>
+  <p><strong>Contrapositive:</strong> ¬Q⇒¬P, equivalent to P⇒Q.</p>
+  <p><strong>Converse:</strong> Q⇒P; inverse: ¬P⇒¬Q (not equivalent in general).</p>
+  <p><strong>Quantifiers:</strong> ∀x P(x), ∃x P(x). Correct translation of "if P(x) then Q(x)" is ∀x(P(x)⇒Q(x)), not biconditional.</p>
+  <p><strong>Logical operators on two variables:</strong> 2^4=16, since four truth assignments each have two possible outputs.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: Principle of Mathematical Induction (PMI)</h3>
+<p>If P(1) is true and for all k≥1, P(k)⇒P(k+1), then P(n) is true for all n≥1. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Let S be the set of n for which P(n) is true. Base gives 1∈S. Inductive step says S is closed upward from 1. By well-ordering of positive integers, S contains all positive integers. ∎</p>
+
+<h3>Theorem: Strong induction</h3>
+<p>If P(1) is true and for all k&gt;1, (∀1≤t&lt;k, P(t))⇒P(k), then P(n) is true for all n≥1.</p>
+<p><em>Proof.</em> Same well-ordering argument, using all previous cases. ∎</p>
+
+<h3>Theorem: De Morgan for quantifiers</h3>
+<p>¬∀x P(x) ≡ ∃x ¬P(x); ¬∃x P(x) ≡ ∀x ¬P(x).</p>
+<p><em>Proof.</em> Directly from meanings of "for all" and "there exists." ∎</p>
+
+<h3>Converse and inverse (not equivalent in general)</h3>
+<p>For P⇒Q, converse is Q⇒P and inverse is ¬P⇒¬Q; they are equivalent to each other but not to P⇒Q. See the slide truth table.</p>
+
+<h3>Theorem: contrapositive equivalence</h3>
+<p>P⇒Q ≡ ¬Q⇒¬P.</p>
+<p><em>Proof.</em> Truth tables: both are false exactly when P true and Q false. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1: direct proof</h3>
+<p>If n is odd, n^2 is odd: n=2k+1 ⇒ n^2=4k^2+4k+1=2(2k^2+2k)+1.</p>
+
+<h3>Example 2: contrapositive</h3>
+<p>If 3n+2 is odd then n is odd. Contrapositive: if n even then 3n+2 even. n=2k ⇒ 3n+2=6k+2=2(3k+1).</p>
+
+<h3>Example 3: induction</h3>
+<p>1+...+n=n(n+1)/2. Base n=1. If true for k, then sum to k+1 = k(k+1)/2 + (k+1) = (k+1)(k+2)/2.</p>
+
+<h3>Example 4: contradiction</h3>
+<p>√2 is irrational: assume a/b in lowest terms; then a,b both even, contradiction.</p>
+
+<h3>Example: Fibonacci all-even fallacy</h3>
+<p>The claim "all Fibonacci numbers are even" fails because F_1=1 is odd; the induction hypothesis for n=2 incorrectly assumes F_1 even.</p>
+
+<h3>Example: AM-GM backward reasoning</h3>
+<p>For a,b≥0, (a+b)/2≥√ab follows by squaring to (a-b)^2≥0.</p>
+
+<h3>Example: matrix-Fibonacci induction</h3>
+<p>Induction proves [[1,1],[1,0]]^n = [[F_{n+1},F_n],[F_n,F_{n-1}]].</p>
+
+<h3>Example: 1000! trailing zeros</h3>
+<p>Count factors of 5: floor(1000/5)+floor(1000/25)+floor(1000/125)+floor(1000/625)=249.</p>
+
+<h3>Example: 1729</h3>
+<p>1729=10^3+9^3=12^3+1^3 gives a constructive existence proof.</p>
+
+<h3>Example 5: counterexample</h3>
+<p>"Every positive integer is sum of two squares" is false: 3 cannot be so expressed.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Truth-table generator for P and Q.</p>
+<div class="card">
+  <label>Operator
+    <select id="op" onchange="truthTable()">
+      <option value="and">AND</option>
+      <option value="or">OR</option>
+      <option value="imp">IMPLICATION</option>
+      <option value="iff">IFF</option>
+    </select>
+  </label>
+  <div id="ttOut"></div>
+</div>
+<script>
+function truthTable(){
+  var op=document.getElementById('op').value;
+  var rows=[[true,true],[true,false],[false,true],[false,false]];
+  var html='<table><tr><th>P</th><th>Q</th><th>Result</th></tr>';
+  for(var i=0;i<rows.length;i++){
+    var p=rows[i][0],q=rows[i][1],r;
+    if(op==='and')r=p&&q;
+    if(op==='or')r=p||q;
+    if(op==='imp')r=(!p)||q;
+    if(op==='iff')r=(p===q);
+    html+='<tr><td>'+(p?'T':'F')+'</td><td>'+(q?'T':'F')+'</td><td>'+(r?'T':'F')+'</td></tr>';
+  }
+  html+='</table>';
+  document.getElementById('ttOut').innerHTML=html;
+}
+truthTable();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Using converse instead of contrapositive.</li>
+  <li>Missing base case in induction.</li>
+  <li>Induction step failing for smallest case (all pigeons same color fallacy).</li>
+  <li>Proving only finitely many cases and claiming general truth.</li>
+  <li>Using biconditional when only implication is meant (quantifier slide).</li>
+</ul>
+
+<div class="notice"><strong>Slide errors I fixed:</strong> PMI was written as "for all k&gt;1" (should be k≥1); strong induction was written with 1&lt;t&lt;k (should be 1≤t&lt;k); AM-GM was stated for "distinct reals" (requires a,b≥0); quantifier slide uses a biconditional where an implication is meant.</div>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+<p>None of the 46 practice questions are assigned to this page.</p>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Is sqrt(2) irrational? Prove by contradiction.</summary><p>Yes; standard proof as above.</p></details>
+<details><summary>2. Prove 1+2+...+n=n(n+1)/2 by induction.</summary><p>Base and step as above.</p></details>
+<details><summary>3. Is "if n even then n^2 even" proved by contrapositive of what?</summary><p>Contrapositive of "if n^2 odd then n odd".</p></details>
+<details><summary>4. Correct quantifier translation of "Every person who is 21+ is eligible"?</summary><p>∀x (P(x)⇒Q(x)).</p></details>
+<details><summary>5. Why is the all-pigeons-same-color induction invalid?</summary><p>Induction step fails for k=2 (no overlapping pigeon).</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>P⇒Q false only P true, Q false.</p>
+  <p>Contrapositive ¬Q⇒¬P is equivalent.</p>
+  <p>Converse/inverse are not equivalent generally.</p>
+  <p>De Morgan for quantifiers swaps ∀/∃ and negates.</p>
+  <p>PMI: base + inductive step.</p>
+  <p>Strong induction: use all previous cases.</p>
+  <p>Induction step must work for smallest case.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="09-pigeonhole.html">← Prev: 09 Pigeonhole</a> | <a href="11-graph-basics.html">Next: 11 Graph Basics →</a></p>
+<div id="vis-main"></div>
+<script src="vis-10.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

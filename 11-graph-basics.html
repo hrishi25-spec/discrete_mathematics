@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>11 Graph Basics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>11 Graph Basics</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Graphs model relationships: bridges, networks, schedules, assignments. The basics (definitions, walks/paths, components, degree, isomorphism, Petersen graph) support every later graph topic. Exam questions often test definitions precisely and ask for short proofs like handshaking or connectivity.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Set theory and counting from <a href="01-sets-relations.html">page 01</a> and <a href="02-basic-counting.html">page 02</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A graph is a set of vertices plus edges connecting them. A walk can repeat; a trail cannot repeat edges; a path cannot repeat vertices. Components are the connected pieces. The picture below is a path on four vertices.</p>
+<svg width="260" height="80" viewBox="0 0 260 80" aria-label="Path graph P4">
+  <circle cx="40" cy="40" r="8" fill="#1f6feb"/>
+  <circle cx="100" cy="40" r="8" fill="#1f6feb"/>
+  <circle cx="160" cy="40" r="8" fill="#1f6feb"/>
+  <circle cx="220" cy="40" r="8" fill="#1f6feb"/>
+  <line x1="48" y1="40" x2="92" y2="40" stroke="#333"/>
+  <line x1="108" y1="40" x2="152" y2="40" stroke="#333"/>
+  <line x1="168" y1="40" x2="212" y2="40" stroke="#333"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Graph:</strong> vertex set V, edge set E, endpoint assignment.</p>
+  <p><strong>Simple graph:</strong> no loops or multiple edges.</p>
+  <p><strong>Degree:</strong> number of incident edges (loop counts 2).</p>
+  <p><strong>Walk/trail/path/cycle:</strong> walk allows repeats; trail no repeated edges; path no repeated vertices; cycle closed path.</p>
+  <p><strong>Connected:</strong> every pair has a path.</p>
+  <p><strong>Component:</strong> maximal connected subgraph.</p>
+  <p><strong>Isomorphism:</strong> bijection preserving adjacency both ways.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: handshaking lemma</h3>
+<p>In any graph, the number of vertices of odd degree is even. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Sum of degrees = 2|E|, which is even. The sum of even-degree terms is even, so the sum of odd-degree terms must be even, requiring an even number of them. ∎</p>
+
+<h3>Theorem: components bound</h3>
+<p>A graph with n vertices and m edges has at least n-m components. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Start with n isolated vertices (n components). Each edge can reduce the component count by at most 1. After m edges, at least n-m components remain. ∎</p>
+
+<h3>Theorem: every walk contains a path</h3>
+<p>Every u,v-walk contains a u,v-path.</p>
+<p><em>Proof.</em> If a vertex repeats, delete the cycle between its two occurrences. This shortens the walk; repeat until no vertex repeats. ∎</p>
+
+<h3>Theorem: connection is an equivalence relation</h3>
+<p>u~v iff there is a u,v-path is an equivalence relation; its classes are components.</p>
+<p><em>Proof.</em> Reflexive via length-0 path; symmetric by reversing; transitive by concatenating walks and using the previous theorem. ∎</p>
+
+<h3>Theorem: connected graph edge minimum</h3>
+<p>A connected n-vertex graph has at least n-1 edges.</p>
+<p><em>Proof.</em> Components bound with c=1 gives 1≥n-m, so m≥n-1. ∎</p>
+
+<h3>Theorem: min degree connectivity</h3>
+<p>If simple graph G has minimum degree δ ≥ (n-1)/2, then G is connected. <span class="notice">Exam likely (Q38).</span></p>
+<p><em>Proof.</em> If disconnected, take components A,B. For u∈A, deg(u)≤|A|-1; for v∈B, deg(v)≤|B|-1. Since |A|+|B|≤n, one of |A|-1, |B|-1 is &lt; (n-1)/2, contradiction. ∎</p>
+
+<h3>Theorem: graph or complement connected</h3>
+<p>For any simple graph G, either G or its complement is connected. <span class="notice">Exam likely (Q39).</span></p>
+<p><em>Proof.</em> If G disconnected, pick u,v in different components of G. In complement, u and v are adjacent (since not adjacent in G), and any two vertices in same G-component have a common non-neighbour? More directly, if G disconnected with components C_1,...,C_r, then in complement all C_i are cliques and every cross pair is adjacent, so complement is connected for r≥2. ∎</p>
+
+<h3>Theorem: Petersen graph properties</h3>
+<p>Petersen graph has 10 vertices, 15 edges, degree 3, girth 5, diameter 2, is vertex-transitive, non-planar. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Vertices are 2-subsets of a 5-set; adjacency is disjointness. Degree C(3,2)=3; edges=10*3/2=15. No triangle because three pairwise disjoint 2-subsets need 6 elements. Non-adjacent vertices have unique common neighbour, ruling out 4-cycles. A 5-cycle exists. ∎</p>
+
+<h2>Complements, cliques, and matrices</h2>
+<div class="card">
+  <p><strong>Complement:</strong> same vertices; uv is an edge iff it is not an edge in G.</p>
+  <p><strong>Clique:</strong> pairwise adjacent vertices. <strong>Independent set:</strong> pairwise non-adjacent.</p>
+  <p><strong>Adjacency matrix:</strong> A_{ij}=number of edges between v_i and v_j. <strong>Incidence matrix:</strong> M_{ij}=1 if v_i is endpoint of e_j.</p>
+</div>
+
+<h2>Automorphisms of K_{r,s}</h2>
+<div class="card">
+  <p>If r≠s: r!s! automorphisms. If r=s: 2(r!)^2 automorphisms.</p>
+</div>
+
+<h2>Unlabelled graphs on 4 vertices</h2>
+<div class="card">
+  <p>There are 11 isomorphism classes of simple graphs on 4 vertices.</p>
+</div>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>For graph with edges wx,wy, two xy, yz: degrees are w=2, x=3, y=4, z=1; sum=10=2*5 edges.</p>
+
+<h3>Example 2</h3>
+<p>Complete graph K_4 has 6 edges and chromatic number 4.</p>
+
+<h3>Example 3</h3>
+<p>Simple graphs on 4 labeled vertices: 2^6=64; unlabeled: 11.</p>
+
+<h3>Example 4</h3>
+<p>K_{3,3} has 9 edges, is 3-regular bipartite, non-planar.</p>
+
+<h3>Example 5</h3>
+<p>Isomorphism: P4 with edges ab,bc,cd is isomorphic to path xz,zy,yw via a→x,b→z,c→y,d→w.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Degree-sum and component-bound calculator.</p>
+<div class="card">
+  <label>Vertices n <input id="nGB" type="number" value="5" oninput="calcGB()"></label>
+  <label>Edges m <input id="mGB" type="number" value="4" oninput="calcGB()"></label>
+  <p id="gbResult"></p>
+</div>
+<script>
+function calcGB(){
+  var n=+document.getElementById('nGB').value;
+  var m=+document.getElementById('mGB').value;
+  document.getElementById('gbResult').textContent='Min components ≥ n-m = '+(n-m)+'; simple graphs on n labeled vertices = 2^C(n,2).';
+}
+calcGB();
+</script>
+
+<div class="notice"><strong>Slide errors I fixed:</strong> Walk definition index range in the slides is too narrow; the endpoint condition applies to every edge. Walk-to-path induction step uses length at least 1.</div>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Confusing walk, trail, and path.</li>
+  <li>Forgetting loops contribute 2 to degree.</li>
+  <li>Using degree sequence alone to prove isomorphism.</li>
+  <li>Thinking n-1 edges guarantee connectedness.</li>
+  <li>Confusing maximal clique with maximum clique.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q31. Prove that in any graph, number of odd-degree vertices is even.</summary>
+<p>Solution: handshaking lemma proof above.</p>
+</details>
+
+<details>
+<summary>Q32. Give connected simple nonisomorphic graphs with same degree sequence.</summary>
+<p>Solution: two nonisomorphic trees with degree sequence 3,2,2,1,1,1 (for example, a star K1,3 with a path attached in two different ways).</p>
+</details>
+
+<details>
+<summary>Q33. Prove if every vertex has degree at least 2, then G contains a cycle.</summary>
+<p>Solution: take a maximal path; its endpoint has a neighbor on the path, forming a cycle.</p>
+</details>
+
+<details>
+<summary>Q38. Prove if δ≥(n-1)/2 then G is connected.</summary>
+<p>Solution: proof above.</p>
+</details>
+
+<details>
+<summary>Q39. Prove for simple graph and complement, at least one is connected.</summary>
+<p>Solution: proof above.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Handshaking lemma for K4?</summary><p>Sum degrees 12=2*6.</p></details>
+<details><summary>2. Min components for 8 vertices 5 edges?</summary><p>At least 3.</p></details>
+<details><summary>3. Petersen graph degree?</summary><p>3.</p></details>
+<details><summary>4. Simple graphs on 3 vertices?</summary><p>2^3=8.</p></details>
+<details><summary>5. Is K_{2,3} planar?</summary><p>Yes.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Handshaking: sum degrees=2|E|; odd-degree vertices even.</p>
+  <p>Components ≥ n-m; connected ⇒ m≥n-1.</p>
+  <p>Every walk contains a path.</p>
+  <p>Min degree ≥(n-1)/2 ⇒ connected.</p>
+  <p>Graph or complement connected.</p>
+  <p>Petersen: 10 vertices, 15 edges, degree 3, girth 5.</p>
+  <p>Simple graphs on n vertices: 2^{C(n,2)}.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="10-logic-proofs-induction.html">← Prev: 10 Logic, Proofs, Induction</a> | <a href="12-bipartite-euler-digraphs.html">Next: 12 Bipartite, Euler, Digraphs →</a></p>
+<div id="vis-main"></div>
+<script src="vis-11.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

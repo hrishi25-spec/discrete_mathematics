@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>14 Matchings</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>14 Matchings: Hall's Theorem and Stable Marriage</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Matchings model assignment problems: jobs to people, partners in marriage, and maximum independent edge sets. Hall's theorem gives a perfect characterization of when a bipartite graph has a matching saturating one side, and Gale-Shapley proves stable matchings always exist. These are classic exam theorems.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Graph basics, bipartite graphs, and degrees from <a href="11-graph-basics.html">page 11</a> and <a href="12-bipartite-euler-digraphs.html">page 12</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A matching is a set of edges with no shared endpoints. In a bipartite job-people graph, a matching saturating all jobs means everyone gets a compatible job. Hall's condition says this is possible exactly when every subset of jobs has at least as many qualified people as jobs. The picture below shows a matching of size 2.</p>
+<svg width="220" height="120" viewBox="0 0 220 120" aria-label="Matching picture">
+  <circle cx="40" cy="30" r="8" fill="#1f6feb"/>
+  <circle cx="40" cy="90" r="8" fill="#1f6feb"/>
+  <circle cx="180" cy="30" r="8" fill="#d73a49"/>
+  <circle cx="180" cy="90" r="8" fill="#d73a49"/>
+  <line x1="48" y1="30" x2="172" y2="30" stroke="#1f6feb" stroke-width="2"/>
+  <line x1="48" y1="90" x2="172" y2="90" stroke="#1f6feb" stroke-width="2"/>
+  <line x1="48" y1="30" x2="172" y2="90" stroke="#bbb"/>
+  <line x1="48" y1="90" x2="172" y2="30" stroke="#bbb"/>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Matching:</strong> set of non-loop edges with no shared endpoints.</p>
+  <p><strong>Saturated vertex:</strong> endpoint of a matching edge.</p>
+  <p><strong>Perfect matching:</strong> matching saturating every vertex.</p>
+  <p><strong>Maximum matching:</strong> largest possible size.</p>
+  <p><strong>Stable matching:</strong> no rogue pair (two people who prefer each other over their partners).</p>
+  <p><strong>Rogue pair:</strong> a man and woman who prefer each other to their assigned partners.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: Hall's theorem</h3>
+<p>An X,Y-bipartite graph has a matching saturating X iff |N(S)|≥|S| for all S⊆X. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Necessity: vertices matched to S lie in N(S), so |N(S)|≥|S|. Sufficiency by contrapositive: if maximum matching M does not saturate X, let u be unsaturated in X. Let S be X-vertices reachable by M-alternating paths from u, and T the Y-vertices reached. Then M matches T with S-{u}, so |T|=|S|-1. Also N(S)=T, hence |N(S)|=|S|-1 &lt; |S|. ∎</p>
+
+<h3>Theorem: stable marriage existence (Gale-Shapley)</h3>
+<p>For equal numbers of men and women with preference lists, the Gale-Shapley algorithm terminates with a stable matching. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Each man proposes to women in decreasing preference; women tentatively accept best proposal so far. A woman never loses a proposal without gaining a better one, and each man proposes at most once to each woman, so termination occurs. If an unmatched rogue pair (m,w) existed, m would have proposed to w before his final partner, and w would have accepted him unless she already had someone she prefers; contradiction. ∎</p>
+
+<h3>Theorem: Gale-Shapley produces man-optimal stable matching</h3>
+<p>Among all stable matchings, Gale-Shapley (men proposing) gives each man his best possible partner.</p>
+<p><em>Proof.</em> By induction on proposals: a woman never rejects a man who could be her partner in some stable matching unless she has a better stable partner. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Bipartite graph X={a,b}, Y={1,2} with edges a-1,a-2,b-1. Hall fails for S={a,b}: N(S)={1,2}? Actually |N|=2≥2, so matching exists. One matching: a-2, b-1.</p>
+
+<h3>Example 2</h3>
+<p>Hall fails example: X={a,b}, Y={1} with edges a-1,b-1. S={a,b}, N(S)={1}, size 1&lt;2, no matching saturating X.</p>
+
+<h3>Example 3</h3>
+<p>Gale-Shapley with 2 men and 2 women terminates after at most 2 proposals per man; stable matching exists.</p>
+
+<h3>Example 4</h3>
+<p>Tree has at most one perfect matching (from page 13); if a tree has a perfect matching, it is unique.</p>
+
+<h3>Example 5</h3>
+<p>Maximum matching in a path on 4 vertices has size 2.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Maximum bipartite matching calculator for small graphs (edges as i-j, 0-based).</p>
+<div class="card">
+  <label>Left size L <input id="Lm" type="number" value="3" oninput="calcMatch()"></label>
+  <label>Right size R <input id="Rm" type="number" value="3" oninput="calcMatch()"></label>
+  <label>Edges (i-j) <input id="Em" value="0-0,0-1,1-1,1-2,2-2" oninput="calcMatch()"></label>
+  <p id="matchResult"></p>
+</div>
+<script>
+function calcMatch(){
+  var L=+document.getElementById('Lm').value;
+  var R=+document.getElementById('Rm').value;
+  var edges=document.getElementById('Em').value.split(',').map(function(s){var p=s.trim().split('-');return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);});
+  var adj=[];
+  for(var i=0;i<L;i++){adj[i]=[];}
+  for(var e of edges){if(e[0]>=0&&e[0]<L&&e[1]>=0&&e[1]<R)adj[e[0]].push(e[1]);}
+  // brute force max matching via backtracking
+  var best=0;
+  function rec(i, used){
+    if(i===L){var cnt=0;for(var j=0;j<R;j++)if(used[j])cnt++;best=Math.max(best,cnt);return;}
+    // skip i
+    rec(i+1, used.slice());
+    // try each edge
+    for(var k=0;k<adj[i].length;k++){
+      var v=adj[i][k];
+      if(!used[v]){
+        var u2=used.slice(); u2[v]=true;
+        rec(i+1,u2);
+      }
+    }
+  }
+  rec(0,new Array(R).fill(false));
+  document.getElementById('matchResult').textContent='Maximum matching size = '+best;
+}
+calcMatch();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Checking Hall's condition only for singletons, not all subsets.</li>
+  <li>Confusing maximum matching with perfect matching.</li>
+  <li>Assuming stable matching is unique (it is not; man-optimal vs woman-optimal).</li>
+  <li>Forgetting Gale-Shapley requires equal numbers and complete preference lists.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+<p>None of the 46 practice questions are assigned to this page.</p>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Hall's condition for X={a,b}, Y={1}, edges a-1,b-1?</summary><p>Fails; no saturating matching.</p></details>
+<details><summary>2. Does every bipartite graph have a perfect matching?</summary><p>No; Hall's condition may fail.</p></details>
+<details><summary>3. Gale-Shapley always terminates?</summary><p>Yes.</p></details>
+<details><summary>4. Stable matching may have rogue pair?</summary><p>No, by construction.</p></details>
+<details><summary>5. Maximum matching in star K1,3?</summary><p>1.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Hall: matching saturating X iff |N(S)|≥|S| for all S⊆X.</p>
+  <p>Gale-Shapley always yields stable matching.</p>
+  <p>Men-proposing is man-optimal.</p>
+  <p>Matching edges share no endpoints.</p>
+  <p>Perfect matching saturates all vertices.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="13-trees-prufer-mst.html">← Prev: 13 Trees, Prüfer, MST</a> | <a href="15-planar-colouring-connectivity.html">Next: 15 Planar, Colouring →</a></p>
+<div id="vis-main"></div>
+<script src="vis-14.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

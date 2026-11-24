@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>04 Inclusion-Exclusion</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>04 Inclusion-Exclusion</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Many counting problems overcount elements that satisfy several conditions at once; inclusion-exclusion corrects this systematically. Derangements, surjections, Euler's totient, primes up to 200, bounded equations, and forbidden strings all reduce to one alternating sum over intersections. Once you can write the sets A_i, the formula does the rest.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Basic counting (sum/product rules, combinations) from <a href="02-basic-counting.html">page 02</a>; surjections and Stirling numbers from <a href="03-occupancy-stirling.html">page 03</a>; derangements are developed on this page.</p>
+
+<h2>3. Intuition</h2>
+<p>Counting "tea or coffee" by adding tea-lovers and coffee-lovers counts the both-tea-and-coffee people twice, so subtract their intersection. With three sets, subtracting all pairwise intersections removes the triple-overlap people three times and adds them back zero times, so add the triple intersection once. In general an element in exactly t sets is counted C(t,1)-C(t,2)+...+(-1)^{t+1}C(t,t)=1 times.</p>
+<svg width="360" height="220" viewBox="0 0 360 220" aria-label="Three-set Venn diagram">
+  <circle cx="120" cy="90" r="70" fill="none" stroke="#1f6feb" stroke-width="2"/>
+  <circle cx="240" cy="90" r="70" fill="none" stroke="#d73a49" stroke-width="2"/>
+  <circle cx="180" cy="150" r="70" fill="none" stroke="#2da44e" stroke-width="2"/>
+  <text x="80" y="80" font-size="14">A</text>
+  <text x="265" y="80" font-size="14">B</text>
+  <text x="180" y="205" font-size="14">C</text>
+  <text x="180" y="95" font-size="12">A∩B∩C</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Union/intersection:</strong> For finite sets A_i, |union A_i| counts elements in at least one set.</p>
+  <p><strong>Surjection:</strong> a function X→Y that is onto; number Sur(n,k).</p>
+  <p><strong>Derangement:</strong> a permutation with no fixed point; number D_n.</p>
+  <p><strong>Euler totient φ(n):</strong> count of 1≤a≤n with gcd(a,n)=1.</p>
+</div>
+
+<h2>5. Theorems and proofs</h2>
+
+<h3>Theorem IE-2 (two sets)</h3>
+<p>|A ∪ B| = |A| + |B| − |A ∩ B|. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Elements in exactly one of A,B are counted once by |A|+|B|; elements in both are counted twice then subtracted once. ∎</p>
+
+<h3>Theorem IE (general form)</h3>
+<p>For finite sets A_1,...,A_m,</p>
+<p>|∪_{i=1}^m A_i| = Σ_i |A_i| − Σ_{i&lt;j} |A_i∩A_j| + Σ_{i&lt;j&lt;k} |A_i∩A_j∩A_k| − ... + (−1)^{m−1}|∩_{i=1}^m A_i|. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Take an element contained in exactly t of the sets. It is counted C(t,r) times at the r-th level with sign (−1)^{r+1}, so its total contribution is Σ_{r=1}^t (−1)^{r+1} C(t,r) = 1 − (1−1)^t = 1. ∎</p>
+
+<h3>Theorem: surjections</h3>
+<p>Sur(n,k) = Σ_{i=0}^k (−1)^i C(k,i)(k−i)^n = k! S(n,k). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Count functions X→Y by excluding missing values: let A_y be functions whose image misses y. By IE over the k values of Y, |∪ A_y| = Σ_{i=1}^k (−1)^{i+1} C(k,i)(k−i)^n. Subtract from k^n. ∎</p>
+
+<h3>Theorem: derangements</h3>
+<p>D_n = n! Σ_{i=0}^n (−1)^i / i! = n! − C(n,1)(n−1)! + C(n,2)(n−2)! − ... + (−1)^n. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Let A_i be permutations fixing i. By IE, |∪ A_i| = Σ_{i=1}^n (−1)^{i+1} C(n,i)(n−i)!. Thus D_n=n!−|∪ A_i|. ∎</p>
+
+<h3>Theorem: Euler totient</h3>
+<p>φ(n)=n ∏_{p|n}(1−1/p), product over distinct prime divisors p of n. <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Count integers 1≤a≤n coprime to n by excluding those divisible by a prime divisor. For each subset of distinct prime divisors, the count divisible by their product is n/(product). IE gives n − Σ n/p + Σ n/(pq) − ... = n∏(1−1/p). ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1 (two sets)</h3>
+<p>If |A|=40, |B|=35, |A∩B|=12, then |A∪B|=40+35−12=63.</p>
+
+<h3>Example 2 (derangement)</h3>
+<p>D_4 = 4! − C(4,1)3! + C(4,2)2! − C(4,3)1! + C(4,4)0! = 24−24+12−4+1=9. Verified: 9/24=3/8.</p>
+
+<h3>Example 3 (surjection)</h3>
+<p>Sur(5,4)=4^5−4·3^5+6·2^5−4·1^5=1024−972+192−4=240.</p>
+
+<h3>Example 4 (bounded equation)</h3>
+<p>Solve x1+...+x4=20 with 1≤x1≤6, 0≤x2≤7, 4≤x3≤8, 2≤x4≤6. Shift lower bounds: y1=x1−1 (0..5), y2=x2 (0..7), y3=x3−4 (0..4), y4=x4−2 (0..4), sum y=13. Count nonnegative solutions sum 13 with upper bounds by IE: 96.</p>
+
+<h3>Example 5 (elevator)</h3>
+<p>8 distinct people discharge onto 5 floors, every floor nonempty: Sur(8,5)=5^8−5·4^8+10·3^8−10·2^8+5·1^8=390625−327680+65610−2560+5=126000.</p>
+
+<h3>Example 6 (primes to 200)</h3>
+<p>IE over primes 2,3,5,7,11,13 counts 40 integers in [2,200] not divisible by any of them. Add the 6 small primes themselves: 46 primes ≤200.</p>
+
+<h3>Example 7 (forbidden strings)</h3>
+<p>Permutations of 26 letters avoiding fish, rat, bird: 26! − 2·23! − 24! + 21! (fish and bird, rat and bird share letters so cannot both occur; fish and rat can). Value ≈4.026×10^26.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Three-set inclusion-exclusion calculator (change any value):</p>
+<div class="card">
+  <label>|A| <input id="a" type="number" value="40" oninput="calcIE()"></label>
+  <label>|B| <input id="b" type="number" value="35" oninput="calcIE()"></label>
+  <label>|C| <input id="c" type="number" value="30" oninput="calcIE()"></label><br>
+  <label>|A∩B| <input id="ab" type="number" value="12" oninput="calcIE()"></label>
+  <label>|A∩C| <input id="ac" type="number" value="8" oninput="calcIE()"></label>
+  <label>|B∩C| <input id="bc" type="number" value="7" oninput="calcIE()"></label><br>
+  <label>|A∩B∩C| <input id="abc" type="number" value="3" oninput="calcIE()"></label>
+  <p id="ieResult"></p>
+</div>
+<script>
+function calcIE(){
+  var a=+document.getElementById('a').value;
+  var b=+document.getElementById('b').value;
+  var c=+document.getElementById('c').value;
+  var ab=+document.getElementById('ab').value;
+  var ac=+document.getElementById('ac').value;
+  var bc=+document.getElementById('bc').value;
+  var abc=+document.getElementById('abc').value;
+  var u=a+b+c-ab-ac-bc+abc;
+  document.getElementById('ieResult').textContent='|A ∪ B ∪ C| = '+u;
+}
+calcIE();
+</script>
+
+<div class="notice"><strong>Slide errors I fixed:</strong> Q9(a) in questions.pdf says x_i&gt;1; this guide uses x_i≥1 (markdown version).</div>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Forgetting to add back the triple intersection in 3-set IE.</li>
+  <li>Using strict vs non-strict inequality in bounded equations (Q9).</li>
+  <li>Treating forbidden words that share letters as independent blocks (Q28).</li>
+  <li>Forgetting that derangement probability for n=4 is 9/24, not the large-n limit 1/e.</li>
+  <li>Euler phi product is over distinct prime divisors only.</li>
+  <li>For primes ≤200, IE counts composites; add the small primes 2,3,5,7,11,13.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q8. Four students pick keys randomly; probability none opens their own room.</summary>
+<p>Solution: D_4/4! = 9/24 = 3/8. Python verification: 9/24 = 0.375.</p>
+</details>
+
+<details>
+<summary>Q9. (a) x1+...+x5 &lt; 25, xi ≥ 1. (b) same with x2 &lt; 5.</summary>
+<p>Solution (a): shift yi=xi−1, sum yi ≤19: C(24,5)=42504. (b): total C(29,5) minus x2≥5 case C(24,5): 76251. Python verification: 42504 and 76251.</p>
+</details>
+
+<details>
+<summary>Q15. Musical chairs twice; probability no winner.</summary>
+<p>Solution: each round is a cyclic shift, so every player has the same score; there is never a unique individual winner. If "no winner" means no player ever sits in their own chair, probability=(4/5)^2=16/25=0.64. As n→∞ this tends to 1.</p>
+</details>
+
+<details>
+<summary>Q17. State and prove inclusion-exclusion.</summary>
+<p>Solution: formula above; proof by element counting as in Theorem IE.</p>
+</details>
+
+<details>
+<summary>Q18. Prove φ(n)=n∏_{p|n}(1−1/p).</summary>
+<p>Solution: proof via IE over distinct prime divisors of n, as above.</p>
+</details>
+
+<details>
+<summary>Q19. 8 people, elevator empties on 5th floor; count ways.</summary>
+<p>Solution: Sur(8,5)=126000. Python verification: 126000.</p>
+</details>
+
+<details>
+<summary>Q23. x1+...+x4=20 with 1≤x1≤6, 0≤x2≤7, 4≤x3≤8, 2≤x4≤6.</summary>
+<p>Solution: 96. Python verification: 96.</p>
+</details>
+
+<details>
+<summary>Q24. n people around a table; second seating with different right neighbour for everyone.</summary>
+<p>Solution: circular arrangements avoiding all n forbidden successors. Count = Σ_{k=0}^{n−1} (−1)^k C(n,k)(n−k−1)! + (−1)^n. For n=5 this is 8. Python verification: n=5 gives 8.</p>
+</details>
+
+<details>
+<summary>Q27. Number of primes ≤200.</summary>
+<p>Solution: IE over 2,3,5,7,11,13 gives 40 integers in [2,200] not divisible by any; plus the 6 primes themselves = 46. Python verification: 46.</p>
+</details>
+
+<details>
+<summary>Q28. Permutations of 26 letters not containing fish, rat, or bird.</summary>
+<p>Solution: 26! − 2·23! − 24! + 21! = 402619359782336797900800000. Python verification: same.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. How many integers 1..100 are divisible by 2 or 3 or 5?</summary><p>74.</p></details>
+<details><summary>2. Number of onto functions from a 6-set to a 3-set?</summary><p>540.</p></details>
+<details><summary>3. D_5?</summary><p>44.</p></details>
+<details><summary>4. φ(12)?</summary><p>4.</p></details>
+<details><summary>5. Solutions to x1+x2+x3=10 with 0≤xi≤4?</summary><p>6.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>|A∪B|=|A|+|B|−|A∩B|.</p>
+  <p>IE alternates + − + − ...</p>
+  <p>Sur(n,k)=Σ (−1)^i C(k,i)(k−i)^n.</p>
+  <p>D_n=n!Σ (−1)^i/i!.</p>
+  <p>φ(n)=n∏_{p|n}(1−1/p).</p>
+  <p>Primes ≤200: 46.</p>
+  <p>Bounded counts: shift lower bounds, then IE on upper bounds.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="03-occupancy-stirling.html">← Prev: 03 Occupancy, Stirling</a> | <a href="05-recurrences.html">Next: 05 Recurrences →</a></p>
+<div id="vis-main"></div>
+<script src="vis-04.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

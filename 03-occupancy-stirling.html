@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>03 Occupancy, Stirling Numbers, Surjections</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>03 Occupancy Problem, Stirling Numbers of the 2nd Kind, Surjections</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Occupancy problems ask how many ways n balls can be placed into k cells under different distinguishability and emptiness rules. The table unifies k^n, combinations, Stirling numbers, and surjections in one place. The Stirling recurrence S(n,k)=k S(n-1,k)+S(n-1,k-1) is a standard exam question, and Sur(n,k)=k! S(n,k) connects counting to set partitions.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Basic counting and stars and bars from <a href="02-basic-counting.html">page 02</a>; inclusion-exclusion for surjections from <a href="04-inclusion-exclusion.html">page 04</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>Imagine distributing n distinct balls into k boxes. If boxes are distinguishable, each ball has k independent choices. If boxes are indistinguishable, only the grouping of balls matters, which is a set partition. The picture below shows 3 distinct balls split into 2 unlabeled groups.</p>
+<svg width="260" height="120" viewBox="0 0 260 120" aria-label="Set partition into two groups">
+  <circle cx="70" cy="60" r="40" fill="none" stroke="#1f6feb" stroke-width="2"/>
+  <text x="55" y="65" font-size="12">{1,3}</text>
+  <circle cx="190" cy="60" r="40" fill="none" stroke="#d73a49" stroke-width="2"/>
+  <text x="175" y="65" font-size="12">{2}</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Occupancy problem:</strong> distribute n balls into k cells, depending on whether balls/cells are distinguishable and whether empty cells are allowed.</p>
+  <p><strong>Surjection Sur(n,k):</strong> number of onto functions from an n-set to a k-set.</p>
+  <p><strong>Stirling number of the 2nd kind S(n,k):</strong> number of partitions of an n-set into exactly k nonempty unlabeled subsets.</p>
+  <p><strong>Base values:</strong> S(n,0)=0 for n>0, S(n,1)=1, S(n,n)=1, S(n,n-1)=C(n,2), S(n,2)=2^{n-1}-1.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: occupancy table (distinguishable balls and cells)</h3>
+<p>If balls and cells are distinguishable and empty cells allowed, count is k^n. If no empty cells, count is Sur(n,k). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Each of n balls independently chooses one of k cells: k^n. For no empty cells, exclude missing cells by inclusion-exclusion: Sur(n,k)=Σ_{i=0}^k (-1)^i C(k,i)(k-i)^n. ∎</p>
+
+<h3>Theorem: occupancy with indistinguishable cells</h3>
+<p>If balls are distinguishable and cells indistinguishable: empty allowed gives Σ_{i=1}^k S(n,i); no empty gives S(n,k).</p>
+<p><em>Proof.</em> A distribution into i nonempty unlabeled cells is exactly a partition of the n balls into i blocks; sum over i for empty allowed. ∎</p>
+
+<h3>Theorem: Stirling recurrence</h3>
+<p>S(n,k)=k S(n-1,k)+S(n-1,k-1). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> Partition {1,...,n} into k blocks. If n is in a block with others, remove it and choose which of the k blocks it rejoins: k S(n-1,k). If n is alone, partition the rest into k-1 blocks: S(n-1,k-1). ∎</p>
+
+<h3>Theorem: Stirling closed form via generating functions</h3>
+<p>S(n,k) = 1/k! Σ_{j=0}^k (-1)^{k-j} C(k,j) j^n. (Not in slides - standard result.)</p>
+<p><em>Proof.</em> The generating function for fixed k is f_k(x)=x^k/((1-x)(1-2x)...(1-kx)); partial fractions give the closed form. ∎</p>
+
+<h3>Theorem: surjections via Stirling numbers</h3>
+<p>Sur(n,k)=k! S(n,k). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> S(n,k) counts partitions into unlabeled cells. Label the k cells in k! ways to make the cells distinguishable. ∎</p>
+
+<h3>Theorem: stars and bars (indistinguishable balls, distinguishable cells)</h3>
+<p>If balls are indistinguishable and cells distinguishable: empty allowed gives C(n+k-1,k-1); no empty gives C(n-1,k-1).</p>
+<p><em>Proof.</em> Weak compositions of n into k parts; standard stars and bars. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>Sur(5,4)=4^5−4·3^5+6·2^5−4·1^5=240.</p>
+
+<h3>Example 2</h3>
+<p>S(5,3)=3·S(4,3)+S(4,2)=3·6+7=25.</p>
+
+<h3>Example 3</h3>
+<p>Number of ways to put 7 distinct balls into 3 identical boxes allowing empty: S(7,1)+S(7,2)+S(7,3)=1+63+301=365.</p>
+
+<h3>Example 4</h3>
+<p>Number of surjections from 4 elements to 4 elements is 4! = 24, and indeed S(4,4)=1, so 4!·1=24.</p>
+
+<h3>Example 5</h3>
+<p>Distribute 10 identical chocolates into 3 distinct kids: C(10+3−1,3−1)=C(12,2)=66.</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Stirling number calculator using the recurrence.</p>
+<div class="card">
+  <label>n <input id="nSt" type="number" value="5" oninput="calcSt()"></label>
+  <label>k <input id="kSt" type="number" value="3" oninput="calcSt()"></label>
+  <p id="stResult"></p>
+</div>
+<script>
+function calcSt(){
+  var n=+document.getElementById('nSt').value;
+  var k=+document.getElementById('kSt').value;
+  // Stirling triangle up to 8
+  var S=[];
+  for(var i=0;i<=8;i++){S[i]=[];for(var j=0;j<=8;j++)S[i][j]=0;}
+  S[0][0]=1;
+  for(var i=1;i<=8;i++)for(var j=1;j<=i;j++)S[i][j]=j*S[i-1][j]+S[i-1][j-1];
+  var val=(n>=0&&n<=8&&k>=0&&k<=8)?S[n][k]:NaN;
+  document.getElementById('stResult').textContent='S('+n+','+k+') = '+val+' ; Sur(n,k)=k! S(n,k)';
+}
+calcSt();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Confusing S(n,k) (unlabeled cells) with Sur(n,k) (labeled cells).</li>
+  <li>Forgetting Sur(n,k)=k! S(n,k), not S(n,k)/k!.</li>
+  <li>Using k^n when empty cells are forbidden.</li>
+  <li>Forgetting S(n,2)=2^{n-1}-1.</li>
+  <li>Mixing up balls vs cells distinguishability.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q7. How many surjective maps from a 5-element set to a 4-element set?</summary>
+<p>Solution: Sur(5,4)=4^5−4·3^5+6·2^5−4·1^5=1024−972+192−4=240. Python verification: 240.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. S(6,2)?</summary><p>31.</p></details>
+<details><summary>2. S(5,4)?</summary><p>10.</p></details>
+<details><summary>3. Sur(4,4)?</summary><p>24.</p></details>
+<details><summary>4. Indistinguishable balls, 10 into 3 distinct cells empty allowed?</summary><p>C(12,2)=66.</p></details>
+<details><summary>5. Distinguishable balls, 4 into 2 identical cells no empty?</summary><p>S(4,2)=7.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>Distinguishable balls/cells, empty allowed: k^n.</p>
+  <p>Surjection: Sur(n,k)=Σ (-1)^i C(k,i)(k-i)^n = k! S(n,k).</p>
+  <p>Stirling recurrence: S(n,k)=k S(n-1,k)+S(n-1,k-1).</p>
+  <p>Base: S(n,2)=2^{n-1}-1, S(n,n-1)=C(n,2), S(n,n)=1.</p>
+  <p>Indistinguishable balls, distinct cells, empty allowed: C(n+k-1,k-1).</p>
+  <p>No empty: C(n-1,k-1).</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="02-basic-counting.html">← Prev: 02 Basic Counting</a> | <a href="04-inclusion-exclusion.html">Next: 04 Inclusion-Exclusion →</a></p>
+<div id="vis-main"></div>
+<script src="vis-03.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>

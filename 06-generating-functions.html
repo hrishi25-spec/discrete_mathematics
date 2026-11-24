@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>06 Generating Functions</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body>
+<main>
+<h1>06 Generating Functions</h1>
+
+<h2>1. Why this topic matters</h2>
+<p>Generating functions turn recurrence and counting problems into algebra. Instead of manipulating sequences term by term, you manipulate a single power series and read off coefficients. Fibonacci, redundant combinations, and partitions all become simple rational functions. The skill is setting up the series correctly and extracting the coefficient.</p>
+
+<h2>2. Prerequisites</h2>
+<p>Sequences and recurrences from <a href="01-sets-relations.html">page 01</a> and <a href="05-recurrences.html">page 05</a>; basic counting from <a href="02-basic-counting.html">page 02</a>.</p>
+
+<h2>3. Intuition</h2>
+<p>A generating function is a clothesline: hang the sequence terms as coefficients of powers of x. Multiplying series corresponds to combining independent choices, so counting problems become polynomial multiplication. The picture below shows Fibonacci terms hanging on the line.</p>
+<svg width="360" height="90" viewBox="0 0 360 90" aria-label="Generating function clothesline">
+  <line x1="20" y1="45" x2="340" y2="45" stroke="#333" stroke-width="2"/>
+  <text x="40" y="35" font-size="12">0</text>
+  <text x="90" y="35" font-size="12">1x</text>
+  <text x="140" y="35" font-size="12">1x^2</text>
+  <text x="190" y="35" font-size="12">2x^3</text>
+  <text x="240" y="35" font-size="12">3x^4</text>
+  <text x="290" y="35" font-size="12">5x^5</text>
+</svg>
+
+<h2>4. Definitions</h2>
+<div class="card">
+  <p><strong>Ordinary generating function:</strong> for sequence a_0,a_1,..., G(x)=Σ_{n≥0} a_n x^n.</p>
+  <p><strong>Coefficient extraction:</strong> [x^n]G(x)=a_n.</p>
+  <p><strong>Geometric series:</strong> 1/(1-x)=1+x+x^2+... .</p>
+  <p><strong>Derivative/integral and shifts:</strong> multiplying by x shifts indices; these are the main algebraic tools.</p>
+</div>
+
+<h2>5. Theorems and complete proofs</h2>
+
+<h3>Theorem: Fibonacci generating function</h3>
+<p>If F_0=0, F_1=1, F_n=F_{n-1}+F_{n-2}, then G(x)=x/(1-x-x^2). <span class="notice">Exam likely.</span></p>
+<p><em>Proof.</em> G=F_0+F_1 x+Σ_{n≥2}F_n x^n = x+Σ_{n≥2}(F_{n-1}+F_{n-2})x^n = x+xΣ_{n≥2}F_{n-1}x^{n-1}+x^2Σ_{n≥2}F_{n-2}x^{n-2} = x+x(G-F_0)+x^2 G = x+xG+x^2G. Hence G(1-x-x^2)=x. ∎</p>
+
+<h3>Theorem: redundant combinations via generating functions</h3>
+<p>The number of multisets of size r from n types is C(n+r-1,r), and its generating function is 1/(1-x)^n.</p>
+<p><em>Proof.</em> Each type contributes 1+x+x^2+...=1/(1-x). Multiplying n types gives 1/(1-x)^n. The coefficient of x^r is (−1)^r C(-n,r)=C(n+r-1,r). ∎</p>
+
+<h3>Theorem: compositions with order counting</h3>
+<p>The number of compositions of n into exactly r positive parts is C(n-1,r-1), with generating function (x/(1-x))^r.</p>
+<p><em>Proof.</em> Each part is x+x^2+...=x/(1-x). Multiplying r parts gives x^r/(1-x)^r. Coefficient of x^n is coefficient of x^{n-r} in (1-x)^{-r}, namely C(n-1,r-1). ∎</p>
+
+<h3>Theorem: binomial series</h3>
+<p>(1-x)^{-r}=Σ_{m≥0} C(r+m-1,m) x^m.</p>
+<p><em>Proof.</em> This is the generalized binomial theorem with exponent -r. ∎</p>
+
+<h2>6. Worked examples</h2>
+
+<h3>Example 1</h3>
+<p>For sequence 1,5,19,65,... with a_n=5a_{n-1}-6a_{n-2}, set up G(x)=a_0+a_1 x+... and solve G(x)= (a_0+(a_1-5a_0)x)/(1-5x+6x^2). With a_0=1,a_1=5, G(x)=1/(1-5x+6x^2).</p>
+
+<h3>Example 2</h3>
+<p>Coefficient of x^4 in (1-x)^{-3} is C(3+4-1,4)=C(6,4)=15.</p>
+
+<h3>Example 3</h3>
+<p>Compositions of 7 into 4 parts: C(6,3)=20.</p>
+
+<h3>Example 4</h3>
+<p>Fibonacci generating function G=x/(1-x-x^2); coefficient of x^5 is F_5=5.</p>
+
+<h3>Example 5</h3>
+<p>Constrained selection: 4 fruits with pomegranate and banana at most 1, mango at most 2, oranges unrestricted: multiply (1+x)(1+x)(1+x+x^2)(1+x+x^2+x^3+x^4); coefficient of x^4 gives the count (Python can extract).</p>
+
+<h2>7. Visual / interactive widget</h2>
+<p>Coefficient extractor for (1-x)^(-n): coefficient of x^r.</p>
+<div class="card">
+  <label>n <input id="nGF" type="number" value="3" oninput="calcGF()"></label>
+  <label>r <input id="rGF" type="number" value="4" oninput="calcGF()"></label>
+  <p id="gfResult"></p>
+</div>
+<script>
+function C(n,r){if(r<0||r>n)return 0;var res=1;for(var i=1;i<=r;i++)res=res*(n-r+i)/i;return Math.round(res);}
+function calcGF(){
+  var n=+document.getElementById('nGF').value;
+  var r=+document.getElementById('rGF').value;
+  document.getElementById('gfResult').textContent='[x^'+r+'](1-x)^(-'+n+') = C(n+r-1,r) = '+C(n+r-1,r);
+}
+calcGF();
+</script>
+
+<h2>9. Common mistakes and exam traps</h2>
+<ul>
+  <li>Forgetting the initial terms when shifting series.</li>
+  <li>Using ordinary generating functions where exponential generating functions are needed (not in this course).</li>
+  <li>Misreading coefficient extraction after multiplying by x.</li>
+  <li>Not factoring the denominator before partial fractions.</li>
+</ul>
+
+<h2>10. Practice questions (assigned to this page)</h2>
+
+<details>
+<summary>Q13. Generating function for partitions into exactly r parts where order counts; find compact form A(n,r).</summary>
+<p>Solution: G(x)=(x/(1-x))^r=x^r/(1-x)^r. Coefficient of x^n is C(n-1,r-1). Python verification for n=7,r=4 gives C(6,3)=20.</p>
+</details>
+
+<h2>11. Extra self-test questions</h2>
+<details><summary>1. Coefficient of x^4 in (1-x)^(-3)?</summary><p>C(6,4)=15.</p></details>
+<details><summary>2. Fibonacci generating function?</summary><p>x/(1-x-x^2).</p></details>
+<details><summary>3. Compositions of 10 into 3 parts?</summary><p>C(9,2)=36.</p></details>
+<details><summary>4. Redundant combinations of 5 from 3 types?</summary><p>C(7,5)=21.</p></details>
+<details><summary>5. Coefficient of x^2 in 1/(1-2x)?</summary><p>2^2=4.</p></details>
+
+<h2>12. Cheat sheet</h2>
+<div class="card">
+  <p>G(x)=Σ a_n x^n. 1/(1-x)=Σ x^n.</p>
+  <p>Fibonacci: x/(1-x-x^2).</p>
+  <p>Redundant combinations: 1/(1-x)^n; coeff C(n+r-1,r).</p>
+  <p>Compositions: x^r/(1-x)^r; coeff C(n-1,r-1).</p>
+  <p>Shift: xG(x) shifts indices by 1.</p>
+  <p>Partial fractions for rational generating functions.</p>
+</div>
+
+<h2>13. Footer</h2>
+<p><a href="05-recurrences.html">← Prev: 05 Recurrences</a> | <a href="07-integer-partitions.html">Next: 07 Integer Partitions →</a></p>
+<div id="vis-main"></div>
+<script src="vis-06.js"></script>
+</main>
+<script src="nav.js"></script>
+<script src="visuals.js"></script>
+</body>
+</html>
