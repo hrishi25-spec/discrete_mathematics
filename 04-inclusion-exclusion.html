@@ -6,6 +6,13 @@
   <title>04 Inclusion-Exclusion</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,7 +25,7 @@
 <p>Basic counting (sum/product rules, combinations) from <a href="02-basic-counting.html">page 02</a>; surjections and Stirling numbers from <a href="03-occupancy-stirling.html">page 03</a>; derangements are developed on this page.</p>
 
 <h2>3. Intuition</h2>
-<p>Counting "tea or coffee" by adding tea-lovers and coffee-lovers counts the both-tea-and-coffee people twice, so subtract their intersection. With three sets, subtracting all pairwise intersections removes the triple-overlap people three times and adds them back zero times, so add the triple intersection once. In general an element in exactly t sets is counted C(t,1)-C(t,2)+...+(-1)^{t+1}C(t,t)=1 times.</p>
+<p>Counting "tea or coffee" by adding tea-lovers and coffee-lovers counts the both-tea-and-coffee people twice, so subtract their intersection. With three sets, subtracting all pairwise intersections removes the triple-overlap people three times and adds them back zero times, so add the triple intersection once. In general an element in exactly <em>t</em> sets is counted <em>C</em>(<em>t</em>,1)−<em>C</em>(<em>t</em>,2)+…+(−1)<sup><em>t</em>+1</sup><em>C</em>(<em>t</em>,<em>t</em>) = 1 times. The first picture shows the three-set overlap; the second shows the two-set correction with concrete numbers.</p>
 <svg width="360" height="220" viewBox="0 0 360 220" aria-label="Three-set Venn diagram">
   <circle cx="120" cy="90" r="70" fill="none" stroke="#1f6feb" stroke-width="2"/>
   <circle cx="240" cy="90" r="70" fill="none" stroke="#d73a49" stroke-width="2"/>
@@ -27,6 +34,15 @@
   <text x="265" y="80" font-size="14">B</text>
   <text x="180" y="205" font-size="14">C</text>
   <text x="180" y="95" font-size="12">A∩B∩C</text>
+</svg>
+<svg width="320" height="150" viewBox="0 0 320 150" role="img" aria-label="Two-set Venn diagram: A only 28, A intersection B 12, B only 23, so the union is 63">
+  <circle cx="115" cy="70" r="52" fill="var(--accent-soft)" fill-opacity=".45" stroke="var(--accent)" stroke-width="2"/>
+  <circle cx="225" cy="70" r="52" fill="var(--accent-soft)" fill-opacity=".45" stroke="var(--accent)" stroke-width="2"/>
+  <text x="85" y="74" font-size="13" text-anchor="middle" fill="var(--text)">28</text>
+  <text x="170" y="74" font-size="13" text-anchor="middle" fill="var(--text)">12</text>
+  <text x="255" y="74" font-size="13" text-anchor="middle" fill="var(--text)">23</text>
+  <text x="160" y="20" font-size="12" text-anchor="middle" fill="var(--muted)">A: 28+12 = 40,  B: 12+23 = 35</text>
+  <text x="160" y="142" font-size="12" text-anchor="middle" fill="var(--text)">|A ∪ B| = 40 + 35 − 12 = 63</text>
 </svg>
 
 <h2>4. Definitions</h2>
@@ -38,158 +54,331 @@
 </div>
 
 <h2>5. Theorems and proofs</h2>
+<p>Every formula here is proved from the definition of a set union and the product rule; the proofs below are the full step-by-step versions used in exams.</p>
 
 <h3>Theorem IE-2 (two sets)</h3>
 <p>|A ∪ B| = |A| + |B| − |A ∩ B|. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Elements in exactly one of A,B are counted once by |A|+|B|; elements in both are counted twice then subtracted once. ∎</p>
+<ol>
+  <li><strong>Split the union into disjoint pieces.</strong> A∪B is the disjoint union of A\B, A∩B and B\A, so |A∪B| = |A\B| + |A∩B| + |B\A|.</li>
+  <li><strong>Rewrite the two differences.</strong> A is the disjoint union of A\B and A∩B, hence |A\B| = |A|−|A∩B|; similarly |B\A| = |B|−|A∩B|.</li>
+  <li><strong>Substitute and simplify.</strong> |A∪B| = (|A|−|A∩B|) + |A∩B| + (|B|−|A∩B|) = |A|+|B|−|A∩B|. ∎</li>
+</ol>
 
 <h3>Theorem IE (general form)</h3>
-<p>For finite sets A_1,...,A_m,</p>
-<p>|∪_{i=1}^m A_i| = Σ_i |A_i| − Σ_{i&lt;j} |A_i∩A_j| + Σ_{i&lt;j&lt;k} |A_i∩A_j∩A_k| − ... + (−1)^{m−1}|∩_{i=1}^m A_i|. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Take an element contained in exactly t of the sets. It is counted C(t,r) times at the r-th level with sign (−1)^{r+1}, so its total contribution is Σ_{r=1}^t (−1)^{r+1} C(t,r) = 1 − (1−1)^t = 1. ∎</p>
+<p>For finite sets A<sub>1</sub>,…,A<sub>m</sub>,</p>
+<p>|∪<sub><em>i</em>=1</sub><sup><em>m</em></sup> A<sub><em>i</em></sub>| = Σ<sub><em>i</em></sub> |A<sub><em>i</em></sub>| − Σ<sub><em>i</em>&lt;<em>j</em></sub> |A<sub><em>i</em></sub>∩A<sub><em>j</em></sub>| + … + (−1)<sup><em>m</em>−1</sup> |∩<sub><em>i</em>=1</sub><sup><em>m</em></sup> A<sub><em>i</em></sub>|. <span class="notice">Exam likely.</span></p>
+<p><strong>Proof A (counting each element).</strong></p>
+<ol>
+  <li><strong>Fix an element <em>x</em> in the union</strong> and let <em>t</em> ≥ 1 be the number of sets A<sub><em>i</em></sub> containing it.</li>
+  <li><strong>Count how many terms of level <em>r</em> contain <em>x</em>.</strong> Choosing <em>r</em> of the <em>t</em> sets that contain <em>x</em> gives <em>C</em>(<em>t</em>,<em>r</em>) intersections; choosing any set that misses <em>x</em> contributes nothing. So the level-<em>r</em> sum contributes <em>C</em>(<em>t</em>,<em>r</em>) copies of <em>x</em>, with sign (−1)<sup><em>r</em>+1</sup>.</li>
+  <li><strong>Add the contributions.</strong> The total coefficient of <em>x</em> is Σ<sub><em>r</em>=1</sub><sup><em>t</em></sup> (−1)<sup><em>r</em>+1</sup> <em>C</em>(<em>t</em>,<em>r</em>).</li>
+  <li><strong>Evaluate by the binomial theorem.</strong> Σ<sub><em>r</em>=0</sub><sup><em>t</em></sup> (−1)<sup><em>r</em></sup><em>C</em>(<em>t</em>,<em>r</em>) = (1−1)<sup><em>t</em></sup> = 0, so Σ<sub><em>r</em>=1</sub><sup><em>t</em></sup> (−1)<sup><em>r</em>+1</sup><em>C</em>(<em>t</em>,<em>r</em>) = 1 − (1−1)<sup><em>t</em></sup> = 1.</li>
+  <li><strong>Conclude.</strong> Every element of the union is counted exactly once, and an element outside every A<sub><em>i</em></sub> is counted zero times. ∎</li>
+</ol>
+<p><strong>Proof B (induction on <em>m</em>, as in the lecture).</strong></p>
+<ol>
+  <li><strong>Base case <em>m</em>=2:</strong> Theorem IE-2 gives |A∪B| = |A|+|B|−|A∩B|.</li>
+  <li><strong>Inductive hypothesis:</strong> assume the formula for <em>m</em> sets, writing the right side as Σ<sub>∅≠J⊆{1,…,<em>m</em>}</sub> (−1)<sup>|J|−1</sup>|∩<sub><em>i</em>∈J</sub>A<sub><em>i</em></sub>|.</li>
+  <li><strong>Apply IE-2 to the union of the first <em>m</em> sets and A<sub><em>m</em>+1</sub>:</strong> |∪<sub><em>i</em>≤<em>m</em>+1</sub>A<sub><em>i</em></sub>| = |∪<sub><em>i</em>≤<em>m</em></sub>A<sub><em>i</em></sub>| + |A<sub><em>m</em>+1</sub>| − |(∪<sub><em>i</em>≤<em>m</em></sub>A<sub><em>i</em></sub>) ∩ A<sub><em>m</em>+1</sub>|.</li>
+  <li><strong>Distribute the last intersection.</strong> (∪<sub><em>i</em>≤<em>m</em></sub>A<sub><em>i</em></sub>) ∩ A<sub><em>m</em>+1</sub> = ∪<sub><em>i</em>≤<em>m</em></sub>(A<sub><em>i</em></sub>∩A<sub><em>m</em>+1</sub>); apply the inductive hypothesis to the <em>m</em> sets A<sub><em>i</em></sub>∩A<sub><em>m</em>+1</sub>.</li>
+  <li><strong>Collect terms.</strong> The subsets J not containing <em>m</em>+1 keep their old sign; those containing <em>m</em>+1 arise with sign −(−1)<sup>(|J|−1)−1</sup> = (−1)<sup>|J|−1</sup>. This is exactly the formula for <em>m</em>+1 sets. ∎</li>
+</ol>
 
 <h3>Theorem: surjections</h3>
-<p>Sur(n,k) = Σ_{i=0}^k (−1)^i C(k,i)(k−i)^n = k! S(n,k). <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Count functions X→Y by excluding missing values: let A_y be functions whose image misses y. By IE over the k values of Y, |∪ A_y| = Σ_{i=1}^k (−1)^{i+1} C(k,i)(k−i)^n. Subtract from k^n. ∎</p>
+<p>Sur(<em>n</em>,<em>k</em>) = Σ<sub><em>i</em>=0</sub><sup><em>k</em></sup> (−1)<sup><em>i</em></sup> <em>C</em>(<em>k</em>,<em>i</em>)(<em>k</em>−<em>i</em>)<sup><em>n</em></sup> = <em>k</em>!·<em>S</em>(<em>n</em>,<em>k</em>). <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Count all functions.</strong> A map X→Y with |X|=<em>n</em>, |Y|=<em>k</em> is built by giving each of the <em>n</em> elements one of <em>k</em> values, so there are <em>k</em><sup><em>n</em></sup>.</li>
+  <li><strong>Define the bad sets.</strong> Let A<sub><em>y</em></sub> be the functions that never take the value <em>y</em>. A function is not onto exactly when it lies in ∪<sub><em>y</em>∈Y</sub>A<sub><em>y</em></sub>.</li>
+  <li><strong>Count an intersection.</strong> For a fixed set <em>I</em> of <em>i</em> values forbidden from the image, the functions avoiding all of them are the maps into the remaining <em>k</em>−<em>i</em> values, so there are (<em>k</em>−<em>i</em>)<sup><em>n</em></sup>; there are <em>C</em>(<em>k</em>,<em>i</em>) such sets <em>I</em>.</li>
+  <li><strong>Apply IE.</strong> |∪<sub><em>y</em></sub>A<sub><em>y</em></sub>| = Σ<sub><em>i</em>=1</sub><sup><em>k</em></sup> (−1)<sup><em>i</em>+1</sup> <em>C</em>(<em>k</em>,<em>i</em>)(<em>k</em>−<em>i</em>)<sup><em>n</em></sup>, and subtracting this from <em>k</em><sup><em>n</em></sup> gives Σ<sub><em>i</em>=0</sub><sup><em>k</em></sup> (−1)<sup><em>i</em></sup><em>C</em>(<em>k</em>,<em>i</em>)(<em>k</em>−<em>i</em>)<sup><em>n</em></sup>.</li>
+  <li><strong>Relate to Stirling numbers.</strong> <em>S</em>(<em>n</em>,<em>k</em>) counts partitions into <em>k</em> unlabeled blocks; labelling the blocks in <em>k</em>! ways gives Sur(<em>n</em>,<em>k</em>) = <em>k</em>!·<em>S</em>(<em>n</em>,<em>k</em>). ∎</li>
+</ol>
 
 <h3>Theorem: derangements</h3>
-<p>D_n = n! Σ_{i=0}^n (−1)^i / i! = n! − C(n,1)(n−1)! + C(n,2)(n−2)! − ... + (−1)^n. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Let A_i be permutations fixing i. By IE, |∪ A_i| = Σ_{i=1}^n (−1)^{i+1} C(n,i)(n−i)!. Thus D_n=n!−|∪ A_i|. ∎</p>
+<p><em>D</em><sub><em>n</em></sub> = <em>n</em>! Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup> (−1)<sup><em>i</em></sup>/<em>i</em>! = <em>n</em>! − <em>C</em>(<em>n</em>,1)(<em>n</em>−1)! + <em>C</em>(<em>n</em>,2)(<em>n</em>−2)! − … + (−1)<sup><em>n</em></sup>. <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Model as permutations.</strong> Put letter <em>i</em> into envelope <em>i</em>; there are <em>n</em>! permutations, and a derangement fixes no letter.</li>
+  <li><strong>Define the bad sets.</strong> A<sub><em>i</em></sub> is the set of permutations fixing letter <em>i</em>. A derangement lies in none of the A<sub><em>i</em></sub>.</li>
+  <li><strong>Count intersections.</strong> Fixing a specified set of <em>i</em> letters leaves (<em>n</em>−<em>i</em>)! permutations of the rest; there are <em>C</em>(<em>n</em>,<em>i</em>) such sets.</li>
+  <li><strong>Apply IE and subtract.</strong> <em>D</em><sub><em>n</em></sub> = <em>n</em>! − Σ<sub><em>i</em>=1</sub><sup><em>n</em></sup> (−1)<sup><em>i</em>+1</sup><em>C</em>(<em>n</em>,<em>i</em>)(<em>n</em>−<em>i</em>)! = Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup> (−1)<sup><em>i</em></sup><em>C</em>(<em>n</em>,<em>i</em>)(<em>n</em>−<em>i</em>)!.</li>
+  <li><strong>Simplify.</strong> Since <em>C</em>(<em>n</em>,<em>i</em>)(<em>n</em>−<em>i</em>)! = <em>n</em>!/<em>i</em>!, factor out <em>n</em>! to get <em>n</em>! Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup> (−1)<sup><em>i</em></sup>/<em>i</em>!. ∎</li>
+</ol>
 
 <h3>Theorem: Euler totient</h3>
-<p>φ(n)=n ∏_{p|n}(1−1/p), product over distinct prime divisors p of n. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Count integers 1≤a≤n coprime to n by excluding those divisible by a prime divisor. For each subset of distinct prime divisors, the count divisible by their product is n/(product). IE gives n − Σ n/p + Σ n/(pq) − ... = n∏(1−1/p). ∎</p>
+<p>φ(<em>n</em>) = <em>n</em> ∏<sub><em>p</em>|<em>n</em></sub> (1−1/<em>p</em>), product over distinct prime divisors <em>p</em> of <em>n</em>. <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Define the bad sets.</strong> For each prime divisor <em>p</em> of <em>n</em>, let A<sub><em>p</em></sub> = {<em>a</em> : 1≤<em>a</em>≤<em>n</em>, <em>p</em>|<em>a</em>}. Then gcd(<em>a</em>,<em>n</em>)=1 exactly when <em>a</em> lies in none of these sets.</li>
+  <li><strong>Count intersections.</strong> The numbers divisible by distinct primes <em>p</em><sub>1</sub>,…,<em>p</em><sub><em>r</em></sub> are those divisible by their product, so |A<sub><em>p</em><sub>1</sub></sub>∩…∩A<sub><em>p</em><sub><em>r</em></sub></sub>| = <em>n</em>/(<em>p</em><sub>1</sub>…<em>p</em><sub><em>r</em></sub>).</li>
+  <li><strong>Apply IE.</strong> φ(<em>n</em>) = <em>n</em> − Σ<sub><em>p</em>|<em>n</em></sub> <em>n</em>/<em>p</em> + Σ<sub><em>p</em>&lt;<em>q</em></sub> <em>n</em>/(<em>pq</em>) − …</li>
+  <li><strong>Factor.</strong> This alternating sum is the expansion of <em>n</em>∏<sub><em>p</em>|<em>n</em></sub>(1−1/<em>p</em>), one factor for each distinct prime, so the two are equal. ∎</li>
+</ol>
+
+<h3>Theorem: bounded integer equations</h3>
+<p>For <em>x</em><sub>1</sub>+…+<em>x</em><sub><em>k</em></sub>=<em>N</em> with lower bounds <em>x</em><sub><em>i</em></sub>≥<em>a</em><sub><em>i</em></sub> and upper bounds <em>x</em><sub><em>i</em></sub>≤<em>b</em><sub><em>i</em></sub>, shift the lower bounds, then remove upper-bound violations by IE.</p>
+<ol>
+  <li><strong>Shift.</strong> Put <em>y</em><sub><em>i</em></sub> = <em>x</em><sub><em>i</em></sub>−<em>a</em><sub><em>i</em></sub>≥0, so Σ<em>y</em><sub><em>i</em></sub> = <em>N</em>′ = <em>N</em>−Σ<em>a</em><sub><em>i</em></sub>, with 0≤<em>y</em><sub><em>i</em></sub>≤<em>b</em><sub><em>i</em></sub>−<em>a</em><sub><em>i</em></sub>. If <em>N</em>′&lt;0 the answer is 0.</li>
+  <li><strong>Ignore upper bounds.</strong> By stars and bars there are <em>C</em>(<em>N</em>′+<em>k</em>−1,<em>k</em>−1) nonnegative solutions.</li>
+  <li><strong>Define bad sets.</strong> B<sub><em>i</em></sub> is the set of solutions with <em>y</em><sub><em>i</em></sub>≥<em>c</em><sub><em>i</em></sub>+1, where <em>c</em><sub><em>i</em></sub> = <em>b</em><sub><em>i</em></sub>−<em>a</em><sub><em>i</em></sub>. Subtracting <em>c</em><sub><em>i</em></sub>+1 from that variable leaves <em>C</em>(<em>N</em>′−(<em>c</em><sub><em>i</em></sub>+1)+<em>k</em>−1,<em>k</em>−1) solutions.</li>
+  <li><strong>Apply IE.</strong> Subtract single violations, add back pairwise violations, and so on; the alternating sum is the answer. ∎</li>
+</ol>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1 (two sets)</h3>
-<p>If |A|=40, |B|=35, |A∩B|=12, then |A∪B|=40+35−12=63.</p>
+<h3>Example 1 (easy): two sets</h3>
+<p>If |A|=40, |B|=35, |A∩B|=12, then by Theorem IE-2: |A∪B| = |A|+|B|−|A∩B| = 40+35−12 = 63. Equivalently, A only has 40−12=28 elements, B only has 35−12=23, and 28+12+23=63 — the same answer, shown in the second picture in section 3.</p>
 
-<h3>Example 2 (derangement)</h3>
-<p>D_4 = 4! − C(4,1)3! + C(4,2)2! − C(4,3)1! + C(4,4)0! = 24−24+12−4+1=9. Verified: 9/24=3/8.</p>
+<h3>Example 2 (easy): a derangement of 4 objects</h3>
+<p>Use Theorem (derangements) with <em>n</em>=4: <em>D</em><sub>4</sub> = 4! − <em>C</em>(4,1)·3! + <em>C</em>(4,2)·2! − <em>C</em>(4,3)·1! + <em>C</em>(4,4)·0! = 24 − 24 + 12 − 4 + 1 = 9. Cross-check with the factorial form: 4!(1−1+1/2−1/6+1/24) = 24·(9/24) = 9. The probability is 9/24 = 3/8 = 0.375 (Q8).</p>
 
-<h3>Example 3 (surjection)</h3>
-<p>Sur(5,4)=4^5−4·3^5+6·2^5−4·1^5=1024−972+192−4=240.</p>
+<h3>Example 3 (medium): surjections from 5 elements to 4</h3>
+<p>By the surjection theorem with <em>n</em>=5, <em>k</em>=4: Sur(5,4) = Σ<sub><em>i</em>=0</sub><sup>4</sup> (−1)<sup><em>i</em></sup><em>C</em>(4,<em>i</em>)(4−<em>i</em>)<sup>5</sup> = 4<sup>5</sup> − 4·3<sup>5</sup> + 6·2<sup>5</sup> − 4·1<sup>5</sup> = 1024 − 972 + 192 − 4 = 240. Cross-check: <em>S</em>(5,4)=10, so 4!·10 = 240 (Q7 on page 03).</p>
 
-<h3>Example 4 (bounded equation)</h3>
-<p>Solve x1+...+x4=20 with 1≤x1≤6, 0≤x2≤7, 4≤x3≤8, 2≤x4≤6. Shift lower bounds: y1=x1−1 (0..5), y2=x2 (0..7), y3=x3−4 (0..4), y4=x4−2 (0..4), sum y=13. Count nonnegative solutions sum 13 with upper bounds by IE: 96.</p>
+<h3>Example 4 (medium–hard): a bounded equation</h3>
+<p>Solve <em>x</em><sub>1</sub>+…+<em>x</em><sub>4</sub>=20 with 1≤<em>x</em><sub>1</sub>≤6, 0≤<em>x</em><sub>2</sub>≤7, 4≤<em>x</em><sub>3</sub>≤8, 2≤<em>x</em><sub>4</sub>≤6 (Q23). Shift lower bounds: <em>y</em><sub>1</sub>=<em>x</em><sub>1</sub>−1∈[0,5], <em>y</em><sub>2</sub>=<em>x</em><sub>2</sub>∈[0,7], <em>y</em><sub>3</sub>=<em>x</em><sub>3</sub>−4∈[0,4], <em>y</em><sub>4</sub>=<em>x</em><sub>4</sub>−2∈[0,4], and Σ<em>y</em><sub><em>i</em></sub>=13.</p>
+<p>Ignore upper bounds: <em>C</em>(13+4−1,3) = <em>C</em>(16,3) = 560. Subtract single violations: <em>y</em><sub>1</sub>≥6 → <em>C</em>(10,3)=120; <em>y</em><sub>2</sub>≥8 → <em>C</em>(8,3)=56; <em>y</em><sub>3</sub>≥5 → <em>C</em>(11,3)=165; <em>y</em><sub>4</sub>≥5 → <em>C</em>(11,3)=165; total 506. Add back pairwise violations: (6,8)→0, (6,5)→<em>C</em>(5,3)=10, (6,5)→10, (8,5)→<em>C</em>(3,3)=1, (8,5)→1, (5,5)→<em>C</em>(6,3)=20; total 42. All triples need more than 13, so they contribute 0. By IE: 560 − 506 + 42 = 96.</p>
 
-<h3>Example 5 (elevator)</h3>
-<p>8 distinct people discharge onto 5 floors, every floor nonempty: Sur(8,5)=5^8−5·4^8+10·3^8−10·2^8+5·1^8=390625−327680+65610−2560+5=126000.</p>
+<h3>Example 5 (medium–hard): the elevator problem</h3>
+<p>Eight distinct people get off on floors 1–5 and the lift must be empty after floor 5, so every floor is used (Q19). Sur(8,5) = 5<sup>8</sup> − 5·4<sup>8</sup> + 10·3<sup>8</sup> − 10·2<sup>8</sup> + 5·1<sup>8</sup> = 390625 − 327680 + 65610 − 2560 + 5 = 126000.</p>
 
-<h3>Example 6 (primes to 200)</h3>
-<p>IE over primes 2,3,5,7,11,13 counts 40 integers in [2,200] not divisible by any of them. Add the 6 small primes themselves: 46 primes ≤200.</p>
+<h3>Example 6 (hard): primes up to 200</h3>
+<p>Any composite ≤200 has a prime divisor among 2,3,5,7,11,13 (since 17<sup>2</sup>&gt;200). Count integers 1–200 divisible by at least one of these six primes by IE: Σ⌊200/<em>p</em>⌋ − Σ⌊200/(<em>pq</em>)⌋ + … = 159. Hence 200−159 = 41 integers are not divisible by any of them, and one of them is 1; the remaining 40 lie in [2,200] and are exactly the primes greater than 13. Adding the six small primes gives 40+6 = 46 primes ≤200 (Q27).</p>
 
-<h3>Example 7 (forbidden strings)</h3>
-<p>Permutations of 26 letters avoiding fish, rat, bird: 26! − 2·23! − 24! + 21! (fish and bird, rat and bird share letters so cannot both occur; fish and rat can). Value ≈4.026×10^26.</p>
+<h3>Example 7 (hard): forbidden strings</h3>
+<p>Count permutations of the 26 distinct letters containing none of fish, rat, bird (Q28). Treat each forbidden word as one block: fish gives 26−4+1=23 items → 23!; rat gives 24!; bird gives 23!. Intersections: fish and rat share no letters, so both blocks give 26−4−3+2=21 items → 21!. Fish and bird share <em>i</em>, and rat and bird share <em>r</em>, so those intersections are empty, as is the triple. IE: 26! − (23!+24!+23!) + 21! = 26! − 2·23! − 24! + 21! = 402619359782336797900800000.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Three-set inclusion-exclusion calculator (change any value):</p>
+<p>Three-set inclusion–exclusion calculator: type the seven values and the panel shows each stage of the alternating sum, not just the final answer. Inconsistent or non-numeric input is reported instead of computed.</p>
 <div class="card">
-  <label>|A| <input id="a" type="number" value="40" oninput="calcIE()"></label>
-  <label>|B| <input id="b" type="number" value="35" oninput="calcIE()"></label>
-  <label>|C| <input id="c" type="number" value="30" oninput="calcIE()"></label><br>
-  <label>|A∩B| <input id="ab" type="number" value="12" oninput="calcIE()"></label>
-  <label>|A∩C| <input id="ac" type="number" value="8" oninput="calcIE()"></label>
-  <label>|B∩C| <input id="bc" type="number" value="7" oninput="calcIE()"></label><br>
-  <label>|A∩B∩C| <input id="abc" type="number" value="3" oninput="calcIE()"></label>
-  <p id="ieResult"></p>
+  <label>|A| <input id="a" type="text" inputmode="numeric" value="40" size="4" oninput="calcIE()"></label>
+  <label>|B| <input id="b" type="text" inputmode="numeric" value="35" size="4" oninput="calcIE()"></label>
+  <label>|C| <input id="c" type="text" inputmode="numeric" value="30" size="4" oninput="calcIE()"></label><br>
+  <label>|A∩B| <input id="ab" type="text" inputmode="numeric" value="12" size="4" oninput="calcIE()"></label>
+  <label>|A∩C| <input id="ac" type="text" inputmode="numeric" value="8" size="4" oninput="calcIE()"></label>
+  <label>|B∩C| <input id="bc" type="text" inputmode="numeric" value="7" size="4" oninput="calcIE()"></label><br>
+  <label>|A∩B∩C| <input id="abc" type="text" inputmode="numeric" value="3" size="4" oninput="calcIE()"></label>
+  <div id="ieResult" aria-live="polite"></div>
 </div>
 <script>
 function calcIE(){
-  var a=+document.getElementById('a').value;
-  var b=+document.getElementById('b').value;
-  var c=+document.getElementById('c').value;
-  var ab=+document.getElementById('ab').value;
-  var ac=+document.getElementById('ac').value;
-  var bc=+document.getElementById('bc').value;
-  var abc=+document.getElementById('abc').value;
-  var u=a+b+c-ab-ac-bc+abc;
-  document.getElementById('ieResult').textContent='|A ∪ B ∪ C| = '+u;
+  var ids=['a','b','c','ab','ac','bc','abc'];
+  var out=document.getElementById('ieResult');
+  out.textContent='';
+  function whole(v){ return /^[0-9]+$/.test(String(v).trim()); }
+  function line(t){ var p=document.createElement('p'); p.textContent=t; return p; }
+  var v={}, i;
+  for(i=0;i<ids.length;i++){
+    var el=document.getElementById(ids[i]);
+    if(!whole(el.value)){ out.appendChild(line('Input error: enter whole numbers for all seven values (digits only).')); return; }
+    v[ids[i]]=parseInt(String(el.value).trim(),10);
+    if(v[ids[i]]>100000){ out.appendChild(line('Input error: values must be at most 100000.')); return; }
+  }
+  if(v.ab>v.a||v.ab>v.b||v.ac>v.a||v.ac>v.c||v.bc>v.b||v.bc>v.c||v.abc>v.ab||v.abc>v.ac||v.abc>v.bc){
+    out.appendChild(line('Input error: an intersection cannot exceed either set that contains it.')); return;
+  }
+  if(v.abc<v.ab+v.ac-v.a||v.abc<v.ab+v.bc-v.b||v.abc<v.ac+v.bc-v.c){
+    out.appendChild(line('Input error: these intersections are impossible for the given set sizes.')); return;
+  }
+  var singles=v.a+v.b+v.c;
+  var pairs=v.ab+v.ac+v.bc;
+  var union=singles-pairs+v.abc;
+  out.appendChild(line('Singles: |A|+|B|+|C| = '+v.a+'+'+v.b+'+'+v.c+' = '+singles));
+  out.appendChild(line('Subtract pairs: −(|A∩B|+|A∩C|+|B∩C|) = −('+v.ab+'+'+v.ac+'+'+v.bc+') = −'+pairs));
+  out.appendChild(line('Add triple: +|A∩B∩C| = +'+v.abc));
+  out.appendChild(line('|A ∪ B ∪ C| = '+singles+' − '+pairs+' + '+v.abc+' = '+union));
 }
 calcIE();
 </script>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>The alternating sum is not a trick: the picture below shows, for an element lying in exactly <em>t</em> of the sets, how many times it is counted at each level. The total is always 1.</p>
+<svg width="320" height="170" viewBox="0 0 320 170" role="img" aria-label="Multiplicity table: for t equals 1, 2, 3 and 4 the alternating binomial sum is 1">
+  <text x="160" y="16" text-anchor="middle" font-size="12" fill="var(--muted)">element in exactly t sets: alternating count = 1</text>
+  <text x="20" y="44" font-size="12" fill="var(--text)">t=1</text>
+  <text x="60" y="44" font-size="12" fill="var(--text)">+C(1,1) = 1</text>
+  <text x="20" y="72" font-size="12" fill="var(--text)">t=2</text>
+  <text x="60" y="72" font-size="12" fill="var(--text)">+C(2,1)−C(2,2) = 2−1 = 1</text>
+  <text x="20" y="100" font-size="12" fill="var(--text)">t=3</text>
+  <text x="60" y="100" font-size="12" fill="var(--text)">+C(3,1)−C(3,2)+C(3,3) = 3−3+1 = 1</text>
+  <text x="20" y="128" font-size="12" fill="var(--text)">t=4</text>
+  <text x="60" y="128" font-size="12" fill="var(--text)">4−6+4−1 = 1</text>
+  <text x="160" y="156" text-anchor="middle" font-size="12" fill="var(--muted)">each element of the union is counted exactly once</text>
+</svg>
+
 <div class="notice"><strong>Slide errors I fixed:</strong> Q9(a) in questions.pdf says x_i&gt;1; this guide uses x_i≥1 (markdown version).</div>
 
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Forgetting to add back the triple intersection in 3-set IE.</li>
-  <li>Using strict vs non-strict inequality in bounded equations (Q9).</li>
-  <li>Treating forbidden words that share letters as independent blocks (Q28).</li>
-  <li>Forgetting that derangement probability for n=4 is 9/24, not the large-n limit 1/e.</li>
-  <li>Euler phi product is over distinct prime divisors only.</li>
-  <li>For primes ≤200, IE counts composites; add the small primes 2,3,5,7,11,13.</li>
-</ul>
+<ol>
+  <li><strong>Forgetting to add back the triple intersection.</strong> Wrong: with |A|=40, |B|=35, |C|=30 and pairwise intersections 12, 8, 7, one gets 40+35+30−12−8−7 = 78. Right: add |A∩B∩C|=3, giving 81.</li>
+  <li><strong>Treating a strict inequality as non-strict (Q9).</strong> Wrong: for x<sub>1</sub>+…+x<sub>5</sub>&lt;25 with x<sub><em>i</em></sub>≥1, using sum ≤25 gives <em>C</em>(25,5) = 53130. Right: "&lt;25" means sum ≤24, and after shifting y<sub><em>i</em></sub>=x<sub><em>i</em></sub>−1 the count is <em>C</em>(24,5) = 42504.</li>
+  <li><strong>Treating forbidden words that share letters as independent blocks (Q28).</strong> Wrong: adding back an intersection for fish and bird, which share <em>i</em>, as if both could occur. Right: that intersection is impossible; only fish and rat (disjoint letters) can both occur, giving 26! − 2·23! − 24! + 21!.</li>
+  <li><strong>Using the large-<em>n</em> limit for a small derangement probability.</strong> Wrong: for four students, probability = 1/<em>e</em> ≈ 0.3679. Right: <em>D</em><sub>4</sub>/4! = 9/24 = 0.375; 1/<em>e</em> is only the limit.</li>
+  <li><strong>Repeating a prime in the Euler product.</strong> Wrong: φ(12) = 12(1−1/2)(1−1/2)(1−1/3) = 2. Right: one factor per distinct prime, φ(12) = 12(1−1/2)(1−1/3) = 4.</li>
+  <li><strong>Stopping at the sieve count for primes ≤200.</strong> Wrong: the 40 integers left after sieving by 2,3,5,7,11,13 are "the primes". Right: add the six sieve primes themselves, 40+6 = 46.</li>
+  <li><strong>Forgetting to add back pairwise violations in a bounded equation (Q23).</strong> Wrong: 560−506 = 54. Right: add back the 42 pairwise overlaps, 560−506+42 = 96.</li>
+</ol>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
 <summary>Q8. Four students pick keys randomly; probability none opens their own room.</summary>
-<p>Solution: D_4/4! = 9/24 = 3/8. Python verification: 9/24 = 0.375.</p>
+<p><strong>Step 1.</strong> Model the picking as a random permutation of the four keys: 4! = 24 equally likely assignments.</p>
+<p><strong>Step 2.</strong> "None opens their own room" means the permutation has no fixed point, i.e. it is a derangement. By the derangement theorem, <em>D</em><sub>4</sub> = 4!(1−1+1/2−1/6+1/24) = 24−24+12−4+1 = 9.</p>
+<p><strong>Step 3.</strong> Probability = 9/24 = 3/8 = 0.375.</p>
 </details>
 
 <details>
-<summary>Q9. (a) x1+...+x5 &lt; 25, xi ≥ 1. (b) same with x2 &lt; 5.</summary>
-<p>Solution (a): shift yi=xi−1, sum yi ≤19: C(24,5)=42504. (b): total C(29,5) minus x2≥5 case C(24,5): 76251. Python verification: 42504 and 76251.</p>
+<summary>Q9. (a) x1+…+x5 &lt; 25, xᵢ ≥ 1. (b) same with x2 &lt; 5.</summary>
+<p><strong>(a) Step 1.</strong> Since the <em>x</em><sub><em>i</em></sub> are integers, <em>x</em><sub>1</sub>+…+<em>x</em><sub>5</sub> &lt; 25 means the sum is at most 24. Put <em>y</em><sub><em>i</em></sub> = <em>x</em><sub><em>i</em></sub>−1 ≥ 0; then Σ<em>y</em><sub><em>i</em></sub> ≤ 19.</p>
+<p><strong>(a) Step 2.</strong> Add a slack variable <em>y</em><sub>6</sub> = 19−Σ<em>y</em><sub><em>i</em></sub> ≥ 0. The six nonnegative variables sum to 19, so by stars and bars the count is <em>C</em>(19+6−1,6−1) = <em>C</em>(24,5) = 42504.</p>
+<p><strong>(b) Step 1.</strong> Here the base equation has x<sub><em>i</em></sub> ≥ 0; add slack so six nonnegative variables sum to 24. Total = <em>C</em>(24+6−1,5) = <em>C</em>(29,5) = 118755.</p>
+<p><strong>(b) Step 2.</strong> Remove x<sub>2</sub> ≥ 5: write x<sub>2</sub>′ = x<sub>2</sub>−5 ≥ 0, so the six variables now sum to 19, giving <em>C</em>(24,5) = 42504 bad solutions.</p>
+<p><strong>(b) Step 3.</strong> Subtract: 118755−42504 = 76251. A single exclusion suffices because only one upper restriction is present.</p>
 </details>
 
 <details>
-<summary>Q15. Musical chairs twice; probability no winner.</summary>
-<p>Solution: each round is a cyclic shift, so every player has the same score; there is never a unique individual winner. If "no winner" means no player ever sits in their own chair, probability=(4/5)^2=16/25=0.64. As n→∞ this tends to 1.</p>
+<summary>Q15. Musical chairs twice; probability of no winner.</summary>
+<p><strong>Step 1.</strong> The players walk in unison, so one round is a cyclic shift of the chairs by one of 5 offsets, each equally likely. Offset 0 gives every player their own chair; the other 4 offsets give it to nobody.</p>
+<p><strong>Step 2.</strong> "No winner" means no player ever sits in their own chair, so both rounds must use a nonzero offset: probability (4/5)·(4/5) = 16/25 = 0.64.</p>
+<p><strong>Step 3.</strong> For <em>n</em> players the same argument gives (1−1/<em>n</em>)<sup>2</sup>, which tends to 1 as <em>n</em>→∞.</p>
+<p><strong>Second reading.</strong> If a round were a uniformly random permutation rather than a cyclic shift, the chance that nobody gets their own chair in both rounds would be (<em>D</em><sub>5</sub>/5!)<sup>2</sup> = (44/120)<sup>2</sup> = 121/900 ≈ 0.1344. The lecture's "walk in unison" wording fixes the cyclic-shift reading.</p>
 </details>
 
 <details>
-<summary>Q17. State and prove inclusion-exclusion.</summary>
-<p>Solution: formula above; proof by element counting as in Theorem IE.</p>
+<summary>Q17. State and prove the Inclusion–Exclusion Principle.</summary>
+<p><strong>Statement.</strong> For finite sets A<sub>1</sub>,…,A<sub><em>m</em></sub>, |∪<sub><em>i</em></sub>A<sub><em>i</em></sub>| = Σ<sub>∅≠J⊆{1,…,<em>m</em>}</sub> (−1)<sup>|J|−1</sup> |∩<sub><em>i</em>∈J</sub>A<sub><em>i</em></sub>|.</p>
+<p><strong>Proof, step 1.</strong> Fix an element <em>x</em> in the union and let <em>t</em>≥1 be the number of sets containing it.</p>
+<p><strong>Step 2.</strong> At level <em>r</em>, <em>x</em> occurs in <em>C</em>(<em>t</em>,<em>r</em>) of the intersections, each with sign (−1)<sup><em>r</em>+1</sup>.</p>
+<p><strong>Step 3.</strong> Its total coefficient is Σ<sub><em>r</em>=1</sub><sup><em>t</em></sup> (−1)<sup><em>r</em>+1</sup><em>C</em>(<em>t</em>,<em>r</em>) = 1−(1−1)<sup><em>t</em></sup> = 1, by the binomial theorem.</p>
+<p><strong>Step 4.</strong> Elements outside every A<sub><em>i</em></sub> contribute 0, so the right side counts exactly the elements of the union. ∎ (An induction proof is given as Proof B in section 5.)</p>
 </details>
 
 <details>
-<summary>Q18. Prove φ(n)=n∏_{p|n}(1−1/p).</summary>
-<p>Solution: proof via IE over distinct prime divisors of n, as above.</p>
+<summary>Q18. Prove φ(n) = n∏_{p|n}(1−1/p).</summary>
+<p><strong>Step 1.</strong> For each prime divisor <em>p</em> of <em>n</em>, let A<sub><em>p</em></sub> = {<em>a</em> : 1≤<em>a</em>≤<em>n</em>, <em>p</em>|<em>a</em>}. Then φ(<em>n</em>) counts the elements in none of these sets.</p>
+<p><strong>Step 2.</strong> For distinct primes <em>p</em><sub>1</sub>,…,<em>p</em><sub><em>r</em></sub>, the intersection A<sub><em>p</em><sub>1</sub></sub>∩…∩A<sub><em>p</em><sub><em>r</em></sub></sub> has size <em>n</em>/(<em>p</em><sub>1</sub>…<em>p</em><sub><em>r</em></sub>).</p>
+<p><strong>Step 3.</strong> Inclusion–exclusion gives φ(<em>n</em>) = <em>n</em> − Σ<sub><em>p</em>|<em>n</em></sub> <em>n</em>/<em>p</em> + Σ<sub><em>p</em>&lt;<em>q</em></sub> <em>n</em>/(<em>pq</em>) − …</p>
+<p><strong>Step 4.</strong> Expanding ∏<sub><em>p</em>|<em>n</em></sub>(1−1/<em>p</em>) gives exactly the same alternating sum, so φ(<em>n</em>) = <em>n</em>∏<sub><em>p</em>|<em>n</em></sub>(1−1/<em>p</em>). ∎</p>
 </details>
 
 <details>
-<summary>Q19. 8 people, elevator empties on 5th floor; count ways.</summary>
-<p>Solution: Sur(8,5)=126000. Python verification: 126000.</p>
+<summary>Q19. 8 people, elevator empties on the fifth floor; count ways.</summary>
+<p><strong>Step 1.</strong> Floors 1–5 must all be used, so each of the 8 distinct people chooses a floor and every floor receives at least one person: this is a surjection from an 8-set to a 5-set.</p>
+<p><strong>Step 2.</strong> Sur(8,5) = Σ<sub><em>i</em>=0</sub><sup>5</sup> (−1)<sup><em>i</em></sup><em>C</em>(5,<em>i</em>)(5−<em>i</em>)<sup>8</sup> = 5<sup>8</sup> − 5·4<sup>8</sup> + 10·3<sup>8</sup> − 10·2<sup>8</sup> + 5·1<sup>8</sup>.</p>
+<p><strong>Step 3.</strong> = 390625 − 327680 + 65610 − 2560 + 5 = 126000. (Cross-check: 5!·<em>S</em>(8,5) = 120·1050 = 126000.)</p>
 </details>
 
 <details>
-<summary>Q23. x1+...+x4=20 with 1≤x1≤6, 0≤x2≤7, 4≤x3≤8, 2≤x4≤6.</summary>
-<p>Solution: 96. Python verification: 96.</p>
+<summary>Q23. x1+…+x4 = 20 with 1≤x1≤6, 0≤x2≤7, 4≤x3≤8, 2≤x4≤6.</summary>
+<p>Full working is in example 4. Shift lower bounds to get Σ<em>y</em><sub><em>i</em></sub>=13 with caps (5,7,4,4). Unrestricted count <em>C</em>(16,3)=560; subtract singles 120+56+165+165=506; add pairs 0+10+10+1+1+20=42; triples and the quadruple are impossible.</p>
+<p><strong>Answer:</strong> 560−506+42 = 96.</p>
 </details>
 
 <details>
-<summary>Q24. n people around a table; second seating with different right neighbour for everyone.</summary>
-<p>Solution: circular arrangements avoiding all n forbidden successors. Count = Σ_{k=0}^{n−1} (−1)^k C(n,k)(n−k−1)! + (−1)^n. For n=5 this is 8. Python verification: n=5 gives 8.</p>
+<summary>Q24. Reseat n people so that everyone has a different right neighbour.</summary>
+<p><strong>Step 1.</strong> Fix the original circular order (1,2,…,<em>n</em>). For each person <em>i</em>, forbid the event that <em>i</em>+1 (mod <em>n</em>) is their right neighbour again.</p>
+<p><strong>Step 2.</strong> Glue a forbidden successive pair into a block. Choosing <em>k</em> disjoint forbidden pairs can be done in (1/(<em>n</em>−<em>k</em>))<em>C</em>(<em>n</em>−<em>k</em>,<em>k</em>)·<em>n</em> ways on a circle, which simplifies to the count below; applying inclusion–exclusion over all forbidden neighbours gives</p>
+<p>Σ<sub><em>k</em>=0</sub><sup><em>n</em>−1</sup> (−1)<sup><em>k</em></sup> <em>C</em>(<em>n</em>,<em>k</em>)(<em>n</em>−<em>k</em>−1)! + (−1)<sup><em>n</em></sup>.</p>
+<p><strong>Step 3.</strong> For <em>n</em>=5: 4! − 5·3! + 10·2! − 10·1! + 5·0! − 1 = 24−30+20−10+5−1 = 8. A brute-force enumeration of circular arrangements of 5 people gives 8, confirming the formula.</p>
 </details>
 
 <details>
 <summary>Q27. Number of primes ≤200.</summary>
-<p>Solution: IE over 2,3,5,7,11,13 gives 40 integers in [2,200] not divisible by any; plus the 6 primes themselves = 46. Python verification: 46.</p>
+<p><strong>Step 1.</strong> Every composite ≤200 has a prime factor among 2,3,5,7,11,13, because 17<sup>2</sup>=289&gt;200.</p>
+<p><strong>Step 2.</strong> Sieve integers 1–200 by these six primes with inclusion–exclusion: 159 are divisible by at least one of them, leaving 200−159 = 41.</p>
+<p><strong>Step 3.</strong> Of those 41, the number 1 is not prime; the other 40 are primes above 13. Adding the six sieve primes gives 40+6 = 46 primes ≤200.</p>
 </details>
 
 <details>
-<summary>Q28. Permutations of 26 letters not containing fish, rat, or bird.</summary>
-<p>Solution: 26! − 2·23! − 24! + 21! = 402619359782336797900800000. Python verification: same.</p>
+<summary>Q28. Permutations of 26 letters containing none of fish, rat, bird.</summary>
+<p><strong>Step 1.</strong> Treat each word as a block: fish (4 letters) gives 26−4+1 = 23 items → 23!; rat (3 letters) gives 24!; bird (4 letters) gives 23!.</p>
+<p><strong>Step 2.</strong> Intersections: fish and rat share no letters, so both blocks fit as 26−4−3+2 = 21 items → 21!. Fish and bird share <em>i</em>; rat and bird share <em>r</em>; those intersections (and the triple) are empty.</p>
+<p><strong>Step 3.</strong> Inclusion–exclusion: 26! − (23!+24!+23!) + 21! = 26! − 2·23! − 24! + 21! = 402619359782336797900800000.</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. How many integers 1..100 are divisible by 2 or 3 or 5?</summary><p>74.</p></details>
-<details><summary>2. Number of onto functions from a 6-set to a 3-set?</summary><p>540.</p></details>
-<details><summary>3. D_5?</summary><p>44.</p></details>
-<details><summary>4. φ(12)?</summary><p>4.</p></details>
-<details><summary>5. Solutions to x1+x2+x3=10 with 0≤xi≤4?</summary><p>6.</p></details>
+<details>
+<summary>1. How many integers 1–100 are divisible by 2, 3 or 5?</summary>
+<p>Let A, B, C be divisibility by 2, 3, 5. |A|=50, |B|=33, |C|=20; pairwise intersections are divisibility by 6, 10, 15 with sizes 16, 10, 6; the triple is divisibility by 30 with size 3. By IE: 50+33+20−16−10−6+3 = 74.</p>
+</details>
+<details>
+<summary>2. How many onto functions from a 6-set to a 3-set?</summary>
+<p>Sur(6,3) = 3<sup>6</sup> − 3·2<sup>6</sup> + 3·1<sup>6</sup> = 729 − 192 + 3 = 540.</p>
+</details>
+<details>
+<summary>3. What is D<sub>5</sub>?</summary>
+<p>D<sub>5</sub> = 5!(1−1+1/2−1/6+1/24−1/120) = 120·(11/30) = 44. Equivalently 120−120+60−20+5−1 = 44.</p>
+</details>
+<details>
+<summary>4. What is φ(12)?</summary>
+<p>The distinct prime divisors are 2 and 3, so φ(12) = 12(1−1/2)(1−1/3) = 12·1/2·2/3 = 4 (namely 1, 5, 7, 11).</p>
+</details>
+<details>
+<summary>5. Solutions of x1+x2+x3=10 with 0≤xᵢ≤4?</summary>
+<p>Unrestricted: <em>C</em>(12,2)=66. Subtract each violation x<sub><em>i</em></sub>≥5: shift by 5 leaves sum 5, giving <em>C</em>(7,2)=21 each, 63 in total. Add back pairs: two variables shifted by 5 leave sum 0, giving <em>C</em>(2,2)=1 per pair, 3 pairs. Triples are impossible. Answer 66−63+3 = 6.</p>
+</details>
+<details>
+<summary>6. What is D<sub>6</sub>?</summary>
+<p>D<sub>6</sub> = 6!(1−1+1/2−1/6+1/24−1/120+1/720) = 720 − 720 + 360 − 120 + 30 − 6 + 1 = 265.</p>
+</details>
+<details>
+<summary>7. What is φ(30)?</summary>
+<p>30 = 2·3·5, so φ(30) = 30(1−1/2)(1−1/3)(1−1/5) = 30·1/2·2/3·4/5 = 8.</p>
+</details>
+<details>
+<summary>8. How many surjections from a 5-set to a 3-set?</summary>
+<p>Sur(5,3) = 3<sup>5</sup> − 3·2<sup>5</sup> + 3·1<sup>5</sup> = 243 − 96 + 3 = 150.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>|A∪B|=|A|+|B|−|A∩B|.</p>
-  <p>IE alternates + − + − ...</p>
-  <p>Sur(n,k)=Σ (−1)^i C(k,i)(k−i)^n.</p>
-  <p>D_n=n!Σ (−1)^i/i!.</p>
-  <p>φ(n)=n∏_{p|n}(1−1/p).</p>
-  <p>Primes ≤200: 46.</p>
-  <p>Bounded counts: shift lower bounds, then IE on upper bounds.</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong>Union/intersection:</strong> |∪<sub><em>i</em></sub>A<sub><em>i</em></sub>| counts elements in at least one set; ∩ means in every set.</li>
+    <li><strong>Surjection Sur(<em>n</em>,<em>k</em>):</strong> onto functions from an <em>n</em>-set to a <em>k</em>-set.</li>
+    <li><strong>Derangement <em>D</em><sub><em>n</em></sub>:</strong> a permutation with no fixed point.</li>
+    <li><strong>Euler totient φ(<em>n</em>):</strong> integers 1≤<em>a</em>≤<em>n</em> with gcd(<em>a</em>,<em>n</em>)=1.</li>
+  </ul>
+
+  <h3>Formulas</h3>
+  <ul>
+    <li>Two sets: |A∪B| = |A|+|B|−|A∩B|.</li>
+    <li>Three sets: |A∪B∪C| = |A|+|B|+|C| − |A∩B|−|A∩C|−|B∩C| + |A∩B∩C|.</li>
+    <li>General: |∪<sub><em>i</em>=1</sub><sup><em>m</em></sup>A<sub><em>i</em></sub>| = Σ<sub>∅≠J⊆{1,…,<em>m</em>}</sub> (−1)<sup>|J|−1</sup>|∩<sub><em>i</em>∈J</sub>A<sub><em>i</em></sub>|; signs alternate + − + −.</li>
+    <li>Why it works: an element in <em>t</em> sets is counted Σ<sub><em>r</em>=1</sub><sup><em>t</em></sup> (−1)<sup><em>r</em>+1</sup><em>C</em>(<em>t</em>,<em>r</em>) = 1−(1−1)<sup><em>t</em></sup> = 1 times.</li>
+    <li>Surjections: Sur(<em>n</em>,<em>k</em>) = Σ<sub><em>i</em>=0</sub><sup><em>k</em></sup> (−1)<sup><em>i</em></sup><em>C</em>(<em>k</em>,<em>i</em>)(<em>k</em>−<em>i</em>)<sup><em>n</em></sup> = <em>k</em>!·<em>S</em>(<em>n</em>,<em>k</em>).</li>
+    <li>Derangements: <em>D</em><sub><em>n</em></sub> = <em>n</em>! Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup> (−1)<sup><em>i</em></sup>/<em>i</em>!; probability ≈ 1/<em>e</em> for large <em>n</em>.</li>
+    <li>Euler totient: φ(<em>n</em>) = <em>n</em>∏<sub><em>p</em>|<em>n</em></sub>(1−1/<em>p</em>), one factor per distinct prime.</li>
+    <li>Bounded equations: shift lower bounds, count by stars and bars, then remove upper-bound violations by IE.</li>
+    <li>Forbidden words: block each word; an intersection exists only when the words share no letters.</li>
+    <li>Primes ≤<em>N</em>: sieve by primes ≤√<em>N</em>, then add those small primes back.</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>40+35−12</td><td>63</td><td>two-set example</td></tr>
+      <tr><td><em>D</em><sub>4</sub>, <em>D</em><sub>5</sub>, <em>D</em><sub>6</sub></td><td>9, 44, 265</td><td>derangements, Q8</td></tr>
+      <tr><td>Sur(5,4), Sur(8,5)</td><td>240, 126000</td><td>Q7, elevator Q19</td></tr>
+      <tr><td><em>C</em>(24,5), <em>C</em>(29,5)</td><td>42504, 118755</td><td>Q9(a), (b)</td></tr>
+      <tr><td>bounded equation, Q23</td><td>96</td><td>560−506+42</td></tr>
+      <tr><td>reseat 5 people, Q24</td><td>8</td><td>IE over forbidden neighbours</td></tr>
+      <tr><td>primes ≤200</td><td>46</td><td>40 sieved + 6 small primes</td></tr>
+      <tr><td>26!−2·23!−24!+21!</td><td>402619359782336797900800000</td><td>Q28 forbidden strings</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>Define the bad sets A<sub><em>i</em></sub> precisely before writing any sum.</li>
+    <li>Alternate signs: add singles, subtract pairs, add triples.</li>
+    <li>Count intersections with stars and bars, factorials, or floor functions, as appropriate.</li>
+    <li>Check whether overlapping "bad words" can occur together at all.</li>
+    <li>For primes, sieve by primes up to √N and add those primes back.</li>
+    <li>For inequalities, check strict versus non-strict before shifting variables.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

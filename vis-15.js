@@ -12,5 +12,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> faces, vertices and edges are linked. <strong>Try this:</strong> set n=4,e=6.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-15.js && echo ok

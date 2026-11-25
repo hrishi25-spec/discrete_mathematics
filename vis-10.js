@@ -12,5 +12,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> implication is false only P true, Q false. <strong>Try this:</strong> switch operators.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-10.js && echo ok

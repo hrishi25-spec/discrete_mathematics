@@ -11,5 +11,3 @@
   var c=document.createElement("p"); c.className="vis-caption"; c.innerHTML="<strong>What to notice:</strong> each term sums two previous terms. <strong>Try this:</strong> set n=1.";
   s.appendChild(c);
 })();
-EOF
-node --check vis-05.js && echo ok

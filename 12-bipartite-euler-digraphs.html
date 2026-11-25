@@ -6,6 +6,13 @@
   <title>12 Bipartite, Eulerian, Digraphs, Tournaments, Degree Sequences</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,7 +25,7 @@
 <p>Graph basics, walks, paths, components from <a href="11-graph-basics.html">page 11</a>.</p>
 
 <h2>3. Intuition</h2>
-<p>A bipartite graph has no odd cycles because going around an odd cycle would force a vertex to have both colors. An Euler circuit exists when every vertex has even degree: you can enter and leave each vertex equally often. The picture below is a 4-cycle, bipartite.</p>
+<p>A bipartite graph has no odd cycles because going around an odd cycle would force a vertex to need both colours. An Euler circuit exists when every vertex has even degree: each time you enter a vertex you can leave it, so the trail can close up. The first picture is a 4-cycle with a proper 2-colouring; the second is a 6-cycle showing both ideas at once — alternating parts and degree 2 everywhere.</p>
 <svg width="160" height="120" viewBox="0 0 160 120" aria-label="4-cycle">
   <circle cx="40" cy="30" r="8" fill="#1f6feb"/>
   <circle cx="120" cy="30" r="8" fill="#d73a49"/>
@@ -29,6 +36,23 @@
   <line x1="48" y1="90" x2="112" y2="90" stroke="#333"/>
   <line x1="40" y1="38" x2="40" y2="82" stroke="#333"/>
 </svg>
+<svg width="200" height="170" viewBox="0 0 200 170" role="img" aria-label="A 6-cycle with alternating colours: bipartite with parts of size 3 and 3, and all degrees 2 so it has an Euler circuit">
+  <text x="100" y="14" text-anchor="middle" font-size="12" fill="var(--muted)">C6: bipartite parts {1,3,5}, {2,4,6}</text>
+  <g stroke="var(--accent)" stroke-width="2">
+    <line x1="100" y1="30" x2="150" y2="60"/><line x1="150" y1="60" x2="150" y2="120"/>
+    <line x1="150" y1="120" x2="100" y2="150"/><line x1="100" y1="150" x2="50" y2="120"/>
+    <line x1="50" y1="120" x2="50" y2="60"/><line x1="50" y1="60" x2="100" y2="30"/>
+  </g>
+  <g stroke="var(--accent)" stroke-width="1.5">
+    <circle cx="100" cy="30" r="9" fill="var(--accent-soft)"/>
+    <circle cx="150" cy="60" r="9" fill="var(--accent)"/>
+    <circle cx="150" cy="120" r="9" fill="var(--accent-soft)"/>
+    <circle cx="100" cy="150" r="9" fill="var(--accent)"/>
+    <circle cx="50" cy="120" r="9" fill="var(--accent-soft)"/>
+    <circle cx="50" cy="60" r="9" fill="var(--accent)"/>
+  </g>
+  <text x="100" y="168" text-anchor="middle" font-size="11" fill="var(--muted)">every degree is 2, so an Euler circuit exists</text>
+</svg>
 
 <h2>4. Definitions</h2>
 <div class="card">
@@ -38,133 +62,293 @@
   <p><strong>Tournament:</strong> orientation of complete graph.</p>
   <p><strong>King:</strong> vertex from which every vertex is reachable by path of length at most 2.</p>
   <p><strong>Graphical sequence:</strong> nonnegative integers that are degrees of some graph.</p>
+  <p><strong>Euler trail:</strong> a trail (no repeated edges) containing every edge; an Euler circuit is a closed such trail.</p>
+  <p><strong>Oriented graph:</strong> a digraph obtained by choosing one direction for each edge of a simple graph; a tournament is the case where the underlying graph is complete.</p>
+  <p><strong>Score sequence:</strong> the list of outdegrees of a tournament.</p>
+  <p><strong>2-colouring:</strong> assigning each vertex one of two colours so adjacent vertices differ; a graph is bipartite iff such a colouring exists.</p>
 </div>
 
 <h2>5. Theorems and complete proofs</h2>
+<p>Every proof below is written with explicit steps; the constructive parts (colouring, splicing circuits, Havel–Hakimi reduction) are given in full.</p>
 
 <h3>Theorem: cut-edge characterization</h3>
 <p>An edge is a cut-edge iff it lies in no cycle.</p>
-<p><em>Proof.</em> If e is a cut-edge, removing it disconnects, so no cycle can contain it. Conversely if e lies in a cycle, the cycle provides an alternative path, so removal does not disconnect. ∎</p>
+<ol>
+  <li><strong>Forward.</strong> Let <em>e</em>=<em>uv</em> be a cut-edge. If <em>e</em> lay on a cycle, removing <em>e</em> would still leave the walk around the rest of that cycle joining <em>u</em> to <em>v</em>, so the graph would stay connected — a contradiction.</li>
+  <li><strong>Reverse.</strong> If <em>e</em> lies on no cycle, suppose removing <em>e</em> leaves <em>u</em> and <em>v</em> connected. Then that path together with <em>e</em> would form a cycle, again a contradiction.</li>
+  <li><strong>Conclusion.</strong> Removing <em>e</em> separates the graph exactly when <em>e</em> belongs to no cycle. ∎</li>
+</ol>
 
 <h3>Lemma: closed odd walk contains odd cycle</h3>
 <p>Every closed odd walk contains an odd cycle.</p>
-<p><em>Proof.</em> Induct on length; if a vertex repeats, delete the closed subwalk and preserve parity/oddness. ∎</p>
+<ol>
+  <li><strong>Use induction on the length <em>L</em> of the walk.</strong> The shortest closed walk with repeated vertices has length at least 3; a closed walk of length 3 with distinct endpoints is already a cycle.</li>
+  <li><strong>Find a repeated vertex.</strong> If the closed walk repeats a vertex besides the start/end, split it into two shorter closed walks whose lengths sum to <em>L</em>.</li>
+  <li><strong>Preserve oddness.</strong> Since <em>L</em> is odd, exactly one of the two shorter closed walks has odd length.</li>
+  <li><strong>Apply the hypothesis.</strong> By induction that shorter odd closed walk contains an odd cycle. ∎</li>
+</ol>
 
 <h3>Theorem: bipartite iff no odd cycles</h3>
 <p>A graph is bipartite iff it has no odd cycle. <span class="notice">Exam likely (Q34).</span></p>
-<p><em>Proof.</em> If bipartite, any cycle alternates parts, so length is even. Conversely, fix a vertex in each component, color by parity of path length; no odd cycle ensures well-defined coloring. ∎</p>
+<ol>
+  <li><strong>Forward.</strong> In a bipartite graph every edge crosses between the two parts, so a cycle alternates parts and must return to its starting part after an even number of steps. Hence no odd cycle exists.</li>
+  <li><strong>Reverse, per component.</strong> It suffices to colour each component, so assume <em>G</em> is connected.</li>
+  <li><strong>Colour by parity.</strong> Fix a root <em>r</em>; colour each vertex <em>v</em> by the parity of the length of a chosen <em>r</em>,<em>v</em>-path.</li>
+  <li><strong>Well-defined.</strong> If two paths to <em>v</em> had different parities, joining them would give a closed odd walk, which by the lemma contains an odd cycle — excluded by hypothesis.</li>
+  <li><strong>Proper.</strong> Adjacent vertices have path lengths differing by exactly 1, so they receive different colours. ∎</li>
+</ol>
 
 <h3>Theorem: Euler circuit</h3>
 <p>A graph is Eulerian iff it has at most one nontrivial component and all vertices have even degree. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Necessity: each passage through a vertex uses one incoming and one outgoing edge. Sufficiency: induct on edges; an even connected graph has a cycle; remove it; remaining even components have Euler circuits; splice them back. ∎</p>
+<ol>
+  <li><strong>Necessity of balance.</strong> Each time an Euler circuit passes through a vertex it uses one edge entering and one leaving; counting the departure at the start and return at the end still gives an even total. Hence every degree is even.</li>
+  <li><strong>Necessity of one component.</strong> A single circuit visits every edge, so all vertices incident with edges lie in one component; isolated vertices are harmless.</li>
+  <li><strong>Sufficiency, induction base.</strong> For <em>m</em>=0 there is nothing to prove. Assume the statement for fewer than <em>m</em> edges.</li>
+  <li><strong>Find and remove a cycle.</strong> In a nontrivial even connected graph every vertex has degree ≥2, so it contains a cycle <em>C</em>. Let <em>G</em>′=<em>G</em>−<em>E</em>(<em>C</em>); deleting a cycle preserves evenness, so each component of <em>G</em>′ is even.</li>
+  <li><strong>Splice.</strong> By induction each component of <em>G</em>′ has an Euler circuit; traverse <em>C</em>, and whenever the current vertex lies in a component of <em>G</em>′ not yet exhausted, detour around its Euler circuit before continuing. This uses every edge exactly once and closes up. ∎</li>
+</ol>
 
 <h3>Theorem: Euler circuit in digraph</h3>
-<p>A digraph is Eulerian iff d^+(v)=d^-(v) for every v and underlying graph has at most one nontrivial component.</p>
-<p><em>Proof.</em> Necessity is the enter/leave argument. Sufficiency follows as in the undirected case: an Eulerian digraph has a directed cycle; remove it; remaining components have balanced degrees; splice. ∎</p>
+<p>A digraph is Eulerian iff d<sup>+</sup>(<em>v</em>)=d<sup>−</sup>(<em>v</em>) for every <em>v</em> and the underlying graph has at most one nontrivial component.</p>
+<ol>
+  <li><strong>Necessity.</strong> An Euler circuit enters and leaves each vertex the same number of times, so indegree equals outdegree at every vertex; the underlying graph is again connected on non-isolated vertices.</li>
+  <li><strong>Sufficiency, cycle.</strong> From any vertex with an outgoing edge, follow unused outgoing edges; balance ensures that you can never get stuck except back at the starting vertex, producing a directed cycle.</li>
+  <li><strong>Induction.</strong> Remove that directed cycle. Balance d<sup>+</sup>=d<sup>−</sup> is preserved at every vertex, so each remaining component is balanced.</li>
+  <li><strong>Splice.</strong> Apply the induction hypothesis to each component and detour around its Euler circuit when the main circuit reaches it. ∎</li>
+</ol>
 
 <h3>Theorem: every tournament has a king</h3>
 <p>Every tournament has a vertex from which every other vertex is reachable by a path of length at most 2. <span class="notice">Exam likely (Q37).</span></p>
-<p><em>Proof.</em> Take a vertex x of maximum outdegree. For any z not reachable from x in one step, z beats x. If some y is beaten by x and beats z, then x reaches z in two steps. If no such y, then all out-neighbors of x lose to z; counting wins gives contradiction to maximality. ∎</p>
+<ol>
+  <li><strong>Pick a maximum.</strong> Let <em>x</em> have maximum outdegree <em>d</em><sup>+</sup>(<em>x</em>).</li>
+  <li><strong>Consider a vertex <em>z</em> not beaten by <em>x</em>.</strong> Then <em>z</em> beats <em>x</em>. If every out-neighbour <em>y</em> of <em>x</em> were also beaten by <em>z</em>, then d<sup>+</sup>(<em>z</em>) ≥ 1 + d<sup>+</sup>(<em>x</em>) (it beats <em>x</em> and all of <em>x</em>'s out-neighbours), contradicting maximality.</li>
+  <li><strong>Find a two-step route.</strong> Hence some out-neighbour <em>y</em> of <em>x</em> beats <em>z</em>, giving <em>x</em>→<em>y</em>→<em>z</em>.</li>
+  <li><strong>Conclusion.</strong> Every vertex is at distance 1 or 2 from <em>x</em>, so <em>x</em> is a king. ∎</li>
+</ol>
 
-<h3>Theorem: Havel-Hakimi</h3>
-<p>A nonincreasing sequence d_1≥...≥d_n is graphical iff d_2-1,...,d_{d_1+1}-1,d_{d_1+2},...,d_n is graphical (after sorting). <span class="notice">Exam likely (Q42).</span></p>
-<p><em>Proof.</em> If graphical, take a vertex v of degree d_1. Its neighbors can be chosen among the d_1 highest-degree vertices by an exchange argument: if a neighbor has lower degree than a non-neighbor, swapping does not decrease feasibility. Remove v and decrement those degrees to obtain the reduced sequence. Conversely, if the reduced sequence is graphical, add a new vertex adjacent to the first d_1 vertices. ∎</p>
+<h3>Theorem: Havel–Hakimi</h3>
+<p>A nonincreasing sequence <em>d</em><sub>1</sub>≥…≥<em>d</em><sub><em>n</em></sub> is graphical iff the sequence obtained by deleting <em>d</em><sub>1</sub> and subtracting 1 from the next <em>d</em><sub>1</sub> entries (then resorting) is graphical. <span class="notice">Exam likely (Q42). Not in slides - standard result.</span></p>
+<ol>
+  <li><strong>Backward direction.</strong> If the reduced sequence is realised by a graph on vertices <em>v</em><sub>2</sub>,…,<em>v</em><sub><em>n</em></sub>, add a new vertex <em>v</em><sub>1</sub> joined to the first <em>d</em><sub>1</sub> of them. The degrees become <em>d</em><sub>1</sub> and the original sequence, so it is graphical.</li>
+  <li><strong>Forward direction, choose neighbours.</strong> If the sequence is realised, take a vertex <em>v</em> of degree <em>d</em><sub>1</sub>. Among all realisations choose one where the neighbours of <em>v</em> have maximum possible degree sum.</li>
+  <li><strong>Exchange argument.</strong> If a neighbour <em>a</em> has smaller degree than a non-neighbour <em>b</em>, then <em>b</em> has a neighbour <em>c</em> that is not adjacent to <em>a</em>; replacing edges <em>va</em>, <em>bc</em> by <em>vb</em>, <em>ac</em> keeps all degrees unchanged and raises the neighbour sum — contradiction.</li>
+  <li><strong>Reduce.</strong> So <em>v</em> may be assumed adjacent to the <em>d</em><sub>1</sub> highest-degree vertices; deleting <em>v</em> subtracts 1 from exactly those entries, giving the reduced sequence, which is therefore graphical. ∎</li>
+</ol>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1</h3>
-<p>K_{3,3} is bipartite and 3-regular; its degree sequence 3,3,3,3,3,3 is graphical.</p>
+<h3>Example 1 (easy): K<sub>3,3</sub></h3>
+<p>The parts have 3 vertices each and every cross pair is an edge, so the graph is bipartite and each vertex has degree 3. The degree sum is 6·3 = 18 = 2·9, matching its 3·3 = 9 edges; the sequence 3,3,3,3,3,3 is graphical (it is realised by this graph).</p>
 
-<h3>Example 2</h3>
-<p>Sequence 3,3,2,2,1,1 is graphical? Havel-Hakimi reduces to 2,1,1,1,1 then 0,0,0,0, so yes.</p>
+<h3>Example 2 (easy): Havel–Hakimi on 3,3,2,2,1,1</h3>
+<p>Remove 3 and decrement the next three: 2,1,1,1,1. Remove 2 and decrement the next two: 1,1,0,0. Remove 1 and decrement the next: 0,0,0; then all zeros. Hence the sequence is graphical.</p>
 
-<h3>Example 3</h3>
-<p>Sequence 8,7,6,6,5,3,2,2,2,1 is not graphical (Havel-Hakimi fails). Python verified.</p>
+<h3>Example 3 (medium): a non-graphical sequence</h3>
+<p>For 8,7,6,6,5,3,2,2,2,1: remove 8 → 6,5,5,4,2,1,1,1,1; remove 6 → 4,4,3,1,1,1,0,0; remove 4 → 3,2,1,0,0; remove 3 requires three remaining entries but only two exist. The reduction fails, so the sequence is not graphical.</p>
 
-<h3>Example 4</h3>
-<p>A tournament on 3 vertices always has a 3-cycle or transitive ordering; a king exists (the source in transitive case).</p>
+<h3>Example 4 (medium): the 6-cycle</h3>
+<p>C<sub>6</sub> has 6 vertices and 6 edges, degree 2 at every vertex, so it is Eulerian. It is bipartite with parts {1,3,5} and {2,4,6}; every cycle has even length, as the theorem requires.</p>
 
-<h3>Example 5</h3>
-<p>An even graph decomposes into cycles; this is used in Euler proof.</p>
+<h3>Example 5 (medium): kings in a 3-vertex tournament</h3>
+<p>A tournament on 3 vertices is either transitive or a directed 3-cycle. In the transitive case the source beats both others and is a king; in the cycle each vertex reaches the other two within two steps, so every vertex is a king.</p>
+
+<h3>Example 6 (medium): K<sub>2,3</sub> is not Eulerian</h3>
+<p>The two vertices in the first part have degree 3 and the three in the second have degree 2, giving degrees 3,3,2,2,2. Two vertices have odd degree, so by the Euler criterion no Euler circuit exists (although an Euler trail might).</p>
+
+<h3>Example 7 (hard): cut-edges and cycles</h3>
+<p>In a path on 4 vertices every edge is a cut-edge: deleting any one separates the graph, and no edge lies on a cycle. In a 4-cycle no edge is a cut-edge: deleting one leaves a path joining its endpoints. This matches the cut-edge characterization.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Havel-Hakimi graphicality tester.</p>
+<p>Havel–Hakimi graphicality tester: every reduction step is printed, and invalid input is reported rather than silently changed.</p>
 <div class="card">
-  <label>Degree sequence (comma) <input id="hhInput" value="8,7,6,6,5,3,2,2,2,1" oninput="runHH()"></label>
-  <p id="hhResult"></p>
+  <label>Degree sequence (comma) <input id="hhInput" type="text" value="8,7,6,6,5,3,2,2,2,1" size="30" oninput="runHH()"></label>
+  <div id="hhResult" aria-live="polite"></div>
 </div>
 <script>
 function runHH(){
-  var s=document.getElementById('hhInput').value;
-  var seq=s.split(',').map(function(x){return parseInt(x.trim(),10);}).filter(function(x){return !isNaN(x);});
-  seq.sort(function(a,b){return b-a;});
-  var steps=[];
-  seq=seq.filter(function(x){return x>=0;});
-  if(seq.every(function(x){return x===0;})){ steps.push('all zeros'); }
-  else while(seq.some(function(x){return x>0;})){
-    seq=seq.filter(function(x){return x>0;});
-    if(seq.length===0){steps.push('all zeros');break;}
-    var d=seq.shift();
-    if(d>seq.length){steps.push('FAIL: d='+d+' > remaining '+seq.length);break;}
-    for(var i=0;i<d;i++) seq[i]-=1;
-    seq.sort(function(a,b){return b-a;});
-    steps.push('d='+d+' -> '+seq.join(','));
+  var out=document.getElementById('hhResult');
+  out.textContent='';
+  function line(t){ var p=document.createElement('p'); p.textContent=t; out.appendChild(p); }
+  var raw=String(document.getElementById('hhInput').value).trim();
+  if(!/^\d+(\s*,\s*\d+)*$/.test(raw)){ line('Input error: enter nonnegative whole numbers separated by commas.'); return; }
+  var seq=raw.split(',').map(function(x){ return parseInt(x.trim(),10); });
+  if(seq.length>20||seq.some(function(x){ return x>19; })){ line('Input error: use at most 20 entries, each at most 19.'); return; }
+  seq.sort(function(a,b){ return b-a; });
+  var total=seq.reduce(function(s,x){ return s+x; },0);
+  line('Sorted sequence: '+seq.join(',')+'; sum = '+total+'.');
+  if(total%2===1){ line('Odd degree sum ⇒ not graphical by handshaking.'); line('Graphical? No'); return; }
+  var steps=[], failed=false, i;
+  while(seq.some(function(x){ return x>0; })){
+    var d=seq.shift(), j, pos=0;
+    for(j=0;j<seq.length;j++) if(seq[j]>0) pos++;
+    if(d>pos){ steps.push('Remove '+d+' but only '+pos+' positive entries remain ⇒ FAIL.'); failed=true; break; }
+    for(j=0;j<d;j++) seq[j]--;
+    seq.sort(function(a,b){ return b-a; });
+    if(seq[seq.length-1]<0){ steps.push('A negative degree appears ⇒ FAIL.'); failed=true; break; }
+    steps.push('Remove '+d+' ⇒ '+seq.join(','));
   }
-  var last=steps[steps.length-1];
-  var ok = last.indexOf('FAIL')===-1;
-  document.getElementById('hhResult').innerHTML='Steps: '+steps.join(' ; ')+'<br>Graphical? '+(ok?'Yes':'No');
+  for(i=0;i<steps.length;i++) line(steps[i]);
+  if(!failed) line('All entries reduced to zero.');
+  line('Graphical? '+(failed?'No':'Yes'));
 }
 runHH();
 </script>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>The tournament below has four vertices. Vertex <em>a</em> has maximum outdegree 2; it loses to <em>d</em> but reaches <em>d</em> in two steps through either <em>b</em> or <em>c</em>. That is the king argument in picture form.</p>
+<svg width="280" height="160" viewBox="0 0 280 160" role="img" aria-label="Tournament on four vertices with a as a king reaching d in two steps">
+  <defs>
+    <marker id="hhArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/>
+    </marker>
+  </defs>
+  <g stroke="var(--accent)" stroke-width="1.8" marker-end="url(#hhArrow)">
+    <line x1="48" y1="66" x2="122" y2="34"/>
+    <line x1="48" y1="74" x2="122" y2="106"/>
+    <line x1="212" y1="68" x2="50" y2="72"/>
+    <line x1="130" y1="40" x2="130" y2="100"/>
+    <line x1="138" y1="34" x2="212" y2="66"/>
+    <line x1="138" y1="106" x2="212" y2="74"/>
+  </g>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2">
+    <circle cx="40" cy="70" r="12"/>
+    <circle cx="130" cy="30" r="10"/>
+    <circle cx="130" cy="110" r="10"/>
+    <circle cx="220" cy="70" r="10"/>
+  </g>
+  <g font-size="12" text-anchor="middle" fill="var(--text)">
+    <text x="40" y="74">a</text><text x="130" y="34">b</text><text x="130" y="114">c</text><text x="220" y="74">d</text>
+  </g>
+  <text x="140" y="145" text-anchor="middle" font-size="11" fill="var(--muted)">a is a king: a→b→d and a→c→d</text>
+</svg>
+
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Forgetting to sort the reduced degree sequence in Havel-Hakimi.</li>
-  <li>Assuming even degree sum implies graphical (Havel-Hakimi needed).</li>
-  <li>Confusing Euler circuit (closed) with Euler trail.</li>
-  <li>Forgetting connectivity condition for Euler circuits.</li>
-  <li>Using "no odd cycles" but forgetting to check all components.</li>
-</ul>
+<ol>
+  <li><strong>Forgetting to re-sort in Havel–Hakimi.</strong> Wrong: from 4,4,3,1,1,1 remove 4 and continue with 3,2,0,0,1 in that order. Right: sort to 3,2,1,0,0 before the next reduction.</li>
+  <li><strong>Assuming an even sum is enough.</strong> Wrong: 3,3,3,1 is graphical because its sum is 10, an even number. Right: Havel–Hakimi reduces 3,3,3,1 → 2,2,0 → 1,−1 and fails; even sum is only necessary.</li>
+  <li><strong>Confusing Euler circuit with Euler trail.</strong> Wrong: P<sub>4</sub>, with degrees 1,2,2,1, has an Euler circuit. Right: it has exactly two odd-degree vertices, so it has an Euler trail from one endpoint to the other, not a closed circuit.</li>
+  <li><strong>Omitting the connectivity condition.</strong> Wrong: two disjoint triangles are Eulerian because all six vertices have degree 2. Right: there are two nontrivial components, so no single closed trail covers all edges.</li>
+  <li><strong>Checking only one component for bipartiteness.</strong> Wrong: the 4-cycle component of C<sub>3</sub>∪C<sub>4</sub> is bipartite, so the graph is bipartite. Right: the triangle component is an odd cycle, so the whole graph is not bipartite.</li>
+  <li><strong>Using balance alone for digraphs.</strong> Wrong: two disjoint directed cycles are Eulerian because d<sup>+</sup>=d<sup>−</sup> at every vertex. Right: the underlying graph must also have at most one nontrivial component.</li>
+  <li><strong>Treating a king as a universal winner.</strong> Wrong: a king must beat every other vertex in one step. Right: reaching them in at most two steps is enough; in a directed 3-cycle every vertex is a king although each loses to one vertex.</li>
+</ol>
 
 <div class="notice"><strong>Slide errors / not in slides:</strong> Havel-Hakimi (Q42,Q43) is not in the slides; marked "Not in slides - standard result".</div>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
-<summary>Q34. Prove G is bipartite iff it contains no odd cycles.</summary>
-<p>Solution: proof above.</p>
+<summary>Q34. Prove that G is bipartite iff it contains no odd cycles.</summary>
+<p><strong>Step 1 (forward).</strong> In a bipartition X∪Y every edge joins X to Y, so a cycle alternates parts and must have even length.</p>
+<p><strong>Step 2 (reverse, setup).</strong> Work component by component and assume G is connected. Fix a root <em>r</em> and colour each vertex by the parity of the length of some <em>r</em>,<em>v</em>-path.</p>
+<p><strong>Step 3 (well-defined).</strong> Two paths to <em>v</em> of different parity would form a closed odd walk; by the lemma that walk contains an odd cycle, contrary to hypothesis. So the colour is independent of the path chosen.</p>
+<p><strong>Step 4 (proper).</strong> Adjacent vertices have path lengths differing by exactly one, hence different colours. The colour classes are independent sets, so G is bipartite.</p>
 </details>
 
 <details>
-<summary>Q37. Show every tournament has a king.</summary>
-<p>Solution: proof above.</p>
+<summary>Q37. Show that every tournament has a king.</summary>
+<p><strong>Step 1.</strong> Choose a vertex <em>x</em> of maximum outdegree.</p>
+<p><strong>Step 2.</strong> If <em>z</em> is not beaten by <em>x</em>, then <em>z</em> beats <em>x</em>. Were it true that every out-neighbour <em>y</em> of <em>x</em> loses to <em>z</em>, then d<sup>+</sup>(<em>z</em>) ≥ 1+d<sup>+</sup>(<em>x</em>) (counting <em>x</em> and all of <em>x</em>'s out-neighbours), contradicting maximality.</p>
+<p><strong>Step 3.</strong> Therefore some out-neighbour <em>y</em> of <em>x</em> beats <em>z</em>, so <em>x</em>→<em>y</em>→<em>z</em> is a path of length 2. Hence every vertex is reachable from <em>x</em> in at most two steps.</p>
 </details>
 
 <details>
-<summary>Q42. State and prove Havel-Hakimi theorem.</summary>
-<p>Solution: theorem and proof above.</p>
+<summary>Q42. State and prove the Havel–Hakimi theorem.</summary>
+<p><strong>Statement.</strong> A nonincreasing sequence <em>d</em><sub>1</sub>≥…≥<em>d</em><sub><em>n</em></sub> is graphical iff the sequence obtained by deleting <em>d</em><sub>1</sub> and subtracting 1 from the next <em>d</em><sub>1</sub> entries, then resorting, is graphical.</p>
+<p><strong>Step 1 (backward).</strong> Given a realisation of the reduced sequence on <em>v</em><sub>2</sub>,…,<em>v</em><sub><em>n</em></sub>, add a new vertex joined to the first <em>d</em><sub>1</sub> of them.</p>
+<p><strong>Step 2 (forward, choice).</strong> Among realisations of the original sequence, choose one in which the neighbours of a degree-<em>d</em><sub>1</sub> vertex <em>v</em> have maximum degree sum.</p>
+<p><strong>Step 3 (exchange).</strong> If a neighbour <em>a</em> had smaller degree than a non-neighbour <em>b</em>, then <em>b</em> has a neighbour <em>c</em> not adjacent to <em>a</em>; replacing <em>va</em>, <em>bc</em> by <em>vb</em>, <em>ac</em> preserves all degrees and increases the neighbour sum — contradiction.</p>
+<p><strong>Step 4.</strong> Hence <em>v</em> may be taken adjacent to the <em>d</em><sub>1</sub> highest-degree vertices; deleting <em>v</em> gives exactly the reduced sequence. ∎</p>
 </details>
 
 <details>
 <summary>Q43. Is the sequence 8,7,6,6,5,3,2,2,2,1 graphical?</summary>
-<p>Solution: No. Havel-Hakimi reduction fails. Python verification: not graphical.</p>
+<p><strong>Step 1.</strong> The sum is 8+7+6+6+5+3+2+2+2+1 = 42, which is even, so the handshaking necessary condition passes.</p>
+<p><strong>Step 2.</strong> Apply Havel–Hakimi: remove 8 → 6,5,5,4,2,1,1,1,1; remove 6 → 4,4,3,1,1,1,0,0; remove 4 → 3,2,1,0,0.</p>
+<p><strong>Step 3.</strong> The next largest entry is 3 but only two entries remain, so the reduction fails.</p>
+<p><strong>Conclusion.</strong> The sequence is not graphical.</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. Is 3,3,2,2,1,1 graphical?</summary><p>Yes.</p></details>
-<details><summary>2. Euler circuit condition?</summary><p>Connected (one nontrivial component) + all degrees even.</p></details>
-<details><summary>3. Digraph Euler condition?</summary><p>In-degree equals out-degree for every vertex.</p></details>
-<details><summary>4. Is K_{2,3} Eulerian?</summary><p>No; degrees are 3 and 2.</p></details>
-<details><summary>5. Tournament on 4 vertices always has a king?</summary><p>Yes.</p></details>
+<details>
+<summary>1. Is 3,3,2,2,1,1 graphical?</summary>
+<p>Yes. Havel–Hakimi: remove 3 → 2,1,1,1,1; remove 2 → 1,1,0,0; remove 1 → 0,0,0, then all zeros.</p>
+</details>
+<details>
+<summary>2. State the Euler circuit condition.</summary>
+<p>A graph is Eulerian iff it has at most one nontrivial component and every vertex has even degree. Necessity: each passage through a vertex pairs an entering edge with a leaving edge. Sufficiency: repeatedly remove a cycle from an even connected graph and splice the circuits back.</p>
+</details>
+<details>
+<summary>3. State the digraph Euler condition.</summary>
+<p>A digraph is Eulerian iff d<sup>+</sup>(<em>v</em>)=d<sup>−</sup>(<em>v</em>) at every vertex and the underlying graph has at most one nontrivial component. Balance is necessary by the enter/leave count and sufficient by removing a directed cycle and splicing.</p>
+</details>
+<details>
+<summary>4. Is K<sub>2,3</sub> Eulerian?</summary>
+<p>No. The two vertices in the first part have degree 3 and the three in the second have degree 2, so two vertices have odd degree and the all-even condition fails.</p>
+</details>
+<details>
+<summary>5. Does every tournament on 4 vertices have a king?</summary>
+<p>Yes. The outdegrees sum to <em>C</em>(4,2)=6, so some vertex has d<sup>+</sup>≥⌈6/4⌉=2. Choosing a vertex <em>x</em> of maximum outdegree, the king argument shows every non-out-neighbour <em>z</em> is reached via some out-neighbour of <em>x</em>.</p>
+</details>
+<details>
+<summary>6. Is C<sub>6</sub> bipartite and Eulerian?</summary>
+<p>Yes to both. Its vertices split into alternating parts {1,3,5} and {2,4,6}, and every vertex has degree 2, so the Euler condition holds.</p>
+</details>
+<details>
+<summary>7. Is 3,3,3,1 graphical?</summary>
+<p>No. The sum is 10, even, but Havel–Hakimi gives 3,3,3,1 → 2,2,0 → 1,−1, which is impossible. An even sum alone is not sufficient.</p>
+</details>
+<details>
+<summary>8. Count tournaments on 4 vertices and simple digraphs on 2 vertices.</summary>
+<p>A tournament orients each of <em>C</em>(4,2)=6 pairs independently, so there are 2<sup>6</sup>=64. A simple digraph on 2 vertices may use each of the 2<sup>2</sup>=4 ordered pairs independently, so there are 2<sup>4</sup>=16.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>Bipartite iff no odd cycles.</p>
-  <p>Euler circuit: connected + all degrees even.</p>
-  <p>Digraph Euler: d^+=d^- and connected underlying.</p>
-  <p>Tournament always has a king.</p>
-  <p>Havel-Hakimi: reduce by largest degree.</p>
-  <p>Graphical ⇒ even degree sum (necessary, not sufficient).</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong>Bipartite:</strong> vertices split into two independent sets; equivalently a proper 2-colouring exists.</li>
+    <li><strong>Euler circuit / trail:</strong> closed / open trail using every edge exactly once.</li>
+    <li><strong>Digraph balance:</strong> d<sup>+</sup>(<em>v</em>) = d<sup>−</sup>(<em>v</em>) at each vertex.</li>
+    <li><strong>Tournament:</strong> an orientation of a complete graph; its score sequence lists outdegrees.</li>
+    <li><strong>King:</strong> a vertex reaching every other vertex by a path of length at most 2.</li>
+    <li><strong>Graphical sequence:</strong> the degree sequence of some graph.</li>
+    <li><strong>Cut-edge:</strong> an edge whose deletion disconnects; equivalently one in no cycle.</li>
+  </ul>
+
+  <h3>Theorems</h3>
+  <ul>
+    <li>Graph bipartite iff it has no odd cycle; a closed odd walk contains an odd cycle.</li>
+    <li>Euler circuit iff at most one nontrivial component and all degrees even.</li>
+    <li>Digraph Euler iff d<sup>+</sup>=d<sup>−</sup> everywhere and the underlying graph has at most one nontrivial component.</li>
+    <li>Every tournament has a king: take a vertex of maximum outdegree.</li>
+    <li>Havel–Hakimi: delete the largest degree and decrement that many following entries, then resort; repeat.</li>
+    <li>Handshaking: Σ deg = 2|E|, so a graphical sequence has even sum — necessary but not sufficient.</li>
+    <li>A simple digraph on <em>n</em> vertices has 2<sup><em>n</em><sup>2</sup></sup> forms; a tournament has 2<sup>C(<em>n</em>,2)</sup>.</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>K<sub>3,3</sub> degree sum / edges</td><td>18 / 9</td><td>3-regular bipartite example</td></tr>
+      <tr><td>3,3,2,2,1,1</td><td>graphical</td><td>Havel–Hakimi example</td></tr>
+      <tr><td>8,7,6,6,5,3,2,2,2,1</td><td>not graphical</td><td>Q43</td></tr>
+      <tr><td>K<sub>2,3</sub> degrees</td><td>3,3,2,2,2</td><td>not Eulerian</td></tr>
+      <tr><td>2<sup><em>C</em>(4,2)</sup>, 2<sup>2<sup>2</sup></sup></td><td>64, 16</td><td>tournaments on 4, digraphs on 2</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>For bipartiteness, give an explicit 2-colouring or an explicit odd cycle.</li>
+    <li>For Euler circuits, check both degree parity and the component condition.</li>
+    <li>For digraphs, check in-degree = out-degree and underlying connectivity.</li>
+    <li>For kings, quote the maximum-outdegree argument rather than guessing a vertex.</li>
+    <li>Always re-sort after a Havel–Hakimi reduction, and check the even-sum condition first.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

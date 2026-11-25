@@ -6,5 +6,3 @@
   var p = document.createElement("p"); p.textContent = "Open a topic page from the sidebar; this panel keeps the revision page lightweight."; s.appendChild(p);
   root.appendChild(s);
 })();
-EOF
-node --check vis-16.js && echo ok

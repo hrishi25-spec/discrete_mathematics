@@ -11,5 +11,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> handshake sum must be even. <strong>Try this:</strong> change one degree.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-11.js && echo ok

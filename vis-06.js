@@ -13,5 +13,3 @@
   var c=document.createElement("p"); c.className="vis-caption"; c.innerHTML="<strong>What to notice:</strong> coefficient extraction reads the count. <strong>Try this:</strong> set r=0.";
   s.appendChild(c);
 })();
-EOF
-node --check vis-06.js && echo ok

@@ -13,5 +13,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> saturation requires maximum matching size L. <strong>Try this:</strong> remove an edge.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-14.js && echo ok

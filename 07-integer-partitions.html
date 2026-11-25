@@ -6,6 +6,13 @@
   <title>07 Integer Partitions</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,7 +25,7 @@
 <p>Basic counting and stars and bars from <a href="02-basic-counting.html">page 02</a>; generating functions from <a href="06-generating-functions.html">page 06</a>.</p>
 
 <h2>3. Intuition</h2>
-<p>A partition of 7 is a way to split 7 into positive parts ignoring order, e.g. 4+2+1. Draw it as rows of boxes: the Ferrers diagram. Reflecting across the diagonal gives the conjugate partition 3+2+1+1. The picture below shows 4+2+1 and its conjugate.</p>
+<p>A partition of 7 is a way to split 7 into positive parts ignoring order, e.g. 4+2+1. Draw it as rows of boxes: the Ferrers diagram. Reflecting across the diagonal gives the conjugate partition 3+2+1+1. The first picture shows 4+2+1 and its conjugate; the second shows a diagram that is its own mirror image, which is what "self-conjugate" means.</p>
 <svg width="220" height="120" viewBox="0 0 220 120" aria-label="Ferrers diagram and conjugate">
   <rect x="20" y="20" width="15" height="15" fill="#1f6feb"/>
   <rect x="35" y="20" width="15" height="15" fill="#1f6feb"/>
@@ -36,6 +43,20 @@
   <rect x="130" y="50" width="15" height="15" fill="#d73a49"/>
   <rect x="130" y="65" width="15" height="15" fill="#d73a49"/>
 </svg>
+<svg width="200" height="110" viewBox="0 0 200 110" role="img" aria-label="Ferrers diagram of 3+2+1 with a diagonal: the boxes mirror across it, so the partition is self-conjugate">
+  <text x="100" y="14" text-anchor="middle" font-size="12" fill="var(--muted)">3+2+1 mirrors across the diagonal</text>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <rect x="40" y="26" width="18" height="18"/>
+    <rect x="58" y="26" width="18" height="18"/>
+    <rect x="76" y="26" width="18" height="18"/>
+    <rect x="40" y="44" width="18" height="18"/>
+    <rect x="58" y="44" width="18" height="18"/>
+    <rect x="40" y="62" width="18" height="18"/>
+  </g>
+  <line x1="40" y1="26" x2="94" y2="80" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="140" y="56" font-size="12" fill="var(--text)">conjugate</text>
+  <text x="140" y="74" font-size="12" fill="var(--text)">= 3+2+1</text>
+</svg>
 
 <h2>4. Definitions</h2>
 <div class="card">
@@ -49,124 +70,271 @@
 </div>
 
 <h2>5. Theorems and complete proofs</h2>
+<p>Each proof below is written as numbered steps with the inverse construction or the coefficient argument made explicit.</p>
 
 <h3>Theorem: recurrence for P(n,k)</h3>
-<p>P(n,k)=P(n-1,k-1)+P(n-k,k). <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> A partition of n into k parts either contains a 1 (remove it to get a partition of n-1 into k-1 parts) or has all parts ≥2 (subtract 1 from each part to get a partition of n-k into k parts). ∎</p>
+<p><em>P</em>(<em>n</em>,<em>k</em>) = <em>P</em>(<em>n</em>−1,<em>k</em>−1) + <em>P</em>(<em>n</em>−<em>k</em>,<em>k</em>). <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Split by the presence of a part 1.</strong> Every partition of <em>n</em> into <em>k</em> parts either has at least one part equal to 1, or all its parts are ≥2. The cases are disjoint and exhaustive.</li>
+  <li><strong>Case A, remove a 1.</strong> Deleting one 1 leaves a partition of <em>n</em>−1 into <em>k</em>−1 parts; conversely, adding a 1 to a partition of <em>n</em>−1 into <em>k</em>−1 parts gives a valid case-A partition. This is a bijection, so case A has <em>P</em>(<em>n</em>−1,<em>k</em>−1) members.</li>
+  <li><strong>Case B, subtract one from every part.</strong> If all <em>k</em> parts are ≥2, subtracting 1 from each leaves <em>k</em> positive parts summing to <em>n</em>−<em>k</em>; adding 1 back to each part inverts the map. Case B therefore has <em>P</em>(<em>n</em>−<em>k</em>,<em>k</em>) members.</li>
+  <li><strong>Add.</strong> The recurrence follows. Boundary values: <em>P</em>(<em>n</em>,<em>k</em>)=0 for <em>k</em>&gt;<em>n</em> or <em>k</em>≤0, and <em>P</em>(<em>n</em>,1)=<em>P</em>(<em>n</em>,<em>n</em>)=1. ∎</li>
+</ol>
 
 <h3>Theorem: conjugation</h3>
-<p>The number of partitions of n into exactly k parts equals the number of partitions of n whose largest part is k.</p>
-<p><em>Proof.</em> Conjugating a partition swaps rows and columns, so number of parts becomes largest part. ∎</p>
+<p>The number of partitions of <em>n</em> into exactly <em>k</em> parts equals the number of partitions of <em>n</em> whose largest part is <em>k</em>.</p>
+<ol>
+  <li><strong>Draw the Ferrers diagram.</strong> A partition <em>a</em><sub>1</sub>≥…≥<em>a</em><sub><em>k</em></sub>≥1 is represented by <em>k</em> rows of boxes of lengths <em>a</em><sub><em>i</em></sub>.</li>
+  <li><strong>Transpose.</strong> Read the columns as rows. Because the original rows decrease, the column heights also decrease, so the transposed picture is again a Ferrers diagram of a partition of the same <em>n</em>.</li>
+  <li><strong>Track the two statistics.</strong> The original number of parts <em>k</em> is the number of rows, which becomes the number of boxes in the first row of the transpose, i.e. its largest part.</li>
+  <li><strong>Involution.</strong> Transposing twice returns the original diagram, so the map is a bijection. ∎</li>
+</ol>
 
-<h3>Theorem: P(n,k)=p_k(n)-p_{k-1}(n)</h3>
-<p>Partitions into exactly k parts equals partitions with parts ≤k minus those with parts ≤k-1.</p>
-<p><em>Proof.</em> Every partition with parts ≤k has some number j≤k of parts; conjugating, largest part ≤k. Subtracting j≤k-1 leaves exactly j=k. ∎</p>
+<h3>Theorem: P(n,k) = p<sub>k</sub>(n) − p<sub>k−1</sub>(n)</h3>
+<ol>
+  <li><strong>Interpret <em>p</em><sub><em>k</em></sub>(<em>n</em>).</strong> It counts partitions of <em>n</em> with all parts ≤<em>k</em>.</li>
+  <li><strong>Convert to a bound on the number of parts.</strong> By conjugation, a partition whose largest part is ≤<em>k</em> corresponds to one with at most <em>k</em> parts. Hence <em>p</em><sub><em>k</em></sub>(<em>n</em>) counts partitions of <em>n</em> into at most <em>k</em> parts.</li>
+  <li><strong>Split by the exact number of parts.</strong> Those with at most <em>k</em>−1 parts are counted by <em>p</em><sub><em>k</em>−1</sub>(<em>n</em>); the remainder have exactly <em>k</em> parts, counted by <em>P</em>(<em>n</em>,<em>k</em>).</li>
+  <li><strong>Subtract.</strong> <em>P</em>(<em>n</em>,<em>k</em>) = <em>p</em><sub><em>k</em></sub>(<em>n</em>)−<em>p</em><sub><em>k</em>−1</sub>(<em>n</em>). ∎</li>
+</ol>
 
 <h3>Theorem: odd equals distinct</h3>
-<p>p_o(n)=p_d(n) for all n. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Generating functions: ∏_{m odd} 1/(1-x^m) = ∏_{m≥1}(1+x^m) because ∏(1-x^{2m})/(1-x^m)=∏(1+x^m). The coefficients are equal. ∎</p>
-<p>An inclusion-exclusion proof is also possible using Euler's pentagonal recurrence; omitted here for brevity.</p>
+<p><em>p</em><sub><em>o</em></sub>(<em>n</em>) = <em>p</em><sub><em>d</em></sub>(<em>n</em>) for all <em>n</em>. <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Generating function for odd parts.</strong> Each odd <em>m</em> may be used any number of times, contributing 1/(1−<em>x</em><sup><em>m</em></sup>), so <em>G</em><sub><em>o</em></sub> = ∏<sub><em>m</em> odd</sub> 1/(1−<em>x</em><sup><em>m</em></sup>).</li>
+  <li><strong>Generating function for distinct parts.</strong> Each <em>m</em> is used 0 or 1 times, contributing (1+<em>x</em><sup><em>m</em></sup>), so <em>G</em><sub><em>d</em></sub> = ∏<sub><em>m</em>≥1</sub>(1+<em>x</em><sup><em>m</em></sup>).</li>
+  <li><strong>Rewrite the distinct-product.</strong> 1+<em>x</em><sup><em>m</em></sup> = (1−<em>x</em><sup>2<em>m</em></sup>)/(1−<em>x</em><sup><em>m</em></sup>), hence <em>G</em><sub><em>d</em></sub> = ∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup>2<em>m</em></sup>) / ∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup><em>m</em></sup>).</li>
+  <li><strong>Cancel the even factors.</strong> ∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup><em>m</em></sup>) = ∏<sub><em>m</em> odd</sub>(1−<em>x</em><sup><em>m</em></sup>) · ∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup>2<em>m</em></sup>), so the quotient is exactly <em>G</em><sub><em>o</em></sub>.</li>
+  <li><strong>Equal series, equal coefficients.</strong> Therefore <em>p</em><sub><em>o</em></sub>(<em>n</em>)=<em>p</em><sub><em>d</em></sub>(<em>n</em>). A second proof uses the binary expansion of the multiplicity of each odd part.</li>
+</ol>
 
 <h3>Theorem: self-conjugate partitions</h3>
-<p>The number of self-conjugate partitions of n equals the number of partitions of n into distinct odd parts. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Fold the Ferrers diagram along the diagonal; each diagonal hook has odd length, and distinctness follows from the nesting of hooks. ∎</p>
+<p>The number of self-conjugate partitions of <em>n</em> equals the number of partitions of <em>n</em> into distinct odd parts. <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Decompose a symmetric diagram into hooks.</strong> For each diagonal box <em>i</em>, take the diagonal box together with all boxes to its right in row <em>i</em> and all boxes below it in column <em>i</em>.</li>
+  <li><strong>Each hook has odd length.</strong> The row arm and the column arm have the same length because the diagram is symmetric, so the hook length is 2<em>a</em>+1, an odd number.</li>
+  <li><strong>The hook lengths are distinct.</strong> The hooks are nested, so the arm lengths strictly decrease and the odd hook lengths are distinct. Their sizes add to <em>n</em>.</li>
+  <li><strong>Invert the construction.</strong> Given distinct odd parts <em>h</em><sub>1</sub>&gt;<em>h</em><sub>2</sub>&gt;…, set arm <em>a</em><sub><em>i</em></sub>=(<em>h</em><sub><em>i</em></sub>−1)/2 and build nested hooks; this returns a self-conjugate diagram of <em>n</em>.</li>
+  <li><strong>Bijection.</strong> The two constructions undo each other, so the counts are equal. ∎</li>
+</ol>
+
+<h3>Theorem: generating functions for partition functions</h3>
+<p>∏<sub><em>m</em>≥1</sub> 1/(1−<em>x</em><sup><em>m</em></sup>) = Σ<sub><em>n</em>≥0</sub> <em>p</em>(<em>n</em>)<em>x</em><sup><em>n</em></sup>, with variants for <em>p</em><sub><em>k</em></sub>, <em>p</em><sub><em>o</em></sub> and <em>p</em><sub><em>d</em></sub>.</p>
+<ol>
+  <li><strong>One part size at a time.</strong> Using the part <em>m</em> zero, one, two, … times contributes 1+<em>x</em><sup><em>m</em></sup>+<em>x</em><sup>2<em>m</em></sup>+… = 1/(1−<em>x</em><sup><em>m</em></sup>).</li>
+  <li><strong>Multiply the independent choices.</strong> The full product ∏<sub><em>m</em>≥1</sub>1/(1−<em>x</em><sup><em>m</em></sup>) has coefficient of <em>x</em><sup><em>n</em></sup> equal to the number of multiplicity choices with Σ <em>m</em>·<em>j</em><sub><em>m</em></sub> = <em>n</em>, which is exactly a partition of <em>n</em>.</li>
+  <li><strong>Restrict the part sizes.</strong> Keeping only <em>m</em>≤<em>k</em> gives ∏<sub><em>m</em>=1</sub><sup><em>k</em></sup>1/(1−<em>x</em><sup><em>m</em></sup>) with coefficients <em>p</em><sub><em>k</em></sub>(<em>n</em>); keeping only odd <em>m</em> gives the generating function for <em>p</em><sub><em>o</em></sub>.</li>
+  <li><strong>Allow each part once.</strong> Replacing the factor by (1+<em>x</em><sup><em>m</em></sup>) gives ∏(1+<em>x</em><sup><em>m</em></sup>) with coefficients <em>p</em><sub><em>d</em></sub>(<em>n</em>). ∎</li>
+</ol>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1</h3>
-<p>P(7,4)=P(6,3)+P(3,4)=3+0=3. Partitions: 4+1+1+1, 3+2+1+1, 2+2+2+1.</p>
+<h3>Example 1 (easy): list the partitions of 5</h3>
+<p>Order is ignored, so write parts in nonincreasing order: 5; 4+1; 3+2; 3+1+1; 2+2+1; 2+1+1+1; 1+1+1+1+1. There are 7, so <em>p</em>(5)=7.</p>
 
-<h3>Example 2</h3>
-<p>P(7,5)=P(6,4)+P(2,5)=2+0=2. Partitions: 3+1+1+1+1, 2+2+1+1+1.</p>
+<h3>Example 2 (easy): P(7,4) by the recurrence</h3>
+<p><em>P</em>(7,4) = <em>P</em>(6,3) + <em>P</em>(3,4). Now <em>P</em>(3,4)=0 (3 cannot be split into 4 positive parts), and <em>P</em>(6,3) = <em>P</em>(5,2) + <em>P</em>(3,3). We have <em>P</em>(5,2) = <em>P</em>(4,1)+<em>P</em>(3,2) = 1 + (<em>P</em>(2,1)+<em>P</em>(1,2)) = 1+(1+0) = 2, and <em>P</em>(3,3)=1. Hence <em>P</em>(6,3)=3 and <em>P</em>(7,4)=3: the partitions 4+1+1+1, 3+2+1+1, 2+2+2+1.</p>
 
-<h3>Example 3</h3>
-<p>Number of partitions of 11 into at most 5 parts is 37 (sum P(11,j), j=1..5). Python verified.</p>
+<h3>Example 3 (easy): P(7,5) by the recurrence</h3>
+<p><em>P</em>(7,5) = <em>P</em>(6,4) + <em>P</em>(2,5) = <em>P</em>(6,4) + 0. Then <em>P</em>(6,4) = <em>P</em>(5,3) + <em>P</em>(2,4) = <em>P</em>(5,3) + 0, and <em>P</em>(5,3) = <em>P</em>(4,2) + <em>P</em>(2,3) = <em>P</em>(4,2) + 0. Finally <em>P</em>(4,2)=<em>P</em>(3,1)+<em>P</em>(2,2)=1+1=2. So <em>P</em>(7,5)=2: 3+1+1+1+1 and 2+2+1+1+1.</p>
 
-<h3>Example 4</h3>
-<p>Partitions of 5: 5, 4+1, 3+2, 3+1+1, 2+2+1, 2+1+1+1, 1+1+1+1+1, so p(5)=7.</p>
+<h3>Example 4 (medium): 11 unlabelled balls into 5 unlabelled cells</h3>
+<p>Cells and balls are both indistinguishable and no cell may be empty, so we count partitions of 11 into at most 5 parts (Q12). Sum <em>P</em>(11,<em>j</em>) for <em>j</em>=1,…,5: 1 + 5 + 10 + 11 + 10 = 37. A brute-force enumeration of partitions of 11 with at most 5 parts also gives 37.</p>
 
-<h3>Example 5</h3>
-<p>Self-conjugate partitions of 5: (3,1,1), so count 1. Distinct odd partitions of 5: 5, so count 1.</p>
+<h3>Example 5 (medium): P(11,5)</h3>
+<p>Using the recurrence repeatedly, or reading from the partition table, <em>P</em>(11,5)=10. Check against Example 4: the 10 partitions of 11 into exactly 5 parts are included in the 37 partitions into at most 5 parts, and direct enumeration confirms 10.</p>
+
+<h3>Example 6 (medium): self-conjugate partitions of 5</h3>
+<p>The symmetric Ferrers diagrams of 5 are just (3,1,1), whose conjugate is again (3,1,1), so the count is 1. The corresponding hook lengths are 5 and 1 — distinct odd parts of 5: the partition 5. Distinct odd partitions of 5 are just 5, so the count is also 1. ✔</p>
+
+<h3>Example 7 (hard): odd equals distinct for n=8</h3>
+<p>Distinct partitions of 8: 8; 7+1; 6+2; 5+3; 5+2+1; 4+3+1 — six in all. Odd partitions of 8: 7+1; 5+3; 5+1+1+1; 3+3+1+1; 3+1+1+1+1+1; 1+1+1+1+1+1+1+1 — also six. Hence <em>p</em><sub><em>d</em></sub>(8)=<em>p</em><sub><em>o</em></sub>(8)=6, as predicted by the generating-function identity.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Enter a partition (comma-separated parts) to draw its Ferrers diagram and conjugate.</p>
+<p>Type a partition as comma-separated parts. The panel checks the input, sorts the parts, counts the columns one by one to build the conjugate, and draws the Ferrers diagram.</p>
 <div class="card">
-  <label>Partition <input id="partInput" value="4,2,1" oninput="drawFerrers()"></label>
-  <div id="ferrersOut"></div>
+  <label>Partition <input id="partInput" type="text" value="4,2,1" oninput="drawFerrers()"></label>
+  <div id="ferrersOut" aria-live="polite"></div>
 </div>
 <script>
 function drawFerrers(){
-  var s=document.getElementById('partInput').value;
-  var parts=s.split(',').map(function(x){return parseInt(x.trim(),10);}).filter(function(x){return x>0;});
-  parts.sort(function(a,b){return b-a;});
-  // conjugate
-  var max=parts.length?parts[0]:0;
-  var conj=[];
-  for(var c=1;c<=max;c++){
-    var cnt=0;
-    for(var i=0;i<parts.length;i++) if(parts[i]>=c) cnt++;
-    if(cnt>0) conj.push(cnt);
+  var out=document.getElementById('ferrersOut');
+  out.textContent='';
+  var raw=String(document.getElementById('partInput').value).trim();
+  if(!/^\d+(\s*,\s*\d+)*$/.test(raw)){
+    out.textContent='Input error: enter positive whole numbers separated by commas, e.g. 4,2,1.';
+    return;
   }
-  var html='<p>Partition: '+parts.join('+')+' ; Conjugate: '+conj.join('+')+'</p>';
-  html+='<svg width="260" height="120" viewBox="0 0 260 120">';
-  var x0=10,y0=10;
-  for(var i=0;i<parts.length;i++){
-    for(var j=0;j<parts[i];j++){
-      html+='<rect x="'+(x0+j*16)+'" y="'+(y0+i*16)+'" width="14" height="14" fill="#1f6feb"/>';
+  var parts=raw.split(',').map(function(x){ return parseInt(x.trim(),10); });
+  if(parts.some(function(x){ return isNaN(x)||x<1||x>15; }) || parts.length>8){
+    out.textContent='Input error: each part must be 1..15 and at most 8 parts are allowed.';
+    return;
+  }
+  parts.sort(function(a,b){ return b-a; });
+  var max=parts[0], conj=[], steps=[], c, i, j;
+  for(c=1;c<=max;c++){
+    var cnt=0;
+    for(i=0;i<parts.length;i++) if(parts[i]>=c) cnt++;
+    if(cnt>0){ conj.push(cnt); steps.push('column '+c+': '+cnt+' part'+(cnt===1?'':'s')+' reach it'); }
+  }
+  var html='<p>Sorted partition: '+parts.join('+')+'</p>';
+  html+='<p>Column counts: '+steps.join('; ')+'.</p>';
+  html+='<p>Conjugate: '+conj.join('+')+'</p>';
+  html+='<p>Self-conjugate: '+(parts.join(',')===conj.join(',')?'yes':'no')+'</p>';
+  html+='<svg width="260" height="150" viewBox="0 0 260 150" role="img" aria-label="Ferrers diagram of the partition">';
+  for(i=0;i<parts.length;i++){
+    for(j=0;j<parts[i];j++){
+      html+='<rect x="'+(10+j*16)+'" y="'+(10+i*16)+'" width="14" height="14" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>';
     }
   }
   html+='</svg>';
-  document.getElementById('ferrersOut').innerHTML=html;
+  out.innerHTML=html;
 }
 drawFerrers();
 </script>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>Folding a self-conjugate diagram along its diagonal splits it into hooks. Here the self-conjugate partition 3+2+1 of 6 has hooks of lengths 5 and 1 — distinct odd parts of 6.</p>
+<svg width="260" height="130" viewBox="0 0 260 130" role="img" aria-label="Ferrers diagram of 3+2+1 with hooks of lengths 5 and 1 highlighted, showing the distinct odd partition 5+1 of 6">
+  <text x="130" y="16" text-anchor="middle" font-size="12" fill="var(--muted)">hook decomposition of the self-conjugate partition 3+2+1</text>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <rect x="40" y="30" width="18" height="18"/>
+    <rect x="58" y="30" width="18" height="18"/>
+    <rect x="76" y="30" width="18" height="18"/>
+    <rect x="40" y="48" width="18" height="18"/>
+    <rect x="40" y="66" width="18" height="18"/>
+  </g>
+  <rect x="58" y="48" width="18" height="18" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.5"/>
+  <g font-size="11" fill="var(--text)">
+    <text x="125" y="52">hook 1: length 5</text>
+    <text x="125" y="72">hook 2: length 1</text>
+    <text x="125" y="96">6 = 5 + 1 (distinct odd)</text>
+  </g>
+  <text x="130" y="120" text-anchor="middle" font-size="11" fill="var(--muted)">each hook arm appears twice, so its length 2a+1 is odd</text>
+</svg>
+
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Confusing partitions (order ignored) with compositions (order counts).</li>
-  <li>Using P(n,k) when empty cells/parts are allowed (use at most k parts).</li>
-  <li>Forgetting conjugation swaps number of parts and largest part.</li>
-  <li>Assuming self-conjugate partitions are rare; count by distinct odd parts.</li>
-</ul>
+<ol>
+  <li><strong>Confusing partitions with compositions.</strong> Wrong: splitting 7 into 4 parts has <em>C</em>(6,3)=20 ways (that counts order). Right: <em>P</em>(7,4)=3, namely 4+1+1+1, 3+2+1+1, 2+2+2+1.</li>
+  <li><strong>Using a lower bound instead of an upper bound.</strong> Wrong: <em>p</em><sub>2</sub>(5) counts partitions of 5 with parts ≥2, giving 2. Right: parts ≤2, giving 2+2+1, 2+1+1+1, 1+1+1+1+1 — three partitions.</li>
+  <li><strong>Exactly <em>k</em> parts when the question says at most <em>k</em>.</strong> Wrong: 11 unlabelled balls into 5 unlabelled cells gives <em>P</em>(11,5)=10. Right: empty cells are allowed, so count partitions into at most 5 parts, which is 37.</li>
+  <li><strong>Miscomputing a conjugate.</strong> Wrong: conjugate of 4+2+1 is 3+2+1. Right: the four columns contain 3, 2, 1, 1 boxes, so the conjugate is 3+2+1+1.</li>
+  <li><strong>Forgetting the boundary <em>P</em>(<em>n</em>,<em>k</em>)=0 for <em>k</em>&gt;<em>n</em>.</strong> Wrong: <em>P</em>(3,4)=<em>P</em>(2,3)+1=1. Right: 3 cannot be written as four positive parts, so <em>P</em>(3,4)=0.</li>
+  <li><strong>Missing a self-conjugate partition.</strong> Wrong: 5 has no self-conjugate partition. Right: (3,1,1) is symmetric, so the count is 1, matching the single distinct-odd partition 5.</li>
+  <li><strong>Dropping a term in the odd/distinct lists.</strong> Wrong: <em>p</em><sub><em>o</em></sub>(8)=5. Right: the six odd partitions are 7+1, 5+3, 5+1+1+1, 3+3+1+1, 3+1+1+1+1+1, 1+1+1+1+1+1+1+1, and <em>p</em><sub><em>d</em></sub>(8)=6 as well.</li>
+</ol>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
-<summary>Q10. P(n,k) recurrence; compute P(7,5).</summary>
-<p>Solution: P(7,5)=P(6,4)+P(2,5)=2+0=2. Python verification: 2.</p>
+<summary>Q10. (a) Write down a recurrence for P(n,k). (b) Compute P(7,5) from it.</summary>
+<p><strong>(a) Step 1.</strong> Split partitions of <em>n</em> into exactly <em>k</em> parts by whether a part 1 occurs. If it does, deleting one 1 gives a partition of <em>n</em>−1 into <em>k</em>−1 parts. If not, every part is ≥2, and subtracting 1 from each of the <em>k</em> parts gives a partition of <em>n</em>−<em>k</em> into <em>k</em> parts.</p>
+<p><strong>Step 2.</strong> These are inverse bijections on disjoint cases, so <em>P</em>(<em>n</em>,<em>k</em>) = <em>P</em>(<em>n</em>−1,<em>k</em>−1) + <em>P</em>(<em>n</em>−<em>k</em>,<em>k</em>), with <em>P</em>(<em>n</em>,<em>k</em>)=0 for <em>k</em>&gt;<em>n</em>.</p>
+<p><strong>(b) Step 3.</strong> <em>P</em>(7,5)=<em>P</em>(6,4)+<em>P</em>(2,5)=<em>P</em>(6,4)+0. Then <em>P</em>(6,4)=<em>P</em>(5,3)+<em>P</em>(2,4)=<em>P</em>(5,3), and <em>P</em>(5,3)=<em>P</em>(4,2)+<em>P</em>(2,3)=<em>P</em>(4,2). Finally <em>P</em>(4,2)=<em>P</em>(3,1)+<em>P</em>(2,2)=1+1=2. Hence <em>P</em>(7,5)=2, namely 3+1+1+1+1 and 2+2+1+1+1.</p>
 </details>
 
 <details>
 <summary>Q12. Number of ways to put 11 unlabelled balls into 5 unlabelled cells.</summary>
-<p>Solution: partitions of 11 into at most 5 parts = 37. Python verification: 37.</p>
+<p><strong>Step 1.</strong> Both balls and cells are identical, so a distribution is just a multiset of the 11 balls; the only data is the multiset of cell sizes. Empty cells are allowed, so this is a partition of 11 into <em>at most</em> 5 parts.</p>
+<p><strong>Step 2.</strong> Count by the exact number of parts: <em>P</em>(11,1)+…+<em>P</em>(11,5) = 1+5+10+11+10 = 37.</p>
+<p><strong>Step 3.</strong> A brute-force enumeration of partitions of 11 with at most 5 parts confirms 37.</p>
 </details>
 
 <details>
-<summary>Q22. Prove self-conjugate partitions of n equals partitions into distinct odd parts.</summary>
-<p>Solution: proof by Ferrers diagram folding, as above.</p>
+<summary>Q22. Prove that self-conjugate partitions of n equal partitions of n into distinct odd parts.</summary>
+<p><strong>Step 1.</strong> Take a self-conjugate Ferrers diagram. For each diagonal box, form the hook consisting of that box, the boxes to its right in its row, and the boxes below it in its column.</p>
+<p><strong>Step 2.</strong> Symmetry makes the row arm and column arm equal, say length <em>a</em>, so the hook length is 2<em>a</em>+1, an odd number. The hooks are nested, so their arm lengths strictly decrease and the hook lengths are distinct odd numbers summing to <em>n</em>.</p>
+<p><strong>Step 3.</strong> Conversely, given distinct odd parts <em>h</em><sub>1</sub>&gt;…&gt;<em>h</em><sub><em>r</em></sub>, set <em>a</em><sub><em>i</em></sub>=(<em>h</em><sub><em>i</em></sub>−1)/2 and build nested hooks; the result is a self-conjugate diagram of <em>n</em>.</p>
+<p><strong>Step 4.</strong> The two constructions invert each other, so the counts are equal. The picture in section 8 shows <em>n</em>=6: 3+2+1 corresponds to 5+1.</p>
 </details>
 
 <details>
-<summary>Q30. Prove partitions into distinct parts equals partitions into odd parts.</summary>
-<p>Solution: generating function identity, as above.</p>
+<summary>Q30. Prove that partitions into distinct parts equal partitions into odd parts.</summary>
+<p><strong>Step 1.</strong> The generating function for distinct parts is ∏<sub><em>m</em>≥1</sub>(1+<em>x</em><sup><em>m</em></sup>), because each size is used 0 or 1 times.</p>
+<p><strong>Step 2.</strong> Use 1+<em>x</em><sup><em>m</em></sup> = (1−<em>x</em><sup>2<em>m</em></sup>)/(1−<em>x</em><sup><em>m</em></sup>), so the product equals ∏(1−<em>x</em><sup>2<em>m</em></sup>)/∏(1−<em>x</em><sup><em>m</em></sup>).</p>
+<p><strong>Step 3.</strong> Cancel the even factors against the denominator: ∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup><em>m</em></sup>) = ∏<sub><em>m</em> odd</sub>(1−<em>x</em><sup><em>m</em></sup>)·∏<sub><em>m</em>≥1</sub>(1−<em>x</em><sup>2<em>m</em></sup>). The quotient is ∏<sub><em>m</em> odd</sub>1/(1−<em>x</em><sup><em>m</em></sup>), the generating function for odd parts with repetition.</p>
+<p><strong>Step 4.</strong> Equal generating functions have equal coefficients, so <em>p</em><sub><em>d</em></sub>(<em>n</em>)=<em>p</em><sub><em>o</em></sub>(<em>n</em>) for every <em>n</em>.</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. p(5)?</summary><p>7.</p></details>
-<details><summary>2. P(6,3)?</summary><p>3.</p></details>
-<details><summary>3. Partitions of 7 into at most 3 parts?</summary><p>P(7,1)+P(7,2)+P(7,3)=1+3+4=8.</p></details>
-<details><summary>4. Conjugate of 5+2+2+1?</summary><p>Conjugate of (5,2,2,1) is (4,3,1,1,1).</p></details>
-<details><summary>5. Self-conjugate partitions of 4?</summary><p>Self-conjugate partition: (2,2). Count 1; distinct odd partitions of 4: 3+1. Count 1.</p></details>
+<details>
+<summary>1. What is p(5)?</summary>
+<p>The partitions are 5; 4+1; 3+2; 3+1+1; 2+2+1; 2+1+1+1; 1+1+1+1+1, so <em>p</em>(5)=7.</p>
+</details>
+<details>
+<summary>2. Find P(6,3).</summary>
+<p><em>P</em>(6,3)=<em>P</em>(5,2)+<em>P</em>(3,3). We found <em>P</em>(5,2)=2 in example 2, and <em>P</em>(3,3)=1 (the partition 1+1+1). Hence <em>P</em>(6,3)=3: 4+1+1, 3+2+1, 2+2+2.</p>
+</details>
+<details>
+<summary>3. Partitions of 7 into at most 3 parts?</summary>
+<p>Sum <em>P</em>(7,1)+<em>P</em>(7,2)+<em>P</em>(7,3) = 1+3+4 = 8. The three-part ones are 5+1+1, 4+2+1, 3+3+1, 3+2+2; the two-part ones are 6+1, 5+2, 4+3; the one-part one is 7.</p>
+</details>
+<details>
+<summary>4. Conjugate of 5+2+2+1?</summary>
+<p>Count boxes in each column: column 1 has 4, column 2 has 3, columns 3, 4 and 5 have 1 each. Hence the conjugate is (4,3,1,1,1).</p>
+</details>
+<details>
+<summary>5. Self-conjugate partitions of 4?</summary>
+<p>Only (2,2) is symmetric, so the count is 1. Distinct odd partitions of 4: only 3+1. Count 1, as the theorem predicts.</p>
+</details>
+<details>
+<summary>6. Find P(7,4) from the recurrence.</summary>
+<p><em>P</em>(7,4)=<em>P</em>(6,3)+<em>P</em>(3,4)=3+0=3, since 3 cannot be split into 4 positive parts.</p>
+</details>
+<details>
+<summary>7. Find p<sub>2</sub>(5), partitions of 5 with parts at most 2.</summary>
+<p>They are 2+2+1, 2+1+1+1 and 1+1+1+1+1, so <em>p</em><sub>2</sub>(5)=3.</p>
+</details>
+<details>
+<summary>8. Find p<sub>d</sub>(8) and p<sub>o</sub>(8).</summary>
+<p>Distinct: 8, 7+1, 6+2, 5+3, 5+2+1, 4+3+1 — six. Odd: 7+1, 5+3, 5+1+1+1, 3+3+1+1, 3+1+1+1+1+1, 1+1+1+1+1+1+1+1 — six. Both are 6.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>P(n,k)=P(n-1,k-1)+P(n-k,k).</p>
-  <p>P(n,k)=p_k(n)-p_{k-1}(n).</p>
-  <p>Conjugation swaps parts and largest part.</p>
-  <p>p_o(n)=p_d(n).</p>
-  <p>Self-conjugate = distinct odd parts.</p>
-  <p>Generating function partitions: ∏ 1/(1-x^m).</p>
-  <p>At most k parts: p_k(n).</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong><em>p</em>(<em>n</em>):</strong> partitions of <em>n</em> into positive parts, order ignored.</li>
+    <li><strong><em>P</em>(<em>n</em>,<em>k</em>):</strong> partitions of <em>n</em> into exactly <em>k</em> parts.</li>
+    <li><strong><em>p</em><sub><em>k</em></sub>(<em>n</em>):</strong> partitions of <em>n</em> with every part ≤<em>k</em> (equivalently at most <em>k</em> parts).</li>
+    <li><strong><em>p</em><sub><em>d</em></sub>(<em>n</em>):</strong> distinct parts; <strong><em>p</em><sub><em>o</em></sub>(<em>n</em>):</strong> odd parts, repetitions allowed.</li>
+    <li><strong>Ferrers diagram:</strong> rows of boxes with nonincreasing lengths; transposing gives the conjugate.</li>
+    <li><strong>Self-conjugate:</strong> a diagram equal to its transpose.</li>
+  </ul>
+
+  <h3>Formulas and identities</h3>
+  <ul>
+    <li><em>P</em>(<em>n</em>,<em>k</em>) = <em>P</em>(<em>n</em>−1,<em>k</em>−1) + <em>P</em>(<em>n</em>−<em>k</em>,<em>k</em>), with <em>P</em>(<em>n</em>,<em>k</em>)=0 if <em>k</em>&gt;<em>n</em>.</li>
+    <li><em>P</em>(<em>n</em>,<em>k</em>) = <em>p</em><sub><em>k</em></sub>(<em>n</em>) − <em>p</em><sub><em>k</em>−1</sub>(<em>n</em>).</li>
+    <li>Conjugation: exactly <em>k</em> parts ↔ largest part <em>k</em>.</li>
+    <li><em>p</em><sub><em>o</em></sub>(<em>n</em>) = <em>p</em><sub><em>d</em></sub>(<em>n</em>).</li>
+    <li>Self-conjugate partitions of <em>n</em> ↔ distinct odd parts of <em>n</em>.</li>
+    <li>Σ<sub><em>n</em>≥0</sub> <em>p</em>(<em>n</em>)<em>x</em><sup><em>n</em></sup> = ∏<sub><em>m</em>≥1</sub> 1/(1−<em>x</em><sup><em>m</em></sup>).</li>
+    <li>Parts ≤<em>k</em>: ∏<sub><em>m</em>=1</sub><sup><em>k</em></sup>1/(1−<em>x</em><sup><em>m</em></sup>); odd parts: ∏<sub><em>m</em> odd</sub>1/(1−<em>x</em><sup><em>m</em></sup>); distinct parts: ∏(1+<em>x</em><sup><em>m</em></sup>).</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>p(1), p(2), p(3), p(4), p(5)</td><td>1, 2, 3, 5, 7</td><td>small partitions</td></tr>
+      <tr><td><em>P</em>(7,4), <em>P</em>(7,5)</td><td>3, 2</td><td>recurrence examples</td></tr>
+      <tr><td><em>P</em>(11,5)</td><td>10</td><td>homework recurrence</td></tr>
+      <tr><td>Σ<sub><em>j</em>≤5</sub> <em>P</em>(11,<em>j</em>)</td><td>37</td><td>Q12, at most 5 parts</td></tr>
+      <tr><td><em>p</em><sub><em>d</em></sub>(8), <em>p</em><sub><em>o</em></sub>(8)</td><td>6, 6</td><td>odd = distinct</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>Decide whether order matters; if not, use partitions, not compositions.</li>
+    <li>Check "exactly <em>k</em> parts" versus "at most <em>k</em> parts".</li>
+    <li>For a recurrence, identify the "part 1" and "all parts ≥2" cases.</li>
+    <li>Draw the Ferrers diagram when conjugation is involved.</li>
+    <li>For self-conjugate questions, switch to distinct odd parts.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

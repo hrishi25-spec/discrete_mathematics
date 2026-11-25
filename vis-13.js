@@ -11,5 +11,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> Prüfer codes count labeled trees. <strong>Try this:</strong> set n=4.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-13.js && echo ok

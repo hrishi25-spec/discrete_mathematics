@@ -11,5 +11,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> failure occurs when d exceeds remaining length. <strong>Try this:</strong> use 3,3,2,2,1,1.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-12.js && echo ok

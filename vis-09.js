@@ -12,5 +12,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> nk+1 forces k+1 in one box. <strong>Try this:</strong> set p=6,h=5.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-09.js && echo ok

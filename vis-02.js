@@ -13,5 +13,3 @@
   var c=document.createElement("p"); c.className="vis-caption"; c.innerHTML="<strong>What to notice:</strong> bars split stars into groups. <strong>Try this:</strong> set r=0.";
   s.appendChild(c);
 })();
-EOF
-node --check vis-02.js && echo ok

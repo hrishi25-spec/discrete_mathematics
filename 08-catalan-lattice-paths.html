@@ -6,6 +6,13 @@
   <title>08 Catalan Numbers and Lattice Paths</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,11 +25,32 @@
 <p>Basic counting and combinations from <a href="02-basic-counting.html">page 02</a>.</p>
 
 <h2>3. Intuition</h2>
-<p>Consider monotone paths from (0,0) to (n,n) using steps east and north. Total paths are C(2n,n). "Good" paths never rise above the diagonal y=x. The first bad path touches the line y=x+1; reflect the rest of the path across that line to get a path to (n-1,n+1). This bijection counts bad paths as C(2n,n-1). The picture shows a good path and a reflected bad path.</p>
+<p>Consider monotone paths from (0,0) to (<em>n</em>,<em>n</em>) using steps east and north. Total paths are <em>C</em>(2<em>n</em>,<em>n</em>). "Good" paths never rise above the diagonal <em>y</em>=<em>x</em>. A bad path first touches the line <em>y</em>=<em>x</em>+1; reflect the rest of that path across the line to get a path to (<em>n</em>−1,<em>n</em>+1). This bijection counts bad paths as <em>C</em>(2<em>n</em>,<em>n</em>−1), so the good ones number <em>C</em>(2<em>n</em>,<em>n</em>)−<em>C</em>(2<em>n</em>,<em>n</em>−1) = <em>C</em><sub><em>n</em></sub>. The first picture shows a good path; the second shows a bad path and its reflection.</p>
 <svg width="260" height="140" viewBox="0 0 260 140" aria-label="Lattice path picture">
   <line x1="20" y1="120" x2="140" y2="0" stroke="#333" stroke-dasharray="4,4"/>
   <polyline points="20,120 60,120 60,80 100,80 100,40 140,40 140,0" fill="none" stroke="#1f6feb" stroke-width="2"/>
   <text x="160" y="70" font-size="12">good path</text>
+</svg>
+<svg width="280" height="165" viewBox="0 0 280 165" role="img" aria-label="A bad lattice path from 0,0 to 4,4 that first touches y=x+1, and the reflected path ending at 3,5">
+  <g stroke="var(--border)" stroke-width="1">
+    <line x1="20" y1="140" x2="100" y2="140"/><line x1="20" y1="120" x2="100" y2="120"/>
+    <line x1="20" y1="100" x2="100" y2="100"/><line x1="20" y1="80" x2="100" y2="80"/>
+    <line x1="20" y1="60" x2="100" y2="60"/><line x1="20" y1="40" x2="100" y2="40"/>
+    <line x1="20" y1="140" x2="20" y2="40"/><line x1="40" y1="140" x2="40" y2="40"/>
+    <line x1="60" y1="140" x2="60" y2="40"/><line x1="80" y1="140" x2="80" y2="40"/>
+    <line x1="100" y1="140" x2="100" y2="40"/>
+  </g>
+  <line x1="20" y1="140" x2="100" y2="60" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <polyline points="20,140 20,120 40,120 40,100 60,100 80,100 100,100 100,80 100,60" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+  <polyline points="20,140 20,120 20,100 40,100 40,80 40,60 40,40 60,40 80,40" fill="none" stroke="var(--vis-warn)" stroke-width="2.5" stroke-dasharray="5 3"/>
+  <circle cx="20" cy="120" r="4" fill="var(--vis-bad)"/>
+  <g font-size="11" fill="var(--text)">
+    <text x="125" y="55">bad path to (4,4)</text>
+    <text x="125" y="78">first touch at (0,1)</text>
+    <text x="125" y="101">reflected path to (3,5)</text>
+    <text x="125" y="124">dashed = y=x</text>
+    <text x="125" y="147">bad paths = C(8,3) = 56</text>
+  </g>
 </svg>
 
 <h2>4. Definitions</h2>
@@ -34,81 +62,226 @@
 </div>
 
 <h2>5. Theorems and complete proofs</h2>
+<p>Each proof is written in numbered steps, with the inverse map or the simplifying algebra shown explicitly.</p>
 
 <h3>Theorem: number of monotone paths</h3>
-<p>Paths from (0,0) to (a,b) = C(a+b,a). <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> A path has a+b steps, of which a are east; choose their positions. ∎</p>
-
-<h3>Theorem: Catalan number</h3>
-<p>C_n = C(2n,n) - C(2n,n-1) = (1/(n+1)) C(2n,n). <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Total paths from (0,0) to (n,n) is C(2n,n). Bad paths first touch y=x+1; reflect the suffix after that touch across y=x+1, giving a bijection to paths from (0,0) to (n-1,n+1), counted by C(2n,n-1). Subtract. Simplify: C(2n,n)-C(2n,n-1)=C(2n,n)/(n+1). ∎</p>
+<p>Paths from (0,0) to (<em>a</em>,<em>b</em>) using east and north steps number <em>C</em>(<em>a</em>+<em>b</em>,<em>a</em>). <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>List the steps.</strong> Every monotone path consists of exactly <em>a</em> east steps and <em>b</em> north steps, in some order, so it has <em>a</em>+<em>b</em> steps.</li>
+  <li><strong>Encode by a choice of positions.</strong> Once the <em>a</em> positions occupied by east steps are known, the remaining <em>b</em> positions are north steps and the path is determined.</li>
+  <li><strong>Count.</strong> The number of ways to choose those positions is <em>C</em>(<em>a</em>+<em>b</em>,<em>a</em>), and different choices give different paths. ∎</li>
+</ol>
 
 <h3>Theorem: reflection principle (general)</h3>
-<p>Paths from (0,0) to (n,n) that touch or cross y=x+1 are in bijection with paths from (0,0) to (n-1,n+1).</p>
-<p><em>Proof.</em> Reflect the portion after the first touch of y=x+1. ∎</p>
+<p>Bad paths from (0,0) to (<em>n</em>,<em>n</em>) that touch or cross <em>y</em>=<em>x</em>+1 are in bijection with all paths from (0,0) to (<em>n</em>−1,<em>n</em>+1).</p>
+<ol>
+  <li><strong>Locate the first touch.</strong> For a bad path, let <em>P</em> be the first vertex with <em>y</em>=<em>x</em>+1. It exists because the path ends with <em>y</em>=<em>x</em> but was above at some point.</li>
+  <li><strong>Reflect the suffix.</strong> Send each later vertex (<em>x</em>,<em>y</em>) to (<em>y</em>−1,<em>x</em>+1), reflection in the line <em>y</em>=<em>x</em>+1. East and north steps swap, so the reflected suffix is still a monotone path, and the endpoint (<em>n</em>,<em>n</em>) becomes (<em>n</em>−1,<em>n</em>+1).</li>
+  <li><strong>Construct the inverse.</strong> Start from any path to (<em>n</em>−1,<em>n</em>+1). It begins below <em>y</em>=<em>x</em>+1 (at the origin) and ends above it, so it has a first touch with that line; reflecting the suffix back recovers a bad path to (<em>n</em>,<em>n</em>).</li>
+  <li><strong>Conclusion.</strong> The two maps undo each other, so the number of bad paths is the number of paths to (<em>n</em>−1,<em>n</em>+1), namely <em>C</em>(2<em>n</em>,<em>n</em>−1). ∎</li>
+</ol>
+
+<h3>Theorem: Catalan number</h3>
+<p><em>C</em><sub><em>n</em></sub> = <em>C</em>(2<em>n</em>,<em>n</em>) − <em>C</em>(2<em>n</em>,<em>n</em>−1) = (1/(<em>n</em>+1))<em>C</em>(2<em>n</em>,<em>n</em>). <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Count all paths.</strong> By the first theorem, there are <em>C</em>(2<em>n</em>,<em>n</em>) monotone paths from (0,0) to (<em>n</em>,<em>n</em>).</li>
+  <li><strong>Subtract the bad ones.</strong> By the reflection principle, <em>C</em>(2<em>n</em>,<em>n</em>−1) of them go above the diagonal, so <em>C</em><sub><em>n</em></sub> = <em>C</em>(2<em>n</em>,<em>n</em>) − <em>C</em>(2<em>n</em>,<em>n</em>−1).</li>
+  <li><strong>Simplify.</strong> <em>C</em>(2<em>n</em>,<em>n</em>−1) = <em>C</em>(2<em>n</em>,<em>n</em>)·<em>n</em>/(<em>n</em>+1), so the difference is <em>C</em>(2<em>n</em>,<em>n</em>)(1−<em>n</em>/(<em>n</em>+1)) = <em>C</em>(2<em>n</em>,<em>n</em>)/(<em>n</em>+1). ∎</li>
+</ol>
+
+<h3>Theorem: Catalan recurrence and parenthesizations</h3>
+<p>The lecture notes give this recurrence; its solution is the Catalan number defined above.</p>
+<ol>
+  <li><strong>Base case.</strong> A product of one factor needs no parentheses, so <em>a</em><sub>0</sub>=1; the notes also set <em>a</em><sub>1</sub>=1.</li>
+  <li><strong>Look at the last multiplication.</strong> Any full parenthesization of <em>x</em><sub>0</sub>…<em>x</em><sub><em>n</em></sub> has a outermost product splitting the factors into a left block of <em>i</em>+1 factors and a right block of <em>n</em>−<em>i</em> factors.</li>
+  <li><strong>Count one split.</strong> The left block can be parenthesized in <em>a</em><sub><em>i</em></sub> ways, the right in <em>a</em><sub><em>n</em>−1−<em>i</em></sub> ways, and these choices are independent: <em>a</em><sub><em>i</em></sub><em>a</em><sub><em>n</em>−1−<em>i</em></sub> ways.</li>
+  <li><strong>Sum over splits.</strong> The splits are disjoint and exhaustive, giving the recurrence; its solution is <em>a</em><sub><em>n</em></sub>=<em>C</em><sub><em>n</em></sub>. ∎</li>
+</ol>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1</h3>
-<p>C_3 = C(6,3)-C(6,2)=20-15=5.</p>
+<h3>Example 1 (easy): monotone paths to (3,5)</h3>
+<p>A path from (0,0) to (3,5) has 3 east and 5 north steps, so 8 steps in all. Choose the 3 positions of the east steps: <em>C</em>(8,3) = (8·7·6)/(3·2·1) = 56.</p>
 
-<h3>Example 2</h3>
-<p>Number of monotone paths from (0,0) to (3,5) = C(8,3)=56.</p>
+<h3>Example 2 (easy): the third Catalan number</h3>
+<p><em>C</em><sub>3</sub> = <em>C</em>(6,3)−<em>C</em>(6,2) = 20−15 = 5, which also equals (1/4)<em>C</em>(6,3) = 20/4 = 5.</p>
 
-<h3>Example 3</h3>
-<p>Bad paths for n=6: C(12,5)=792. Good (Catalan) paths: C_6=132.</p>
+<h3>Example 3 (easy): parenthesizing four factors</h3>
+<p>Four factors <em>x</em><sub>0</sub><em>x</em><sub>1</sub><em>x</em><sub>2</sub><em>x</em><sub>3</sub> have <em>C</em><sub>3</sub>=5 parenthesizations: ((x<sub>0</sub>x<sub>1</sub>)(x<sub>2</sub>x<sub>3</sub>)), (((x<sub>0</sub>x<sub>1</sub>)x<sub>2</sub>)x<sub>3</sub>), (x<sub>0</sub>(x<sub>1</sub>(x<sub>2</sub>x<sub>3</sub>))), ((x<sub>0</sub>(x<sub>1</sub>x<sub>2</sub>))x<sub>3</sub>), (x<sub>0</sub>((x<sub>1</sub>x<sub>2</sub>)x<sub>3</sub>)).</p>
 
-<h3>Example 4</h3>
-<p>Paths from (0,0) to (6,6) that cross the diagonal exactly once (change sides) = 330 (Python verified).</p>
+<h3>Example 4 (medium): good and bad paths for n=6</h3>
+<p>All paths from (0,0) to (6,6): <em>C</em>(12,6)=924. Bad paths: <em>C</em>(12,5)=792. Hence good paths = 924−792=132 = <em>C</em><sub>6</sub> (also (1/7)·924=132).</p>
 
-<h3>Example 5</h3>
-<p>Parenthesizations of 4 factors: C_3=5.</p>
+<h3>Example 5 (medium): parenthesizing five factors</h3>
+<p>Five factors give <em>C</em><sub>4</sub> = <em>C</em>(8,4)−<em>C</em>(8,3) = 70−56 = 14 ways, matching the recurrence <em>a</em><sub>4</sub>=<em>a</em><sub>0</sub><em>a</em><sub>3</sub>+<em>a</em><sub>1</sub><em>a</em><sub>2</sub>+<em>a</em><sub>2</sub><em>a</em><sub>1</sub>+<em>a</em><sub>3</sub><em>a</em><sub>0</sub> = 5+2+2+5 = 14.</p>
+
+<h3>Example 6 (hard): cross the diagonal exactly once</h3>
+<p>For a path from (0,0) to (6,6), "cross" means the sign of <em>y</em>−<em>x</em> changes once. Split at the diagonal point (<em>k</em>,<em>k</em>) where the change happens. The part before stays weakly on one side: <em>C</em><sub><em>k</em></sub> ways; the part after stays weakly on the other: <em>C</em><sub>6−<em>k</em></sub> ways. Either order is possible, so for <em>k</em>=1,…,5 the count is 2Σ<em>C</em><sub><em>k</em></sub><em>C</em><sub>6−<em>k</em></sub> = 2(1·42 + 2·14 + 5·5 + 14·2 + 42·1) = 2·165 = 330. Brute-force enumeration of all 924 paths confirms 330.</p>
+
+<h3>Example 7 (hard): touch the diagonal at exactly one interior point</h3>
+<p>Reading "cross" as "touch at one interior vertex" gives a different answer. Choose the interior touch (<em>k</em>,<em>k</em>), 1≤<em>k</em>≤5. A path from (0,0) to (<em>k</em>,<em>k</em>) with no interior diagonal visit is strictly above or strictly below throughout, so 2<em>C</em><sub><em>k</em>−1</sub> ways; similarly 2<em>C</em><sub>5−<em>k</em></sub> ways for the rest. Total 4Σ<sub><em>k</em>=1</sub><sup>5</sup> <em>C</em><sub><em>k</em>−1</sub><em>C</em><sub>5−<em>k</em></sub> = 4<em>C</em><sub>5</sub> = 4·42 = 168, confirmed by enumeration. Both readings of Q26 are stated on this page.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Catalan and path counter.</p>
+<p>Catalan and lattice-path counters with the intermediate arithmetic shown. Bad input is reported rather than computed.</p>
 <div class="card">
-  <label>n <input id="catN" type="number" value="6" oninput="calcCat()"></label>
-  <p id="catResult"></p>
-  <label>a <input id="aPath" type="number" value="3" oninput="calcPath()"></label>
-  <label>b <input id="bPath" type="number" value="5" oninput="calcPath()"></label>
-  <p id="pathResult"></p>
+  <label>n <input id="catN" type="text" inputmode="numeric" value="6" size="4" oninput="calcCat()"></label>
+  <div id="catResult" aria-live="polite"></div>
+  <label>a <input id="aPath" type="text" inputmode="numeric" value="3" size="4" oninput="calcPath()"></label>
+  <label>b <input id="bPath" type="text" inputmode="numeric" value="5" size="4" oninput="calcPath()"></label>
+  <div id="pathResult" aria-live="polite"></div>
 </div>
 <script>
-function C(n,r){if(r<0||r>n)return 0;var res=1;for(var i=1;i<=r;i++)res=res*(n-r+i)/i;return Math.round(res);}
-function calcCat(){var n=+document.getElementById('catN').value;document.getElementById('catResult').textContent='C_'+n+' = C(2n,n)-C(2n,n-1) = '+ (C(2*n,n)-C(2*n,n-1));}
-function calcPath(){var a=+document.getElementById('aPath').value;var b=+document.getElementById('bPath').value;document.getElementById('pathResult').textContent='Paths = C(a+b,a) = '+C(a+b,a);}
+function C(n,r){ if(r<0||r>n) return 0; r=Math.min(r,n-r); var res=1,i; for(i=1;i<=r;i++) res=res*(n-r+i)/i; return Math.round(res); }
+function whole(v){ return /^[0-9]+$/.test(String(v).trim()); }
+function line(out,t){ var p=document.createElement('p'); p.textContent=t; out.appendChild(p); }
+function calcCat(){
+  var out=document.getElementById('catResult'); out.textContent='';
+  var raw=String(document.getElementById('catN').value).trim();
+  if(!whole(raw)){ line(out,'Input error: n must be a whole number.'); return; }
+  var n=parseInt(raw,10);
+  if(n<0||n>20){ line(out,'Input error: use 0 <= n <= 20.'); return; }
+  var total=C(2*n,n), bad=C(2*n,n-1);
+  line(out,'Total paths C(2n,n) = C('+(2*n)+','+n+') = '+total+'.');
+  line(out,'Bad paths C(2n,n-1) = C('+(2*n)+','+(n-1)+') = '+bad+'.');
+  line(out,'C_'+n+' = '+total+' - '+bad+' = '+(total-bad)+'.');
+  line(out,'Check: C(2n,n)/(n+1) = '+total+'/'+(n+1)+' = '+(total/(n+1))+'.');
+}
+function calcPath(){
+  var out=document.getElementById('pathResult'); out.textContent='';
+  var ra=String(document.getElementById('aPath').value).trim();
+  var rb=String(document.getElementById('bPath').value).trim();
+  if(!whole(ra)||!whole(rb)){ line(out,'Input error: a and b must be whole numbers.'); return; }
+  var a=parseInt(ra,10), b=parseInt(rb,10);
+  if(a>20||b>20){ line(out,'Input error: use a <= 20 and b <= 20.'); return; }
+  line(out,'Steps: '+a+' east + '+b+' north = '+(a+b)+' total.');
+  line(out,'Choose the '+a+' east positions: C('+(a+b)+','+a+') = '+C(a+b,a)+'.');
+}
 calcCat();calcPath();
 </script>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>The Catalan recurrence is visible in a Dyck path: look at its first return to the diagonal. The picture shows the path E N E N E N of semilength 3, whose first return is at (1,1), splitting it into a left excursion (<em>C</em><sub>0</sub>=1 way) and a right Dyck path (<em>C</em><sub>2</sub>=2 ways).</p>
+<svg width="280" height="160" viewBox="0 0 280 160" role="img" aria-label="Dyck path ENENEN of semilength 3 with its first return to the diagonal marked at 1,1">
+  <g stroke="var(--border)" stroke-width="1">
+    <line x1="30" y1="120" x2="114" y2="120"/><line x1="30" y1="92" x2="114" y2="92"/>
+    <line x1="30" y1="64" x2="114" y2="64"/><line x1="30" y1="36" x2="114" y2="36"/>
+    <line x1="30" y1="120" x2="30" y2="36"/><line x1="58" y1="120" x2="58" y2="36"/>
+    <line x1="86" y1="120" x2="86" y2="36"/><line x1="114" y1="120" x2="114" y2="36"/>
+  </g>
+  <line x1="30" y1="120" x2="114" y2="36" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <polyline points="30,120 58,120 58,92 86,92 86,64 114,64 114,36" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+  <circle cx="58" cy="92" r="5" fill="var(--vis-bad)"/>
+  <g font-size="11" fill="var(--text)">
+    <text x="140" y="55">first return (1,1)</text>
+    <text x="140" y="80">left excursion: C_0 = 1</text>
+    <text x="140" y="105">right part: C_2 = 2</text>
+    <text x="140" y="135">C_3 = 1·2 + 1·1 + 2·1 = 5</text>
+  </g>
+</svg>
+
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Confusing "touch diagonal" with "cross diagonal" (change sides).</li>
-  <li>Using C(2n,n) instead of Catalan for good paths.</li>
-  <li>Reflecting across the wrong line (y=x vs y=x+1).</li>
-  <li>Forgetting the 1/(n+1) factor in Catalan.</li>
-</ul>
+<ol>
+  <li><strong>Confusing "cross" with "touch" (Q26).</strong> Wrong: answer 168 to "changes sides exactly once". Right: 330 for a sign change, 168 for an interior touch at a single point. Both readings are stated in example 7 and Q26.</li>
+  <li><strong>Using all paths instead of good paths.</strong> Wrong: paths from (0,0) to (6,6) staying on one side = <em>C</em>(12,6)=924. Right: <em>C</em><sub>6</sub>=924−792=132.</li>
+  <li><strong>Reflecting across the wrong line.</strong> Wrong: reflect across <em>y</em>=<em>x</em>, which fixes the endpoint (6,6), giving bad paths = <em>C</em>(12,6)=924. Right: first touch is <em>y</em>=<em>x</em>+1, so bad paths = <em>C</em>(12,5)=792.</li>
+  <li><strong>Forgetting the 1/(<em>n</em>+1) factor.</strong> Wrong: parenthesizations of 5 factors = <em>C</em>(8,4)=70. Right: <em>C</em><sub>4</sub> = 70/(4+1) = 14.</li>
+  <li><strong>Off-by-one in the Catalan index.</strong> Wrong: 4 factors give <em>C</em><sub>4</sub>=14. Right: <em>n</em>+1 factors give <em>C</em><sub><em>n</em></sub>, so 4 factors give <em>C</em><sub>3</sub>=5.</li>
+  <li><strong>Swapping good and bad counts.</strong> Wrong: bad paths for <em>n</em>=6 number 132. Right: bad = <em>C</em>(12,5)=792, good = <em>C</em>(12,6)−<em>C</em>(12,5)=132.</li>
+  <li><strong>Adding both binomial choices for a path.</strong> Wrong: paths to (3,5) = <em>C</em>(8,3)+<em>C</em>(8,5) = 112. Right: choosing the east positions or the north positions describes the same paths, so the answer is just <em>C</em>(8,3)=56.</li>
+</ol>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
-<summary>Q26. Number of monotone paths from (0,0) to (6,6) crossing the diagonal exactly once.</summary>
-<p>Solution: changing sides of the diagonal exactly once gives 330. Python verification: 330. (If "touch the diagonal at one interior point" is intended, the count is 168.)</p>
+<summary>Q26. Find the number of progressing paths from (0,0) to (6,6) which cross the diagonal exactly once.</summary>
+<p><strong>Reading A — "cross" means change sides.</strong></p>
+<p><strong>Step 1.</strong> Decompose the path at its visits to the diagonal. Between visits it stays strictly on one side, so each excursion has a sign: above or below.</p>
+<p><strong>Step 2.</strong> If the sign changes exactly once, there is a diagonal point (<em>k</em>,<em>k</em>), 1≤<em>k</em>≤5, where the above-excursions end and the below-excursions begin, or the reverse.</p>
+<p><strong>Step 3.</strong> A sequence of above-excursions from (0,0) to (<em>k</em>,<em>k</em>) is exactly a path staying weakly above the diagonal: <em>C</em><sub><em>k</em></sub> ways. The remaining below-excursions give <em>C</em><sub>6−<em>k</em></sub> ways.</p>
+<p><strong>Step 4.</strong> Either order is possible, so the count is 2Σ<sub><em>k</em>=1</sub><sup>5</sup> <em>C</em><sub><em>k</em></sub><em>C</em><sub>6−<em>k</em></sub> = 2(1·42 + 2·14 + 5·5 + 14·2 + 42·1) = 2·165 = 330. Enumeration of all <em>C</em>(12,6)=924 paths confirms 330.</p>
+<p><strong>Reading B — "cross" means touch the diagonal at exactly one interior point.</strong></p>
+<p><strong>Step 5.</strong> Choose the interior touch (<em>k</em>,<em>k</em>). A path from (0,0) to (<em>k</em>,<em>k</em>) with no earlier diagonal visit is strictly above or strictly below, giving 2<em>C</em><sub><em>k</em>−1</sub> ways; the remaining segment gives 2<em>C</em><sub>5−<em>k</em></sub>.</p>
+<p><strong>Step 6.</strong> Total = 4Σ<sub><em>k</em>=1</sub><sup>5</sup> <em>C</em><sub><em>k</em>−1</sub><em>C</em><sub>5−<em>k</em></sub> = 4<em>C</em><sub>5</sub> = 4·42 = 168, also confirmed by enumeration.</p>
+<p><strong>Conclusion.</strong> State which reading is intended: 330 for an actual change of sides, 168 for a single interior touch.</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. C_4?</summary><p>14.</p></details>
-<details><summary>2. Paths from (0,0) to (2,4)?</summary><p>C(6,2)=15.</p></details>
-<details><summary>3. Bad paths for n=4?</summary><p>C(8,3)=56.</p></details>
-<details><summary>4. Parenthesizations of 5 factors?</summary><p>C_4=14.</p></details>
-<details><summary>5. Good paths for n=3?</summary><p>C_3=5.</p></details>
+<details>
+<summary>1. What is C<sub>4</sub>?</summary>
+<p><em>C</em><sub>4</sub> = <em>C</em>(8,4)−<em>C</em>(8,3) = 70−56 = 14, equivalently (1/5)<em>C</em>(8,4) = 70/5 = 14.</p>
+</details>
+<details>
+<summary>2. Paths from (0,0) to (2,4)?</summary>
+<p>There are 2 east and 4 north steps, 6 in all, so <em>C</em>(6,2) = (6·5)/(2·1) = 15.</p>
+</details>
+<details>
+<summary>3. Bad paths for n=4?</summary>
+<p>Bad paths first touch <em>y</em>=<em>x</em>+1 and correspond to paths to (3,5), so there are <em>C</em>(8,3)=56. The good ones are <em>C</em>(8,4)−<em>C</em>(8,3)=14.</p>
+</details>
+<details>
+<summary>4. Parenthesizations of 5 factors?</summary>
+<p>Five factors give <em>C</em><sub>4</sub> = 14 ways, matching the recurrence 5+2+2+5 = 14.</p>
+</details>
+<details>
+<summary>5. Good paths for n=3?</summary>
+<p><em>C</em><sub>3</sub> = <em>C</em>(6,3)−<em>C</em>(6,2) = 20−15 = 5.</p>
+</details>
+<details>
+<summary>6. Paths from (0,0) to (4,7)?</summary>
+<p>Eleven steps, of which 4 are east, so <em>C</em>(11,4) = (11·10·9·8)/(4·3·2·1) = 7920/24 = 330.</p>
+</details>
+<details>
+<summary>7. What is C<sub>5</sub>?</summary>
+<p><em>C</em><sub>5</sub> = <em>C</em>(10,5)−<em>C</em>(10,4) = 252−210 = 42, equivalently 252/6 = 42.</p>
+</details>
+<details>
+<summary>8. Paths from (0,0) to (6,6) that never go above the diagonal?</summary>
+<p>These are the Catalan paths: <em>C</em><sub>6</sub> = <em>C</em>(12,6)−<em>C</em>(12,5) = 924−792 = 132.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>Total paths (a,b): C(a+b,a).</p>
-  <p>Catalan: C_n=C(2n,n)-C(2n,n-1)=C(2n,n)/(n+1).</p>
-  <p>Bad paths: C(2n,n-1).</p>
-  <p>Reflection across y=x+1.</p>
-  <p>Parenthesizations of n+1 factors: C_n.</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong>Monotone lattice path:</strong> from (0,0) to (<em>a</em>,<em>b</em>) with east and north steps.</li>
+    <li><strong>Bad path:</strong> from (0,0) to (<em>n</em>,<em>n</em>) that at some point has <em>y</em>&gt;<em>x</em>.</li>
+    <li><strong>Catalan number:</strong> <em>C</em><sub><em>n</em></sub> = (1/(<em>n</em>+1))<em>C</em>(2<em>n</em>,<em>n</em>).</li>
+    <li><strong>Reflection principle:</strong> reflect the part of a path after its first touch of a boundary line.</li>
+  </ul>
+
+  <h3>Formulas</h3>
+  <ul>
+    <li>Paths (0,0)→(<em>a</em>,<em>b</em>): <em>C</em>(<em>a</em>+<em>b</em>,<em>a</em>).</li>
+    <li>Total paths to (<em>n</em>,<em>n</em>): <em>C</em>(2<em>n</em>,<em>n</em>).</li>
+    <li>Bad paths: <em>C</em>(2<em>n</em>,<em>n</em>−1) (reflect across <em>y</em>=<em>x</em>+1 to (0,0)→(<em>n</em>−1,<em>n</em>+1)).</li>
+    <li><em>C</em><sub><em>n</em></sub> = <em>C</em>(2<em>n</em>,<em>n</em>) − <em>C</em>(2<em>n</em>,<em>n</em>−1) = <em>C</em>(2<em>n</em>,<em>n</em>)/(<em>n</em>+1).</li>
+    <li>Catalan recurrence: <em>a</em><sub>0</sub>=1, <em>a</em><sub><em>n</em></sub> = Σ<sub><em>i</em>=0</sub><sup><em>n</em>−1</sup> <em>a</em><sub><em>i</em></sub><em>a</em><sub><em>n</em>−1−<em>i</em></sub>.</li>
+    <li>Parenthesizations of <em>n</em>+1 factors, triangulations of an (<em>n</em>+2)-gon, and non-crossing handshake pairings of 2<em>n</em> people: <em>C</em><sub><em>n</em></sub>.</li>
+    <li>Change sides exactly once from (0,0) to (<em>n</em>,<em>n</em>): 2Σ<sub><em>k</em>=1</sub><sup><em>n</em>−1</sup> <em>C</em><sub><em>k</em></sub><em>C</em><sub><em>n</em>−<em>k</em></sub>.</li>
+    <li>Exactly one interior diagonal touch: 4<em>C</em><sub><em>n</em>−1</sub>.</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td><em>C</em><sub>3</sub>, <em>C</em><sub>4</sub>, <em>C</em><sub>5</sub>, <em>C</em><sub>6</sub></td><td>5, 14, 42, 132</td><td>Catalan numbers</td></tr>
+      <tr><td><em>C</em>(12,6), <em>C</em>(12,5)</td><td>924, 792</td><td>total and bad paths for n=6</td></tr>
+      <tr><td><em>C</em>(8,3), <em>C</em>(6,2)</td><td>56, 15</td><td>path examples</td></tr>
+      <tr><td>Q26 change sides, Q26 one touch</td><td>330, 168</td><td>two readings</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>Count the total paths first with <em>C</em>(<em>a</em>+<em>b</em>,<em>a</em>).</li>
+    <li>For a diagonal condition, locate the first touch of <em>y</em>=<em>x</em>+1.</li>
+    <li>Reflect the suffix, not the whole path.</li>
+    <li>Use the factor 1/(<em>n</em>+1) for Catalan numbers.</li>
+    <li>Decide whether "cross" means change sides or touch; verify both if needed.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

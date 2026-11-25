@@ -6,6 +6,13 @@
   <title>11 Graph Basics</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,7 +25,7 @@
 <p>Set theory and counting from <a href="01-sets-relations.html">page 01</a> and <a href="02-basic-counting.html">page 02</a>.</p>
 
 <h2>3. Intuition</h2>
-<p>A graph is a set of vertices plus edges connecting them. A walk can repeat; a trail cannot repeat edges; a path cannot repeat vertices. Components are the connected pieces. The picture below is a path on four vertices.</p>
+<p>A graph is a set of vertices plus edges connecting them. A walk can repeat vertices and edges; a trail cannot repeat edges; a path cannot repeat vertices. Components are the connected pieces. The first picture is a path on four vertices; the second contrasts a walk that repeats with a path that does not.</p>
 <svg width="260" height="80" viewBox="0 0 260 80" aria-label="Path graph P4">
   <circle cx="40" cy="40" r="8" fill="#1f6feb"/>
   <circle cx="100" cy="40" r="8" fill="#1f6feb"/>
@@ -27,6 +34,30 @@
   <line x1="48" y1="40" x2="92" y2="40" stroke="#333"/>
   <line x1="108" y1="40" x2="152" y2="40" stroke="#333"/>
   <line x1="168" y1="40" x2="212" y2="40" stroke="#333"/>
+</svg>
+<svg width="320" height="140" viewBox="0 0 320 140" role="img" aria-label="A walk a-b-c-a-b repeats a vertex and an edge, while a path a-b-c-d has no repeats">
+  <text x="80" y="20" text-anchor="middle" font-size="12" fill="var(--muted)">walk a-b-c-a-b</text>
+  <g stroke="var(--accent)" stroke-width="2">
+    <line x1="50" y1="90" x2="110" y2="90"/><line x1="110" y1="90" x2="80" y2="50"/><line x1="80" y1="50" x2="50" y2="90"/>
+  </g>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <circle cx="50" cy="90" r="10"/><circle cx="110" cy="90" r="10"/><circle cx="80" cy="50" r="10"/>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="var(--text)">
+    <text x="50" y="94">a</text><text x="110" y="94">b</text><text x="80" y="54">c</text>
+  </g>
+  <text x="80" y="125" text-anchor="middle" font-size="11" fill="var(--muted)">repeats a and edge ab</text>
+  <text x="240" y="20" text-anchor="middle" font-size="12" fill="var(--muted)">path a-b-c-d</text>
+  <g stroke="var(--accent)" stroke-width="2">
+    <line x1="180" y1="90" x2="220" y2="90"/><line x1="220" y1="90" x2="260" y2="90"/><line x1="260" y1="90" x2="300" y2="90"/>
+  </g>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <circle cx="180" cy="90" r="10"/><circle cx="220" cy="90" r="10"/><circle cx="260" cy="90" r="10"/><circle cx="300" cy="90" r="10"/>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="var(--text)">
+    <text x="180" y="94">a</text><text x="220" y="94">b</text><text x="260" y="94">c</text><text x="300" y="94">d</text>
+  </g>
+  <text x="240" y="125" text-anchor="middle" font-size="11" fill="var(--muted)">four distinct vertices</text>
 </svg>
 
 <h2>4. Definitions</h2>
@@ -41,143 +72,310 @@
 </div>
 
 <h2>5. Theorems and complete proofs</h2>
+<p>Each proof is written in numbered steps; the only fact quoted without proof here is the standard non-planarity of the Petersen graph.</p>
 
 <h3>Theorem: handshaking lemma</h3>
 <p>In any graph, the number of vertices of odd degree is even. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Sum of degrees = 2|E|, which is even. The sum of even-degree terms is even, so the sum of odd-degree terms must be even, requiring an even number of them. ∎</p>
+<ol>
+  <li><strong>Count edge-ends.</strong> Every edge has two endpoints, so Σ<sub><em>v</em></sub> deg(<em>v</em>) = 2|<em>E</em>|, an even number (a loop contributes 2, as required).</li>
+  <li><strong>Split the sum.</strong> Separate vertices of even degree and odd degree: Σ<sub>even</sub> deg(<em>v</em>) + Σ<sub>odd</sub> deg(<em>v</em>) = 2|<em>E</em>|.</li>
+  <li><strong>Reduce mod 2.</strong> The even-degree sum is even, so Σ<sub>odd</sub> deg(<em>v</em>) is even.</li>
+  <li><strong>Conclude.</strong> A sum of odd numbers is even only if there is an even number of them. ∎</li>
+</ol>
 
 <h3>Theorem: components bound</h3>
-<p>A graph with n vertices and m edges has at least n-m components. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Start with n isolated vertices (n components). Each edge can reduce the component count by at most 1. After m edges, at least n-m components remain. ∎</p>
+<p>A graph with <em>n</em> vertices and <em>m</em> edges has at least <em>n</em>−<em>m</em> components. <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Start empty.</strong> With <em>n</em> vertices and no edges, there are exactly <em>n</em> components.</li>
+  <li><strong>Add edges one at a time.</strong> An edge joins two vertices; if they lie in different components those two merge (count drops by 1), while an edge inside one component leaves the count unchanged.</li>
+  <li><strong>Bound the drop.</strong> Each of the <em>m</em> edges reduces the component count by at most 1, so the total drop is at most <em>m</em>.</li>
+  <li><strong>Conclude.</strong> The remaining number of components is at least <em>n</em>−<em>m</em>. ∎</li>
+</ol>
 
 <h3>Theorem: every walk contains a path</h3>
-<p>Every u,v-walk contains a u,v-path.</p>
-<p><em>Proof.</em> If a vertex repeats, delete the cycle between its two occurrences. This shortens the walk; repeat until no vertex repeats. ∎</p>
+<p>Every <em>u</em>,<em>v</em>-walk contains a <em>u</em>,<em>v</em>-path.</p>
+<ol>
+  <li><strong>Use induction on the walk length.</strong> A walk with no repeated vertex is already a path.</li>
+  <li><strong>Find a repeat.</strong> Otherwise there is a vertex <em>x</em> occurring at positions <em>i</em>&lt;<em>j</em>.</li>
+  <li><strong>Delete the closed portion.</strong> Remove the steps from position <em>i</em>+1 to <em>j</em>; the remaining sequence is still a <em>u</em>,<em>v</em>-walk and is shorter, with the endpoint <em>v</em> unchanged.</li>
+  <li><strong>Repeat.</strong> Termination is guaranteed because the length strictly decreases; the result is a walk with no repeated vertex, i.e. a path. ∎</li>
+</ol>
 
 <h3>Theorem: connection is an equivalence relation</h3>
-<p>u~v iff there is a u,v-path is an equivalence relation; its classes are components.</p>
-<p><em>Proof.</em> Reflexive via length-0 path; symmetric by reversing; transitive by concatenating walks and using the previous theorem. ∎</p>
+<p><em>u</em>~<em>v</em> iff there is a <em>u</em>,<em>v</em>-path is an equivalence relation; its classes are components.</p>
+<ol>
+  <li><strong>Reflexive:</strong> the length-0 walk from <em>u</em> to itself counts as a path.</li>
+  <li><strong>Symmetric:</strong> reverse a <em>u</em>,<em>v</em>-path to get a <em>v</em>,<em>u</em>-path.</li>
+  <li><strong>Transitive:</strong> concatenate a <em>u</em>,<em>v</em>-walk with a <em>v</em>,<em>w</em>-walk; by the previous theorem the resulting <em>u</em>,<em>w</em>-walk contains a path.</li>
+  <li><strong>Classes:</strong> the equivalence class of <em>u</em> is exactly the set of vertices reachable from <em>u</em>, which is the definition of its connected component. ∎</li>
+</ol>
 
 <h3>Theorem: connected graph edge minimum</h3>
-<p>A connected n-vertex graph has at least n-1 edges.</p>
-<p><em>Proof.</em> Components bound with c=1 gives 1≥n-m, so m≥n-1. ∎</p>
+<p>A connected <em>n</em>-vertex graph has at least <em>n</em>−1 edges.</p>
+<ol>
+  <li><strong>Count components.</strong> A connected graph has exactly <em>c</em>=1 component.</li>
+  <li><strong>Apply the components bound.</strong> 1 ≥ <em>n</em>−<em>m</em>, so <em>m</em> ≥ <em>n</em>−1. ∎</li>
+</ol>
 
 <h3>Theorem: min degree connectivity</h3>
-<p>If simple graph G has minimum degree δ ≥ (n-1)/2, then G is connected. <span class="notice">Exam likely (Q38).</span></p>
-<p><em>Proof.</em> If disconnected, take components A,B. For u∈A, deg(u)≤|A|-1; for v∈B, deg(v)≤|B|-1. Since |A|+|B|≤n, one of |A|-1, |B|-1 is &lt; (n-1)/2, contradiction. ∎</p>
+<p>If a simple graph <em>G</em> has minimum degree δ ≥ (<em>n</em>−1)/2, then <em>G</em> is connected. <span class="notice">Exam likely (Q38).</span></p>
+<ol>
+  <li><strong>Suppose <em>G</em> is disconnected.</strong> Let its components have sizes <em>a</em><sub>1</sub>,…,<em>a</em><sub><em>r</em></sub> with <em>r</em>≥2 and Σ<em>a</em><sub><em>i</em></sub>=<em>n</em>.</li>
+  <li><strong>Bound degrees inside a component.</strong> A vertex in a component of size <em>a</em> has at most <em>a</em>−1 neighbours, so δ ≤ <em>a</em><sub><em>i</em></sub>−1 for every <em>i</em>.</li>
+  <li><strong>Convert to a size bound.</strong> Hence each <em>a</em><sub><em>i</em></sub> ≥ δ+1 ≥ (<em>n</em>+1)/2.</li>
+  <li><strong>Contradiction.</strong> Two components already give <em>n</em> ≥ <em>a</em><sub>1</sub>+<em>a</em><sub>2</sub> ≥ <em>n</em>+1, impossible. So <em>r</em>=1. ∎</li>
+</ol>
 
 <h3>Theorem: graph or complement connected</h3>
-<p>For any simple graph G, either G or its complement is connected. <span class="notice">Exam likely (Q39).</span></p>
-<p><em>Proof.</em> If G disconnected, pick u,v in different components of G. In complement, u and v are adjacent (since not adjacent in G), and any two vertices in same G-component have a common non-neighbour? More directly, if G disconnected with components C_1,...,C_r, then in complement all C_i are cliques and every cross pair is adjacent, so complement is connected for r≥2. ∎</p>
+<p>For any simple graph <em>G</em>, either <em>G</em> or its complement is connected. <span class="notice">Exam likely (Q39).</span></p>
+<ol>
+  <li><strong>If <em>G</em> is connected, done.</strong> Otherwise its components C<sub>1</sub>,…,C<sub><em>r</em></sub> satisfy <em>r</em>≥2.</li>
+  <li><strong>Cross-component pairs.</strong> If <em>u</em>∈C<sub><em>i</em></sub> and <em>v</em>∈C<sub><em>j</em></sub> with <em>i</em>≠<em>j</em>, then <em>uv</em>∉E(<em>G</em>), so <em>uv</em>∈E(<em>Ḡ</em>).</li>
+  <li><strong>Within one component.</strong> For <em>u</em>,<em>v</em>∈C<sub><em>i</em></sub>, choose <em>w</em> in another component; by step 2, <em>uw</em> and <em>wv</em> are complement edges, giving a complement path from <em>u</em> to <em>v</em>.</li>
+  <li><strong>Conclusion.</strong> Every pair of vertices is joined in the complement, so <em>Ḡ</em> is connected. ∎</li>
+</ol>
 
 <h3>Theorem: Petersen graph properties</h3>
-<p>Petersen graph has 10 vertices, 15 edges, degree 3, girth 5, diameter 2, is vertex-transitive, non-planar. <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> Vertices are 2-subsets of a 5-set; adjacency is disjointness. Degree C(3,2)=3; edges=10*3/2=15. No triangle because three pairwise disjoint 2-subsets need 6 elements. Non-adjacent vertices have unique common neighbour, ruling out 4-cycles. A 5-cycle exists. ∎</p>
+<p>The Petersen graph has 10 vertices, 15 edges, degree 3, girth 5, diameter 2, and is vertex-transitive and non-planar. <span class="notice">Exam likely.</span> <span class="notice">Not in slides - standard result.</span> (Non-planarity is quoted; the other claims are proved below.)</p>
+<ol>
+  <li><strong>Model it.</strong> Vertices are the 2-subsets of {1,2,3,4,5}; two are adjacent when the subsets are disjoint. There are <em>C</em>(5,2)=10 vertices.</li>
+  <li><strong>Degree and edges.</strong> A fixed pair {<em>a</em>,<em>b</em>} is disjoint from the <em>C</em>(3,2)=3 pairs from the remaining three elements, so the graph is 3-regular; handshaking gives 10·3/2 = 15 edges.</li>
+  <li><strong>No triangle.</strong> Three pairwise disjoint 2-subsets would need 6 distinct elements, but only 5 exist.</li>
+  <li><strong>No 4-cycle.</strong> Two non-adjacent vertices (pairs sharing one element) have exactly one common neighbour: the pair disjoint from their union. A 4-cycle would require two common neighbours, so girth ≥5; a 5-cycle exists (e.g. {1,2},{3,4},{1,5},{2,3},{4,5}), so girth is 5.</li>
+  <li><strong>Diameter 2.</strong> Adjacent pairs are at distance 1; non-adjacent pairs share exactly one neighbour as in step 4, so distance 2. ∎</li>
+</ol>
 
-<h2>Complements, cliques, and matrices</h2>
+<h3>Complements, cliques, and matrices</h3>
 <div class="card">
   <p><strong>Complement:</strong> same vertices; uv is an edge iff it is not an edge in G.</p>
   <p><strong>Clique:</strong> pairwise adjacent vertices. <strong>Independent set:</strong> pairwise non-adjacent.</p>
   <p><strong>Adjacency matrix:</strong> A_{ij}=number of edges between v_i and v_j. <strong>Incidence matrix:</strong> M_{ij}=1 if v_i is endpoint of e_j.</p>
 </div>
 
-<h2>Automorphisms of K_{r,s}</h2>
+<h3>Automorphisms of K<sub><em>r</em>,<em>s</em></sub></h3>
 <div class="card">
-  <p>If r≠s: r!s! automorphisms. If r=s: 2(r!)^2 automorphisms.</p>
+  <p>If <em>r</em>≠<em>s</em>: <em>r</em>!<em>s</em>! automorphisms. If <em>r</em>=<em>s</em>: 2(<em>r</em>!)<sup>2</sup> automorphisms.</p>
+  <ol>
+    <li><strong>Permute within parts.</strong> The two partite sets have sizes <em>r</em> and <em>s</em>; any permutation inside each part preserves all cross edges, giving <em>r</em>!<em>s</em>! automorphisms.</li>
+    <li><strong>Swap parts when possible.</strong> If <em>r</em>=<em>s</em>, exchanging the two parts is also an automorphism, doubling the count to 2(<em>r</em>!)<sup>2</sup>; for <em>r</em>=3 this is 2·6<sup>2</sup> = 72.</li>
+    <li><strong>Completeness.</strong> An automorphism must send partite sets to partite sets because adjacency within a part is uniformly absent, so no further maps exist.</li>
+  </ol>
 </div>
 
-<h2>Unlabelled graphs on 4 vertices</h2>
+<h3>Unlabelled graphs on 4 vertices</h3>
 <div class="card">
-  <p>There are 11 isomorphism classes of simple graphs on 4 vertices.</p>
+  <p>There are 11 isomorphism classes of simple graphs on 4 vertices, although there are 2<sup><em>C</em>(4,2)</sup> = 2<sup>6</sup> = 64 labelled ones.</p>
+  <ol>
+    <li><strong>Count labelled graphs.</strong> Six possible edges may each be present or absent, giving 64.</li>
+    <li><strong>Identify up to relabelling.</strong> Grouping the 64 by isomorphism yields 11 classes, a standard enumeration quoted from the lecture summary.</li>
+  </ol>
 </div>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1</h3>
-<p>For graph with edges wx,wy, two xy, yz: degrees are w=2, x=3, y=4, z=1; sum=10=2*5 edges.</p>
+<h3>Example 1 (easy): degree sum with parallel edges</h3>
+<p>Take edges <em>wx</em>, <em>wy</em>, two copies of <em>xy</em>, and <em>yz</em> — five edges in all. Counting incidences: deg(<em>w</em>)=2 (<em>wx</em>, <em>wy</em>); deg(<em>x</em>)=3 (<em>wx</em> and two <em>xy</em>); deg(<em>y</em>)=4 (<em>wy</em>, two <em>xy</em>, <em>yz</em>); deg(<em>z</em>)=1. Sum = 2+3+4+1 = 10 = 2·5, confirming the handshaking lemma.</p>
 
-<h3>Example 2</h3>
-<p>Complete graph K_4 has 6 edges and chromatic number 4.</p>
+<h3>Example 2 (easy): the complete graph K<sub>4</sub></h3>
+<p>Every pair of the 4 vertices is joined, so |E| = <em>C</em>(4,2) = 6. Each vertex has degree 3, sum = 4·3 = 12 = 2·6. Since all four vertices are pairwise adjacent, they need four different colours, so χ(K<sub>4</sub>)=4.</p>
 
-<h3>Example 3</h3>
-<p>Simple graphs on 4 labeled vertices: 2^6=64; unlabeled: 11.</p>
+<h3>Example 3 (easy): counting graphs on four vertices</h3>
+<p>There are <em>C</em>(4,2)=6 possible edges, each independently present or absent, so 2<sup>6</sup>=64 labelled simple graphs. Up to isomorphism these fall into 11 classes.</p>
 
-<h3>Example 4</h3>
-<p>K_{3,3} has 9 edges, is 3-regular bipartite, non-planar.</p>
+<h3>Example 4 (medium): the complete bipartite graph K<sub>3,3</sub></h3>
+<p>Every one of the 3 vertices in the first part joins each of the 3 in the second, giving 3·3 = 9 edges and degree 3 at every vertex. It is bipartite by construction (one colour per part); it is non-planar, a standard result proved on page 15.</p>
 
-<h3>Example 5</h3>
-<p>Isomorphism: P4 with edges ab,bc,cd is isomorphic to path xz,zy,yw via a→x,b→z,c→y,d→w.</p>
+<h3>Example 5 (medium): an explicit isomorphism</h3>
+<p>Let G be the path with edges <em>ab</em>, <em>bc</em>, <em>cd</em> and H the path with edges <em>xz</em>, <em>zy</em>, <em>yw</em>. Define <em>a</em>↦<em>x</em>, <em>b</em>↦<em>z</em>, <em>c</em>↦<em>y</em>, <em>d</em>↦<em>w</em>. This is a bijection, and each G-edge maps to the corresponding H-edge: <em>ab</em>↦<em>xz</em>, <em>bc</em>↦<em>zy</em>, <em>cd</em>↦<em>yw</em>. Hence G≅H.</p>
+
+<h3>Example 6 (medium): a complement</h3>
+<p>Let V={a,b,c,d} and E(G)={ab,bc,cd}. The six possible edges are ab, ac, ad, bc, bd, cd, so E(Ḡ) = {ac,ad,bd}. Check the formula |E(G)|+|E(Ḡ)| = 3+3 = 6 = <em>C</em>(4,2), and deg<sub>Ḡ</sub>(a)=2 = 3−deg<sub>G</sub>(a)=3−1.</p>
+
+<h3>Example 7 (hard): a component bound</h3>
+<p>A graph with 8 vertices and 5 edges has at least 8−5 = 3 components. The bound need not be tight: if the 5 edges form a path on 6 vertices, the components are that path plus 2 isolated vertices, exactly 3; if they form a 5-cycle on 5 vertices, there are 4 components.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Degree-sum and component-bound calculator.</p>
+<p>Degree-sum and component-bound calculator with intermediate steps and input validation.</p>
 <div class="card">
-  <label>Vertices n <input id="nGB" type="number" value="5" oninput="calcGB()"></label>
-  <label>Edges m <input id="mGB" type="number" value="4" oninput="calcGB()"></label>
-  <p id="gbResult"></p>
+  <label>Vertices n <input id="nGB" type="text" inputmode="numeric" value="5" size="4" oninput="calcGB()"></label>
+  <label>Edges m <input id="mGB" type="text" inputmode="numeric" value="4" size="4" oninput="calcGB()"></label>
+  <div id="gbResult" aria-live="polite"></div>
 </div>
 <script>
 function calcGB(){
-  var n=+document.getElementById('nGB').value;
-  var m=+document.getElementById('mGB').value;
-  document.getElementById('gbResult').textContent='Min components ≥ n-m = '+(n-m)+'; simple graphs on n labeled vertices = 2^C(n,2).';
+  var out=document.getElementById('gbResult');
+  out.textContent='';
+  function line(t){ var p=document.createElement('p'); p.textContent=t; out.appendChild(p); }
+  function whole(v){ return /^[0-9]+$/.test(String(v).trim()); }
+  var rn=String(document.getElementById('nGB').value).trim();
+  var rm=String(document.getElementById('mGB').value).trim();
+  if(!whole(rn)||!whole(rm)){ line('Input error: enter whole numbers for n and m.'); return; }
+  var n=parseInt(rn,10), m=parseInt(rm,10);
+  if(n<0||n>64||m>2016){ line('Input error: use 0 <= n <= 64 and m <= 2016.'); return; }
+  var maxEdges=n*(n-1)/2;
+  if(m>maxEdges){ line('Input error: a simple graph on '+n+' vertices has at most '+maxEdges+' edges.'); return; }
+  line('Components bound: at least n - m = '+n+' - '+m+' = '+(n-m)+'.');
+  line('Handshaking: sum of degrees = 2m = '+(2*m)+'.');
+  line('Possible edges C(n,2) = '+n+'·'+ (n-1) +'/2 = '+maxEdges+'.');
+  if(n<=10) line('Labelled simple graphs: 2^'+maxEdges+' = '+Math.pow(2,maxEdges)+'.');
+  else line('Labelled simple graphs: 2^'+maxEdges+' (too large to print exactly).');
+  if(m>=n-1) line('Note: m >= n-1 is necessary, not sufficient, for connectedness.');
 }
 calcGB();
 </script>
 
 <div class="notice"><strong>Slide errors I fixed:</strong> Walk definition index range in the slides is too narrow; the endpoint condition applies to every edge. Walk-to-path induction step uses length at least 1.</div>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>These two trees answer Q32: both are connected and simple, both have degree sequence 3,2,2,1,1,1, yet they are not isomorphic. At the degree-3 vertex the branch lengths differ.</p>
+<svg width="320" height="170" viewBox="0 0 320 170" role="img" aria-label="Two nonisomorphic trees with the same degree sequence: branch lengths 1,1,2 and 1,2,2">
+  <text x="80" y="18" text-anchor="middle" font-size="12" fill="var(--muted)">A: branches 1, 1, 2</text>
+  <text x="240" y="18" text-anchor="middle" font-size="12" fill="var(--muted)">B: branches 1, 2, 2</text>
+  <g stroke="var(--accent)" stroke-width="2">
+    <line x1="90" y1="50" x2="50" y2="80"/><line x1="90" y1="50" x2="130" y2="80"/>
+    <line x1="90" y1="50" x2="90" y2="110"/><line x1="50" y1="80" x2="30" y2="115"/><line x1="30" y1="115" x2="15" y2="150"/>
+    <line x1="240" y1="50" x2="200" y2="80"/><line x1="240" y1="50" x2="280" y2="80"/>
+    <line x1="240" y1="50" x2="240" y2="110"/><line x1="200" y1="80" x2="180" y2="120"/><line x1="280" y1="80" x2="300" y2="120"/>
+  </g>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <circle cx="90" cy="50" r="8"/><circle cx="50" cy="80" r="8"/><circle cx="130" cy="80" r="8"/><circle cx="90" cy="110" r="8"/><circle cx="30" cy="115" r="8"/><circle cx="15" cy="150" r="8"/>
+    <circle cx="240" cy="50" r="8"/><circle cx="200" cy="80" r="8"/><circle cx="280" cy="80" r="8"/><circle cx="240" cy="110" r="8"/><circle cx="180" cy="120" r="8"/><circle cx="300" cy="120" r="8"/>
+  </g>
+  <text x="160" y="166" text-anchor="middle" font-size="11" fill="var(--muted)">both have degree sequence 3,2,2,1,1,1 — degree sequence does not decide isomorphism</text>
+</svg>
+
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Confusing walk, trail, and path.</li>
-  <li>Forgetting loops contribute 2 to degree.</li>
-  <li>Using degree sequence alone to prove isomorphism.</li>
-  <li>Thinking n-1 edges guarantee connectedness.</li>
-  <li>Confusing maximal clique with maximum clique.</li>
-</ul>
+<ol>
+  <li><strong>Confusing walk, trail and path.</strong> Wrong: call a-b-c-a-b a path. Right: it is a walk that repeats vertex <em>a</em> and edge <em>ab</em>; a path such as a-b-c-d repeats no vertex.</li>
+  <li><strong>Under-counting a loop.</strong> Wrong: a loop adds 1 to the degree of its vertex. Right: it adds 2, so handshaking still gives an even degree sum; a single looped vertex has degree 2, not 1.</li>
+  <li><strong>Using a degree sequence to prove isomorphism.</strong> Wrong: conclude the two trees in section 8 are isomorphic because both have degree sequence 3,2,2,1,1,1. Right: their branch lengths at the degree-3 vertex are 1,1,2 and 1,2,2, so they are not isomorphic.</li>
+  <li><strong>Assuming n−1 edges force connectedness.</strong> Wrong: 4 vertices and 3 edges always give a connected graph. Right: a triangle on three vertices plus one isolated vertex has n=4, m=3 and is disconnected; n−1 is only a lower bound.</li>
+  <li><strong>Confusing maximal with maximum clique.</strong> Wrong: every maximal clique is a largest clique. Right: with a triangle 1-2-3 and an extra vertex 4 joined only to 1, the clique {1,4} is maximal of size 2, while the maximum clique {1,2,3} has size 3.</li>
+  <li><strong>Wrong complement degree.</strong> Wrong: deg<sub>Ḡ</sub>(<em>v</em>) = <em>n</em>−deg<sub>G</sub>(<em>v</em>). Right: there are only <em>n</em>−1 other vertices, so deg<sub>Ḡ</sub>(<em>v</em>) = <em>n</em>−1−deg<sub>G</sub>(<em>v</em>); in P<sub>4</sub>, deg<sub>G</sub>(a)=1 gives complement degree 2, not 3.</li>
+  <li><strong>Double-counting Petersen edges.</strong> Wrong: 10 vertices of degree 3 give 30 edges. Right: each edge has two ends, so 10·3/2 = 15.</li>
+</ol>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
-<summary>Q31. Prove that in any graph, number of odd-degree vertices is even.</summary>
-<p>Solution: handshaking lemma proof above.</p>
+<summary>Q31. Prove that in any graph the number of odd-degree vertices is even.</summary>
+<p><strong>Step 1.</strong> Every edge contributes two incidences, so Σ<sub><em>v</em></sub> deg(<em>v</em>) = 2|<em>E</em>|, which is even.</p>
+<p><strong>Step 2.</strong> Split the sum into even-degree and odd-degree vertices. The even part is even, so the odd part is also even.</p>
+<p><strong>Step 3.</strong> A sum of odd integers is even only when there is an even number of terms, so the number of odd-degree vertices is even.</p>
 </details>
 
 <details>
-<summary>Q32. Give connected simple nonisomorphic graphs with same degree sequence.</summary>
-<p>Solution: two nonisomorphic trees with degree sequence 3,2,2,1,1,1 (for example, a star K1,3 with a path attached in two different ways).</p>
+<summary>Q32. Give connected simple nonisomorphic graphs with the same degree sequence.</summary>
+<p><strong>Step 1.</strong> Both trees drawn in section 8 have six vertices and edges {01,03,04,12,25} and {01,02,03,14,25} respectively. Both are connected, have 5 edges, and are therefore trees.</p>
+<p><strong>Step 2.</strong> In each, the degrees (at vertices 0,1,2,3,4,5) are 3,2,2,1,1,1, so the degree sequences agree.</p>
+<p><strong>Step 3.</strong> At the unique degree-3 vertex, the three branches have lengths 1,1,2 in the first tree and 1,2,2 in the second. Any isomorphism would preserve the degree-3 vertex and its branch lengths, so none exists. Brute-force enumeration over all 6! relabellings confirms the two are not isomorphic.</p>
 </details>
 
 <details>
-<summary>Q33. Prove if every vertex has degree at least 2, then G contains a cycle.</summary>
-<p>Solution: take a maximal path; its endpoint has a neighbor on the path, forming a cycle.</p>
+<summary>Q33. Prove that if every vertex has degree at least 2, then G contains a cycle.</summary>
+<p><strong>Step 1.</strong> Take a longest path <em>v</em><sub>0</sub><em>v</em><sub>1</sub>…<em>v</em><sub><em>k</em></sub>; it exists because the graph is finite.</p>
+<p><strong>Step 2.</strong> The endpoint <em>v</em><sub>0</sub> has degree at least 2, so it has a neighbour other than <em>v</em><sub>1</sub>.</p>
+<p><strong>Step 3.</strong> Every neighbour of <em>v</em><sub>0</sub> must lie on the path: otherwise the path could be extended at the front, contradicting maximality.</p>
+<p><strong>Step 4.</strong> Hence <em>v</em><sub>0</sub> is adjacent to some <em>v</em><sub><em>i</em></sub> with <em>i</em>≥2, and <em>v</em><sub>0</sub><em>v</em><sub>1</sub>…<em>v</em><sub><em>i</em></sub><em>v</em><sub>0</sub> is a cycle. ∎</p>
 </details>
 
 <details>
-<summary>Q38. Prove if δ≥(n-1)/2 then G is connected.</summary>
-<p>Solution: proof above.</p>
+<summary>Q38. Prove that δ ≥ (n−1)/2 implies G is connected.</summary>
+<p><strong>Step 1.</strong> Suppose <em>G</em> is disconnected, with components of sizes <em>a</em><sub>1</sub>,…,<em>a</em><em>r</em>, <em>r</em>≥2.</p>
+<p><strong>Step 2.</strong> A vertex in a component of size <em>a</em> has at most <em>a</em>−1 neighbours, so δ ≤ <em>a</em><sub><em>i</em></sub>−1, giving <em>a</em><sub><em>i</em></sub> ≥ δ+1 ≥ (<em>n</em>+1)/2.</p>
+<p><strong>Step 3.</strong> Two components would then contain at least <em>n</em>+1 vertices between them, contradicting the total of <em>n</em>. Hence <em>r</em>=1 and <em>G</em> is connected.</p>
 </details>
 
 <details>
-<summary>Q39. Prove for simple graph and complement, at least one is connected.</summary>
-<p>Solution: proof above.</p>
+<summary>Q39. Prove that for a simple graph G, either G or its complement is connected.</summary>
+<p><strong>Step 1.</strong> If <em>G</em> is connected there is nothing to prove, so assume <em>G</em> has components C<sub>1</sub>,…,C<sub><em>r</em></sub> with <em>r</em>≥2.</p>
+<p><strong>Step 2.</strong> If <em>u</em> and <em>v</em> lie in different components, <em>uv</em> is not an edge of <em>G</em>, so it is an edge of the complement.</p>
+<p><strong>Step 3.</strong> If <em>u</em>,<em>v</em> lie in the same C<sub><em>i</em></sub>, choose <em>w</em> in another component; by step 2 both <em>uw</em> and <em>wv</em> are complement edges, giving a complement path.</p>
+<p><strong>Step 4.</strong> Every pair is joined in the complement, so <em>Ḡ</em> is connected. ∎</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. Handshaking lemma for K4?</summary><p>Sum degrees 12=2*6.</p></details>
-<details><summary>2. Min components for 8 vertices 5 edges?</summary><p>At least 3.</p></details>
-<details><summary>3. Petersen graph degree?</summary><p>3.</p></details>
-<details><summary>4. Simple graphs on 3 vertices?</summary><p>2^3=8.</p></details>
-<details><summary>5. Is K_{2,3} planar?</summary><p>Yes.</p></details>
+<details>
+<summary>1. Check the handshaking lemma for K<sub>4</sub>.</summary>
+<p>All 4 vertices have degree 3, so the degree sum is 4·3 = 12. The graph has <em>C</em>(4,2)=6 edges, and 2·6 = 12. ✔</p>
+</details>
+<details>
+<summary>2. Minimum components for 8 vertices and 5 edges?</summary>
+<p>At least <em>n</em>−<em>m</em> = 8−5 = 3. Each edge can merge at most two components, so it is impossible to reach fewer than 3.</p>
+</details>
+<details>
+<summary>3. Petersen graph degree and edge count?</summary>
+<p>A vertex is a 2-subset of a 5-set; the disjoint 2-subsets of the remaining 3 elements number <em>C</em>(3,2)=3, so the degree is 3. By handshaking, edges = 10·3/2 = 15.</p>
+</details>
+<details>
+<summary>4. How many simple graphs on 3 labelled vertices?</summary>
+<p>There are <em>C</em>(3,2)=3 possible edges, each independently present or absent, giving 2<sup>3</sup> = 8 graphs.</p>
+</details>
+<details>
+<summary>5. Is K<sub>2,3</sub> planar?</summary>
+<p>Yes. <span class="notice">Not in slides - standard result.</span> It has 5 vertices and 2·3 = 6 edges; a planar bipartite graph obeys <em>e</em> ≤ 2<em>v</em>−4 = 6, so the bound is tight and realisable: place the two partite vertices inside two of the three faces around a path through the three others. (K<sub>3,3</sub>, by contrast, is non-planar.)</p>
+</details>
+<details>
+<summary>6. How many edges has the path P<sub>4</sub>?</summary>
+<p>A path on <em>n</em> vertices has <em>n</em>−1 edges, so P<sub>4</sub> has 3. Its two endpoints have degree 1 and its two internal vertices degree 2.</p>
+</details>
+<details>
+<summary>7. In P<sub>4</sub> on vertices a-b-c-d, what is deg<sub>Ḡ</sub>(a)?</summary>
+<p>With <em>n</em>=4 and deg<sub>G</sub>(a)=1, the complement degree is <em>n</em>−1−deg<sub>G</sub>(a) = 3−1 = 2 (the complement edges ac and ad).</p>
+</details>
+<details>
+<summary>8. How many automorphisms has K<sub>3,3</sub>?</summary>
+<p>Here <em>r</em>=<em>s</em>=3, so the count is 2(<em>r</em>!)² = 2·6² = 72: 3! permutations in each part, times 2 for swapping the equal-sized parts.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>Handshaking: sum degrees=2|E|; odd-degree vertices even.</p>
-  <p>Components ≥ n-m; connected ⇒ m≥n-1.</p>
-  <p>Every walk contains a path.</p>
-  <p>Min degree ≥(n-1)/2 ⇒ connected.</p>
-  <p>Graph or complement connected.</p>
-  <p>Petersen: 10 vertices, 15 edges, degree 3, girth 5.</p>
-  <p>Simple graphs on n vertices: 2^{C(n,2)}.</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong>Graph:</strong> vertex set V, edge set E, and an endpoint assignment for each edge.</li>
+    <li><strong>Simple:</strong> no loops, no parallel edges; then E⊆C(V,2) and edges are unordered pairs.</li>
+    <li><strong>Degree:</strong> number of incident edges; a loop contributes 2.</li>
+    <li><strong>Walk / trail / path:</strong> repeats allowed / no repeated edges / no repeated vertices.</li>
+    <li><strong>Connected:</strong> a path joins every pair; a component is a maximal connected subgraph.</li>
+    <li><strong>Isomorphism:</strong> a vertex bijection preserving adjacency in both directions.</li>
+    <li><strong>Complement:</strong> same vertices, uv present iff absent in G; deg<sub>Ḡ</sub>(v)=n−1−deg<sub>G</sub>(v).</li>
+    <li><strong>Clique / independent set:</strong> pairwise adjacent / pairwise non-adjacent.</li>
+  </ul>
+
+  <h3>Theorems</h3>
+  <ul>
+    <li>Handshaking: Σ deg(v) = 2|E|; the number of odd-degree vertices is even.</li>
+    <li>Components ≥ n−m; connected ⇒ m ≥ n−1.</li>
+    <li>Every walk contains a path; connection is an equivalence relation with components as classes.</li>
+    <li>δ ≥ (n−1)/2 ⇒ connected; for any simple G, G or Ḡ is connected.</li>
+    <li>Petersen: 10 vertices, 15 edges, 3-regular, girth 5, diameter 2, vertex-transitive, non-planar.</li>
+    <li>Aut(K<sub><em>r</em>,<em>s</em></sub>) = <em>r</em>!<em>s</em>! if <em>r</em>≠<em>s</em>, and 2(<em>r</em>!)² if <em>r</em>=<em>s</em>.</li>
+    <li>Labelled simple graphs on <em>n</em> vertices: 2<sup>C(<em>n</em>,2)</sup>; unlabelled on 4 vertices: 11.</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td><em>C</em>(4,2), |E(K<sub>4</sub>)|</td><td>6</td><td>complete graph on 4 vertices</td></tr>
+      <tr><td>2<sup><em>C</em>(4,2)</sup></td><td>64</td><td>labelled graphs on 4 vertices</td></tr>
+      <tr><td>2<sup><em>C</em>(3,2)</sup></td><td>8</td><td>labelled graphs on 3 vertices</td></tr>
+      <tr><td>10·3/2</td><td>15</td><td>Petersen edges</td></tr>
+      <tr><td>2·(3!)<sup>2</sup></td><td>72</td><td>automorphisms of K<sub>3,3</sub></td></tr>
+      <tr><td>8−5</td><td>3</td><td>component bound example</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>State whether loops or parallel edges are allowed before using simple-graph formulas.</li>
+    <li>Count incidences with handshaking; loops count twice.</li>
+    <li>Use degree sequences only as a quick invariant, never as proof of isomorphism.</li>
+    <li>For connectivity, check the exact hypothesis (degree bound, complement, or edge count).</li>
+    <li>Give a concrete invariant — cycles, branch lengths, bipartition — to prove non-isomorphism.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

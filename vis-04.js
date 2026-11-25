@@ -103,5 +103,3 @@
   var cap6 = document.createElement("p"); cap6.className = "vis-caption"; cap6.innerHTML = "<strong>What to notice:</strong> shared letters make events impossible. <strong>Try this:</strong> identify which pairs share letters.";
   f.appendChild(cap6);
 })();
-EOF
-node --check vis-04.js && echo "vis-04 ok"

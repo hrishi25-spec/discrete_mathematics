@@ -12,5 +12,3 @@
   var c=document.createElement("p"); c.className="vis-caption"; c.innerHTML="<strong>What to notice:</strong> S(n,k)=kS(n-1,k)+S(n-1,k-1). <strong>Try this:</strong> increase n.";
   s.appendChild(c);
 })();
-EOF
-node --check vis-03.js && echo ok

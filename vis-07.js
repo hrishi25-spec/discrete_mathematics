@@ -12,5 +12,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> rows become columns. <strong>Try this:</strong> enter 5,3,1.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-07.js && echo ok

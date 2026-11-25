@@ -6,6 +6,13 @@
   <title>06 Generating Functions</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="visuals.css">
+  <style>
+    /* Page-local: keep wide tables from widening the 360px layout. */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) {
+      .site-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
 </head>
 <body>
 <main>
@@ -18,7 +25,7 @@
 <p>Sequences and recurrences from <a href="01-sets-relations.html">page 01</a> and <a href="05-recurrences.html">page 05</a>; basic counting from <a href="02-basic-counting.html">page 02</a>.</p>
 
 <h2>3. Intuition</h2>
-<p>A generating function is a clothesline: hang the sequence terms as coefficients of powers of x. Multiplying series corresponds to combining independent choices, so counting problems become polynomial multiplication. The picture below shows Fibonacci terms hanging on the line.</p>
+<p>A generating function is a clothesline: hang the sequence terms as coefficients of powers of <em>x</em>. Multiplying series corresponds to combining independent choices, so counting problems become polynomial multiplication. The first picture shows Fibonacci terms hanging on the line; the second shows why multiplying by <em>x</em> shifts every coefficient one place to the right.</p>
 <svg width="360" height="90" viewBox="0 0 360 90" aria-label="Generating function clothesline">
   <line x1="20" y1="45" x2="340" y2="45" stroke="#333" stroke-width="2"/>
   <text x="40" y="35" font-size="12">0</text>
@@ -27,6 +34,28 @@
   <text x="190" y="35" font-size="12">2x^3</text>
   <text x="240" y="35" font-size="12">3x^4</text>
   <text x="290" y="35" font-size="12">5x^5</text>
+</svg>
+<svg width="340" height="130" viewBox="0 0 340 130" role="img" aria-label="Multiplying a generating function by x shifts coefficients right: G has a0 to a4, xG has 0 then a0 to a3">
+  <text x="170" y="16" text-anchor="middle" font-size="12" fill="var(--muted)">multiplying by x shifts every coefficient one place right</text>
+  <text x="16" y="56" font-size="12" fill="var(--text)">G</text>
+  <text x="16" y="101" font-size="12" fill="var(--text)">xG</text>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <rect x="40" y="42" width="50" height="26" rx="4"/>
+    <rect x="100" y="42" width="50" height="26" rx="4"/>
+    <rect x="160" y="42" width="50" height="26" rx="4"/>
+    <rect x="220" y="42" width="50" height="26" rx="4"/>
+    <rect x="280" y="42" width="50" height="26" rx="4"/>
+    <rect x="40" y="87" width="50" height="26" rx="4"/>
+    <rect x="100" y="87" width="50" height="26" rx="4"/>
+    <rect x="160" y="87" width="50" height="26" rx="4"/>
+    <rect x="220" y="87" width="50" height="26" rx="4"/>
+    <rect x="280" y="87" width="50" height="26" rx="4"/>
+  </g>
+  <g font-size="12" text-anchor="middle" fill="var(--text)">
+    <text x="65" y="59">a0</text><text x="125" y="59">a1</text><text x="185" y="59">a2</text><text x="245" y="59">a3</text><text x="305" y="59">a4</text>
+    <text x="65" y="104">0</text><text x="125" y="104">a0</text><text x="185" y="104">a1</text><text x="245" y="104">a2</text><text x="305" y="104">a3</text>
+  </g>
+  <text x="170" y="126" text-anchor="middle" font-size="11" fill="var(--muted)">xG has no constant term; [x^n](xG) = a_{n−1}</text>
 </svg>
 
 <h2>4. Definitions</h2>
@@ -38,87 +67,226 @@
 </div>
 
 <h2>5. Theorems and complete proofs</h2>
+<p>Every identity below is proved by expanding a product of power series and reading off a coefficient.</p>
+
+<h3>Theorem: product of generating functions (convolution)</h3>
+<p>If <em>G</em>(<em>x</em>)=Σ<sub><em>n</em>≥0</sub><em>a</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup> and <em>H</em>(<em>x</em>)=Σ<sub><em>n</em>≥0</sub><em>b</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup>, then <em>G</em>(<em>x</em>)<em>H</em>(<em>x</em>) = Σ<sub><em>n</em>≥0</sub> <em>c</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup> with <em>c</em><sub><em>n</em></sub> = Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup> <em>a</em><sub><em>i</em></sub><em>b</em><sub><em>n</em>−<em>i</em></sub>.</p>
+<ol>
+  <li><strong>Multiply term by term.</strong> <em>G</em>(<em>x</em>)<em>H</em>(<em>x</em>) = Σ<sub><em>i</em>,<em>j</em>≥0</sub> <em>a</em><sub><em>i</em></sub><em>b</em><sub><em>j</em></sub><em>x</em><sup><em>i</em>+<em>j</em></sup>.</li>
+  <li><strong>Collect like powers.</strong> The coefficient of <em>x</em><sup><em>n</em></sup> receives exactly the pairs with <em>i</em>+<em>j</em>=<em>n</em>, i.e. <em>j</em>=<em>n</em>−<em>i</em> with 0≤<em>i</em>≤<em>n</em>.</li>
+  <li><strong>Write the coefficient.</strong> Hence <em>c</em><sub><em>n</em></sub> = Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup><em>a</em><sub><em>i</em></sub><em>b</em><sub><em>n</em>−<em>i</em></sub>; the sum is finite, so no convergence issue arises for a formal power series. ∎</li>
+</ol>
 
 <h3>Theorem: Fibonacci generating function</h3>
-<p>If F_0=0, F_1=1, F_n=F_{n-1}+F_{n-2}, then G(x)=x/(1-x-x^2). <span class="notice">Exam likely.</span></p>
-<p><em>Proof.</em> G=F_0+F_1 x+Σ_{n≥2}F_n x^n = x+Σ_{n≥2}(F_{n-1}+F_{n-2})x^n = x+xΣ_{n≥2}F_{n-1}x^{n-1}+x^2Σ_{n≥2}F_{n-2}x^{n-2} = x+x(G-F_0)+x^2 G = x+xG+x^2G. Hence G(1-x-x^2)=x. ∎</p>
+<p>If <em>F</em><sub>0</sub>=0, <em>F</em><sub>1</sub>=1, <em>F</em><sub><em>n</em></sub>=<em>F</em><sub><em>n</em>−1</sub>+<em>F</em><sub><em>n</em>−2</sub>, then <em>G</em>(<em>x</em>)=<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>). <span class="notice">Exam likely.</span></p>
+<ol>
+  <li><strong>Write the series.</strong> <em>G</em>(<em>x</em>) = <em>F</em><sub>0</sub> + <em>F</em><sub>1</sub><em>x</em> + Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup> = <em>x</em> + Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup>.</li>
+  <li><strong>Use the recurrence.</strong> Replace <em>F</em><sub><em>n</em></sub> by <em>F</em><sub><em>n</em>−1</sub>+<em>F</em><sub><em>n</em>−2</sub>, so the tail becomes Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em>−1</sub><em>x</em><sup><em>n</em></sup> + Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em>−2</sub><em>x</em><sup><em>n</em></sup>.</li>
+  <li><strong>Factor out powers of <em>x</em>.</strong> The first sum is <em>x</em>Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em>−1</sub><em>x</em><sup><em>n</em>−1</sup> = <em>x</em>(<em>G</em>−<em>F</em><sub>0</sub>) = <em>xG</em>, and the second is <em>x</em><sup>2</sup>Σ<sub><em>n</em>≥2</sub><em>F</em><sub><em>n</em>−2</sub><em>x</em><sup><em>n</em>−2</sup> = <em>x</em><sup>2</sup><em>G</em>.</li>
+  <li><strong>Solve.</strong> <em>G</em> = <em>x</em> + <em>xG</em> + <em>x</em><sup>2</sup><em>G</em>, so <em>G</em>(1−<em>x</em>−<em>x</em><sup>2</sup>) = <em>x</em> and <em>G</em>(<em>x</em>)=<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>). ∎</li>
+</ol>
 
 <h3>Theorem: redundant combinations via generating functions</h3>
-<p>The number of multisets of size r from n types is C(n+r-1,r), and its generating function is 1/(1-x)^n.</p>
-<p><em>Proof.</em> Each type contributes 1+x+x^2+...=1/(1-x). Multiplying n types gives 1/(1-x)^n. The coefficient of x^r is (−1)^r C(-n,r)=C(n+r-1,r). ∎</p>
+<p>The number of multisets of size <em>r</em> from <em>n</em> types is <em>C</em>(<em>n</em>+<em>r</em>−1,<em>r</em>), and the generating function is 1/(1−<em>x</em>)<sup><em>n</em></sup>.</p>
+<ol>
+  <li><strong>Encode a multiset by counts.</strong> If type <em>i</em> is chosen <em>y</em><sub><em>i</em></sub> times, the multiset of size <em>r</em> satisfies <em>y</em><sub>1</sub>+…+<em>y</em><sub><em>n</em></sub>=<em>r</em> with every <em>y</em><sub><em>i</em></sub>≥0.</li>
+  <li><strong>One type contributes a geometric series.</strong> The possible counts 0,1,2,… give the factor 1+<em>x</em>+<em>x</em><sup>2</sup>+… = 1/(1−<em>x</em>).</li>
+  <li><strong>Multiply the independent types.</strong> By the convolution theorem, the product (1/(1−<em>x</em>))<sup><em>n</em></sup> has coefficient of <em>x</em><sup><em>r</em></sup> equal to the number of count-tuples summing to <em>r</em>.</li>
+  <li><strong>Extract the coefficient.</strong> By the binomial series below, [<em>x</em><sup><em>r</em></sup>](1−<em>x</em>)<sup>−<em>n</em></sup> = <em>C</em>(<em>n</em>+<em>r</em>−1,<em>r</em>). ∎</li>
+</ol>
 
 <h3>Theorem: compositions with order counting</h3>
-<p>The number of compositions of n into exactly r positive parts is C(n-1,r-1), with generating function (x/(1-x))^r.</p>
-<p><em>Proof.</em> Each part is x+x^2+...=x/(1-x). Multiplying r parts gives x^r/(1-x)^r. Coefficient of x^n is coefficient of x^{n-r} in (1-x)^{-r}, namely C(n-1,r-1). ∎</p>
+<p>The number of compositions of <em>n</em> into exactly <em>r</em> positive parts is <em>C</em>(<em>n</em>−1,<em>r</em>−1), with generating function (<em>x</em>/(1−<em>x</em>))<sup><em>r</em></sup>.</p>
+<ol>
+  <li><strong>Model one part.</strong> A positive part can be 1, 2, 3, …, contributing <em>x</em>+<em>x</em><sup>2</sup>+… = <em>x</em>/(1−<em>x</em>).</li>
+  <li><strong>Multiply <em>r</em> ordered parts.</strong> The product is <em>x</em><sup><em>r</em></sup>/(1−<em>x</em>)<sup><em>r</em></sup>; order is already built in because the factors are distinguished.</li>
+  <li><strong>Shift the coefficient.</strong> [<em>x</em><sup><em>n</em></sup>] <em>x</em><sup><em>r</em></sup>/(1−<em>x</em>)<sup><em>r</em></sup> = [<em>x</em><sup><em>n</em>−<em>r</em></sup>](1−<em>x</em>)<sup>−<em>r</em></sup> = <em>C</em>(<em>r</em>+(<em>n</em>−<em>r</em>)−1,<em>n</em>−<em>r</em>) = <em>C</em>(<em>n</em>−1,<em>r</em>−1), using the symmetry of binomial coefficients. ∎</li>
+</ol>
 
 <h3>Theorem: binomial series</h3>
-<p>(1-x)^{-r}=Σ_{m≥0} C(r+m-1,m) x^m.</p>
-<p><em>Proof.</em> This is the generalized binomial theorem with exponent -r. ∎</p>
+<p>(1−<em>x</em>)<sup>−<em>r</em></sup> = Σ<sub><em>m</em>≥0</sub> <em>C</em>(<em>r</em>+<em>m</em>−1,<em>m</em>) <em>x</em><sup><em>m</em></sup>.</p>
+<ol>
+  <li><strong>Write the reciprocal as a power.</strong> (1−<em>x</em>)<sup>−<em>r</em></sup> = (1+<em>x</em>+<em>x</em><sup>2</sup>+…)<sup><em>r</em></sup>.</li>
+  <li><strong>Expand the product.</strong> By the convolution theorem, the coefficient of <em>x</em><sup><em>m</em></sup> is the number of <em>r</em>-tuples of nonnegative integers whose entries sum to <em>m</em>.</li>
+  <li><strong>Count those tuples.</strong> Stars and bars gives <em>C</em>(<em>m</em>+<em>r</em>−1,<em>r</em>−1) = <em>C</em>(<em>m</em>+<em>r</em>−1,<em>m</em>).</li>
+  <li><strong>Equivalent form.</strong> The same coefficient is (−1)<sup><em>m</em></sup><em>C</em>(−<em>r</em>,<em>m</em>), the generalized binomial theorem with exponent −<em>r</em>. ∎</li>
+</ol>
 
 <h2>6. Worked examples</h2>
 
-<h3>Example 1</h3>
-<p>For sequence 1,5,19,65,... with a_n=5a_{n-1}-6a_{n-2}, set up G(x)=a_0+a_1 x+... and solve G(x)= (a_0+(a_1-5a_0)x)/(1-5x+6x^2). With a_0=1,a_1=5, G(x)=1/(1-5x+6x^2).</p>
+<h3>Example 1 (easy): the geometric series</h3>
+<p>Since 1/(1−<em>x</em>) = 1+<em>x</em>+<em>x</em><sup>2</sup>+…, every coefficient is 1: [<em>x</em><sup><em>n</em></sup>]1/(1−<em>x</em>) = 1. Replacing <em>x</em> by 2<em>x</em> gives 1/(1−2<em>x</em>) = Σ2<sup><em>n</em></sup><em>x</em><sup><em>n</em></sup>, so [<em>x</em><sup>2</sup>]1/(1−2<em>x</em>) = 2<sup>2</sup> = 4.</p>
 
-<h3>Example 2</h3>
-<p>Coefficient of x^4 in (1-x)^{-3} is C(3+4-1,4)=C(6,4)=15.</p>
+<h3>Example 2 (easy): a negative power</h3>
+<p>Use the binomial series with <em>r</em>=3: (1−<em>x</em>)<sup>−3</sup> = Σ<sub><em>m</em>≥0</sub> <em>C</em>(3+<em>m</em>−1,<em>m</em>)<em>x</em><sup><em>m</em></sup>. Hence [<em>x</em><sup>4</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+4−1,4) = <em>C</em>(6,4) = 15.</p>
 
-<h3>Example 3</h3>
-<p>Compositions of 7 into 4 parts: C(6,3)=20.</p>
+<h3>Example 3 (easy): compositions</h3>
+<p>Compositions of 7 into 4 positive parts have generating function (<em>x</em>/(1−<em>x</em>))<sup>4</sup>, so the count is [<em>x</em><sup>7</sup>]<em>x</em><sup>4</sup>(1−<em>x</em>)<sup>−4</sup> = [<em>x</em><sup>3</sup>](1−<em>x</em>)<sup>−4</sup> = <em>C</em>(4+3−1,3) = <em>C</em>(6,3) = 20. Direct check: the patterns 4+1+1+1 give 4 orders, 3+2+1+1 give 12, and 2+2+2+1 give 4, total 20. ✔</p>
 
-<h3>Example 4</h3>
-<p>Fibonacci generating function G=x/(1-x-x^2); coefficient of x^5 is F_5=5.</p>
+<h3>Example 4 (medium): Fibonacci coefficients</h3>
+<p>From <em>G</em>(<em>x</em>)=<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>) we have [<em>x</em><sup><em>n</em></sup>]<em>G</em> = <em>F</em><sub><em>n</em></sub>. In particular [<em>x</em><sup>5</sup>]<em>G</em> = <em>F</em><sub>5</sub> = 5, matching the sequence 0, 1, 1, 2, 3, 5 hung on the clothesline in section 3.</p>
 
-<h3>Example 5</h3>
-<p>Constrained selection: 4 fruits with pomegranate and banana at most 1, mango at most 2, oranges unrestricted: multiply (1+x)(1+x)(1+x+x^2)(1+x+x^2+x^3+x^4); coefficient of x^4 gives the count (Python can extract).</p>
+<h3>Example 5 (medium): a linear recurrence from its generating function</h3>
+<p>For 1, 5, 19, 65, … with <em>a</em><sub><em>n</em></sub> = 5<em>a</em><sub><em>n</em>−1</sub>−6<em>a</em><sub><em>n</em>−2</sub>, <em>a</em><sub>0</sub>=1, <em>a</em><sub>1</sub>=5, multiply by <em>x</em><sup><em>n</em></sup> and sum: <em>G</em>−<em>a</em><sub>0</sub>−<em>a</em><sub>1</sub><em>x</em> = 5<em>x</em>(<em>G</em>−<em>a</em><sub>0</sub>)−6<em>x</em><sup>2</sup><em>G</em>, so <em>G</em> = (<em>a</em><sub>0</sub>+(<em>a</em><sub>1</sub>−5<em>a</em><sub>0</sub>)<em>x</em>)/(1−5<em>x</em>+6<em>x</em><sup>2</sup>) = 1/(1−5<em>x</em>+6<em>x</em><sup>2</sup>). Partial fractions: 1/((1−2<em>x</em>)(1−3<em>x</em>)) = −2/(1−2<em>x</em>) + 3/(1−3<em>x</em>), so <em>a</em><sub><em>n</em></sub> = −2·2<sup><em>n</em></sup>+3·3<sup><em>n</em></sup> = 3<sup><em>n</em>+1</sup>−2<sup><em>n</em>+1</sup>. Check <em>n</em>=2: 27−8=19. ✔</p>
+
+<h3>Example 6 (medium): redundant combinations</h3>
+<p>Multisets of 5 fruits from 3 types have generating function (1−<em>x</em>)<sup>−3</sup>, so the count is [<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+5−1,5) = <em>C</em>(7,5) = 21.</p>
+
+<h3>Example 7 (hard): a constrained selection</h3>
+<p>Choose 4 fruits with pomegranate and banana at most 1 each, mango at most 2, oranges unrestricted. The generating function is (1+<em>x</em>)(1+<em>x</em>)(1+<em>x</em>+<em>x</em><sup>2</sup>)(1+<em>x</em>+<em>x</em><sup>2</sup>+<em>x</em><sup>3</sup>+<em>x</em><sup>4</sup>+…). Multiply the first two: (1+<em>x</em>)<sup>2</sup> = 1+2<em>x</em>+<em>x</em><sup>2</sup>. Multiply by (1+<em>x</em>+<em>x</em><sup>2</sup>): coefficients 1, 3, 4, 3, 1 for degrees 0–4. Convolving with the all-ones orange series, the coefficient of <em>x</em><sup>4</sup> is 1+3+4+3+1 = 12. Direct enumeration of the four bounded counts gives the same 12.</p>
 
 <h2>7. Visual / interactive widget</h2>
-<p>Coefficient extractor for (1-x)^(-n): coefficient of x^r.</p>
+<p>Coefficient extractor for (1−<em>x</em>)<sup>−<em>n</em></sup>: type two whole numbers and the panel shows the formula, the arithmetic and the answer. Bad input is reported, not computed.</p>
 <div class="card">
-  <label>n <input id="nGF" type="number" value="3" oninput="calcGF()"></label>
-  <label>r <input id="rGF" type="number" value="4" oninput="calcGF()"></label>
-  <p id="gfResult"></p>
+  <label>n <input id="nGF" type="text" inputmode="numeric" value="3" size="4" oninput="calcGF()"></label>
+  <label>r <input id="rGF" type="text" inputmode="numeric" value="4" size="4" oninput="calcGF()"></label>
+  <div id="gfResult" aria-live="polite"></div>
 </div>
 <script>
-function C(n,r){if(r<0||r>n)return 0;var res=1;for(var i=1;i<=r;i++)res=res*(n-r+i)/i;return Math.round(res);}
+function C(n,r){ if(r<0||r>n) return 0; r=Math.min(r,n-r); var res=1,i; for(i=1;i<=r;i++) res=res*(n-r+i)/i; return Math.round(res); }
 function calcGF(){
-  var n=+document.getElementById('nGF').value;
-  var r=+document.getElementById('rGF').value;
-  document.getElementById('gfResult').textContent='[x^'+r+'](1-x)^(-'+n+') = C(n+r-1,r) = '+C(n+r-1,r);
+  var out=document.getElementById('gfResult');
+  out.textContent='';
+  function line(t){ var p=document.createElement('p'); p.textContent=t; return p; }
+  function whole(v){ return /^[0-9]+$/.test(String(v).trim()); }
+  var nEl=document.getElementById('nGF'), rEl=document.getElementById('rGF');
+  if(!whole(nEl.value)||!whole(rEl.value)){ out.appendChild(line('Input error: enter whole numbers for n and r (digits only).')); return; }
+  var n=parseInt(String(nEl.value).trim(),10), r=parseInt(String(rEl.value).trim(),10);
+  if(n<1||n>20||r>20){ out.appendChild(line('Input error: need 1 <= n <= 20 and 0 <= r <= 20.')); return; }
+  var total=n+r-1;
+  var small=Math.min(r,n-1), i, num='', den='';
+  if(small===0){ num='1'; den='1'; }
+  for(i=0;i<small;i++){ num+=(total-i)+(i<small-1?'·':''); den+=(small-i)+(i<small-1?'·':''); }
+  out.appendChild(line('Formula: [x^'+r+'](1−x)^(−'+n+') = C('+total+', '+r+').'));
+  out.appendChild(line('Symmetry: C('+total+', '+r+') = C('+total+', '+(total-r)+'), so use bottom '+small+'.'));
+  out.appendChild(line('Arithmetic: '+num+' / '+den+' = '+C(total,r)+'.'));
+  out.appendChild(line('Answer: '+C(total,r)+' ways.'));
 }
 calcGF();
 </script>
 
+<h2>8. Visual proofs (see it)</h2>
+<p>When two generating functions are multiplied, the coefficient of <em>x</em><sup>4</sup> collects every pair of exponents adding to 4. This is the convolution theorem pictured explicitly.</p>
+<svg width="320" height="110" viewBox="0 0 320 110" role="img" aria-label="Convolution: the coefficient of x to the fourth in G times H is the sum of a0b4, a1b3, a2b2, a3b1 and a4b0">
+  <text x="160" y="16" text-anchor="middle" font-size="12" fill="var(--muted)">pairs of exponents i + j = 4</text>
+  <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5">
+    <rect x="20" y="36" width="50" height="30" rx="4"/>
+    <rect x="75" y="36" width="50" height="30" rx="4"/>
+    <rect x="130" y="36" width="50" height="30" rx="4"/>
+    <rect x="185" y="36" width="50" height="30" rx="4"/>
+    <rect x="240" y="36" width="50" height="30" rx="4"/>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="var(--text)">
+    <text x="45" y="55">a0b4</text>
+    <text x="100" y="55">a1b3</text>
+    <text x="155" y="55">a2b2</text>
+    <text x="210" y="55">a3b1</text>
+    <text x="265" y="55">a4b0</text>
+  </g>
+  <text x="160" y="88" text-anchor="middle" font-size="11" fill="var(--muted)">c4 = a0b4 + a1b3 + a2b2 + a3b1 + a4b0</text>
+</svg>
+
 <h2>9. Common mistakes and exam traps</h2>
-<ul>
-  <li>Forgetting the initial terms when shifting series.</li>
-  <li>Using ordinary generating functions where exponential generating functions are needed (not in this course).</li>
-  <li>Misreading coefficient extraction after multiplying by x.</li>
-  <li>Not factoring the denominator before partial fractions.</li>
-</ul>
+<ol>
+  <li><strong>Forgetting the initial terms when shifting.</strong> For Fibonacci, wrong: subtract the three series and conclude <em>G</em>−<em>xG</em>−<em>x</em><sup>2</sup><em>G</em>=0, so <em>G</em>=0. Right: the surviving term is <em>F</em><sub>0</sub>+(<em>F</em><sub>1</sub>−<em>F</em><sub>0</sub>)<em>x</em>=<em>x</em>, giving <em>G</em>=<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>).</li>
+  <li><strong>Misreading a shift.</strong> Wrong: [<em>x</em><sup><em>n</em></sup>](<em>xG</em>)=<em>a</em><sub><em>n</em></sub>. Right: [<em>x</em><sup><em>n</em></sup>](<em>xG</em>)=<em>a</em><sub><em>n</em>−1</sub>, and [<em>x</em><sup>0</sup>](<em>xG</em>)=0.</li>
+  <li><strong>Wrong bottom number in a coefficient.</strong> Wrong: [<em>x</em><sup>4</sup>](1−<em>x</em>)<sup>−3</sup>=<em>C</em>(6,3)=20. Right: <em>C</em>(3+4−1,4)=<em>C</em>(6,4)=15; the bottom is the exponent 4, or equivalently 3.</li>
+  <li><strong>Not factoring before partial fractions.</strong> Wrong: split 1/(1−5<em>x</em>+6<em>x</em><sup>2</sup>) as if the denominator were already linear. Right: factor as (1−2<em>x</em>)(1−3<em>x</em>), giving −2/(1−2<em>x</em>)+3/(1−3<em>x</em>) and <em>a</em><sub><em>n</em></sub>=3<sup><em>n</em>+1</sup>−2<sup><em>n</em>+1</sup>.</li>
+  <li><strong>Forgetting that parts must be positive.</strong> Wrong: (1/(1−<em>x</em>))<sup>4</sup> for 7 into 4 parts gives <em>C</em>(10,3)=120. Right: each part is positive, so use (<em>x</em>/(1−<em>x</em>))<sup>4</sup> and get <em>C</em>(6,3)=20.</li>
+  <li><strong>Off-by-one in Fibonacci extraction.</strong> Wrong: [<em>x</em><sup>5</sup>]<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>)=<em>F</em><sub>4</sub>=3. Right: it is <em>F</em><sub>5</sub>=5, because the series starts <em>x</em>+<em>x</em><sup>2</sup>+2<em>x</em><sup>3</sup>+3<em>x</em><sup>4</sup>+5<em>x</em><sup>5</sup>+…</li>
+  <li><strong>Using exponential rather than ordinary generating functions.</strong> Wrong: divide coefficients by <em>n</em>! and expect [<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−3</sup>/5! to count multisets. Right: this course uses ordinary generating functions; [<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−3</sup>=21 directly.</li>
+</ol>
 
 <h2>10. Practice questions (assigned to this page)</h2>
 
 <details>
-<summary>Q13. Generating function for partitions into exactly r parts where order counts; find compact form A(n,r).</summary>
-<p>Solution: G(x)=(x/(1-x))^r=x^r/(1-x)^r. Coefficient of x^n is C(n-1,r-1). Python verification for n=7,r=4 gives C(6,3)=20.</p>
+<summary>Q13. Find the generating function for partitions of n into exactly r parts where order counts, and give the compact form of A(n,r).</summary>
+<p><strong>Step 1 — model one part.</strong> "Order counts" means a composition: an ordered list of <em>r</em> positive integers summing to <em>n</em>. A single part may be 1, 2, 3, …, so its generating function is <em>x</em>+<em>x</em><sup>2</sup>+<em>x</em><sup>3</sup>+… = <em>x</em>/(1−<em>x</em>).</p>
+<p><strong>Step 2 — multiply the ordered parts.</strong> The <em>r</em> positions are distinguishable, so by the convolution theorem the generating function is</p>
+<p><em>G</em>(<em>x</em>) = (<em>x</em>/(1−<em>x</em>))<sup><em>r</em></sup> = <em>x</em><sup><em>r</em></sup> (1−<em>x</em>)<sup>−<em>r</em></sup>.</p>
+<p><strong>Step 3 — extract the coefficient.</strong> <em>A</em>(<em>n</em>,<em>r</em>) = [<em>x</em><sup><em>n</em></sup>]<em>G</em> = [<em>x</em><sup><em>n</em>−<em>r</em></sup>](1−<em>x</em>)<sup>−<em>r</em></sup> = <em>C</em>(<em>r</em>+(<em>n</em>−<em>r</em>)−1,<em>n</em>−<em>r</em>) = <em>C</em>(<em>n</em>−1,<em>n</em>−<em>r</em>) = <em>C</em>(<em>n</em>−1,<em>r</em>−1).</p>
+<p><strong>Step 4 — verify a case.</strong> For <em>n</em>=7, <em>r</em>=4, <em>A</em>(7,4)=<em>C</em>(6,3)=20, and the brute-force lists 4+1+1+1 (4 orders), 3+2+1+1 (12 orders) and 2+2+2+1 (4 orders) give 4+12+4=20. ✔</p>
 </details>
 
 <h2>11. Extra self-test questions</h2>
-<details><summary>1. Coefficient of x^4 in (1-x)^(-3)?</summary><p>C(6,4)=15.</p></details>
-<details><summary>2. Fibonacci generating function?</summary><p>x/(1-x-x^2).</p></details>
-<details><summary>3. Compositions of 10 into 3 parts?</summary><p>C(9,2)=36.</p></details>
-<details><summary>4. Redundant combinations of 5 from 3 types?</summary><p>C(7,5)=21.</p></details>
-<details><summary>5. Coefficient of x^2 in 1/(1-2x)?</summary><p>2^2=4.</p></details>
+<details>
+<summary>1. Coefficient of x<sup>4</sup> in (1−x)<sup>−3</sup>?</summary>
+<p>By the binomial series, [<em>x</em><sup>4</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+4−1,4) = <em>C</em>(6,4) = 15.</p>
+</details>
+<details>
+<summary>2. Find the Fibonacci generating function.</summary>
+<p>With <em>F</em><sub>0</sub>=0, <em>F</em><sub>1</sub>=1, the subtraction <em>G</em>−<em>xG</em>−<em>x</em><sup>2</sup><em>G</em> leaves <em>F</em><sub>0</sub>+(<em>F</em><sub>1</sub>−<em>F</em><sub>0</sub>)<em>x</em>=<em>x</em>, so <em>G</em>(<em>x</em>)=<em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>).</p>
+</details>
+<details>
+<summary>3. Compositions of 10 into 3 positive parts?</summary>
+<p>Generating function (<em>x</em>/(1−<em>x</em>))<sup>3</sup>, so the count is [<em>x</em><sup>7</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+7−1,7) = <em>C</em>(9,7) = <em>C</em>(9,2) = 36.</p>
+</details>
+<details>
+<summary>4. Redundant combinations of 5 from 3 types?</summary>
+<p>Generating function (1−<em>x</em>)<sup>−3</sup>, so [<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+5−1,5) = <em>C</em>(7,5) = 21.</p>
+</details>
+<details>
+<summary>5. Coefficient of x<sup>2</sup> in 1/(1−2x)?</summary>
+<p>1/(1−2<em>x</em>) = Σ2<sup><em>n</em></sup><em>x</em><sup><em>n</em></sup>, so the coefficient is 2<sup>2</sup> = 4.</p>
+</details>
+<details>
+<summary>6. Coefficient of x<sup>5</sup> in (1−x)<sup>−4</sup>?</summary>
+<p>[<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−4</sup> = <em>C</em>(4+5−1,5) = <em>C</em>(8,5) = 56.</p>
+</details>
+<details>
+<summary>7. Coefficient of x<sup>3</sup> in (1+x)<sup>6</sup>?</summary>
+<p>By the binomial theorem it is <em>C</em>(6,3) = (6·5·4)/(3·2·1) = 20.</p>
+</details>
+<details>
+<summary>8. Coefficient of x<sup>6</sup> in x<sup>2</sup>/(1−x)<sup>3</sup>?</summary>
+<p>Shift: [<em>x</em><sup>6</sup>]<em>x</em><sup>2</sup>(1−<em>x</em>)<sup>−3</sup> = [<em>x</em><sup>4</sup>](1−<em>x</em>)<sup>−3</sup> = <em>C</em>(3+4−1,4) = <em>C</em>(6,4) = 15.</p>
+</details>
 
 <h2>12. Cheat sheet</h2>
 <div class="card">
-  <p>G(x)=Σ a_n x^n. 1/(1-x)=Σ x^n.</p>
-  <p>Fibonacci: x/(1-x-x^2).</p>
-  <p>Redundant combinations: 1/(1-x)^n; coeff C(n+r-1,r).</p>
-  <p>Compositions: x^r/(1-x)^r; coeff C(n-1,r-1).</p>
-  <p>Shift: xG(x) shifts indices by 1.</p>
-  <p>Partial fractions for rational generating functions.</p>
+  <h3>Definitions</h3>
+  <ul>
+    <li><strong>Ordinary generating function:</strong> <em>G</em>(<em>x</em>) = Σ<sub><em>n</em>≥0</sub><em>a</em><sub><em>n</em></sub><em>x</em><sup><em>n</em></sup>.</li>
+    <li><strong>Coefficient extraction:</strong> [<em>x</em><sup><em>n</em></sup>]<em>G</em> = <em>a</em><sub><em>n</em></sub>.</li>
+    <li><strong>Geometric series:</strong> 1/(1−<em>x</em>) = 1+<em>x</em>+<em>x</em><sup>2</sup>+…</li>
+    <li><strong>Convolution:</strong> [<em>x</em><sup><em>n</em></sup>](<em>GH</em>) = Σ<sub><em>i</em>=0</sub><sup><em>n</em></sup><em>a</em><sub><em>i</em></sub><em>b</em><sub><em>n</em>−<em>i</em></sub>.</li>
+    <li><strong>Shift:</strong> [<em>x</em><sup><em>n</em></sup>](<em>xG</em>) = <em>a</em><sub><em>n</em>−1</sub>.</li>
+  </ul>
+
+  <h3>Formulas</h3>
+  <ul>
+    <li>(1−<em>x</em>)<sup>−<em>r</em></sup> = Σ<sub><em>m</em>≥0</sub> <em>C</em>(<em>r</em>+<em>m</em>−1,<em>m</em>) <em>x</em><sup><em>m</em></sup>.</li>
+    <li>Fibonacci: <em>G</em>(<em>x</em>) = <em>x</em>/(1−<em>x</em>−<em>x</em><sup>2</sup>).</li>
+    <li>Multisets of size <em>r</em> from <em>n</em> types: 1/(1−<em>x</em>)<sup><em>n</em></sup>, coefficient <em>C</em>(<em>n</em>+<em>r</em>−1,<em>r</em>).</li>
+    <li>Compositions of <em>n</em> into <em>r</em> positive ordered parts: (<em>x</em>/(1−<em>x</em>))<sup><em>r</em></sup>, coefficient <em>C</em>(<em>n</em>−1,<em>r</em>−1).</li>
+    <li>A linear recurrence gives a rational <em>G</em>: <em>G</em> = (<em>a</em><sub>0</sub>+(<em>a</em><sub>1</sub>−<em>c</em><sub>1</sub><em>a</em><sub>0</sub>)<em>x</em>)/(1−<em>c</em><sub>1</sub><em>x</em>−<em>c</em><sub>2</sub><em>x</em><sup>2</sup>).</li>
+    <li>Factor the denominator, use partial fractions, then expand 1/(1−<em>αx</em>) = Σ<em>α</em><sup><em>n</em></sup><em>x</em><sup><em>n</em></sup>.</li>
+    <li>Constrained choices: one factor per item, truncated at its upper bound.</li>
+  </ul>
+
+  <h3>Numbers worth recognising</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expression</th><th>Value</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>[<em>x</em><sup>4</sup>](1−<em>x</em>)<sup>−3</sup></td><td>15</td><td>binomial series</td></tr>
+      <tr><td><em>C</em>(6,3)</td><td>20</td><td>compositions of 7 into 4; Q13</td></tr>
+      <tr><td><em>C</em>(7,5)</td><td>21</td><td>multisets of 5 from 3</td></tr>
+      <tr><td><em>C</em>(9,2)</td><td>36</td><td>compositions of 10 into 3</td></tr>
+      <tr><td>[<em>x</em><sup>5</sup>](1−<em>x</em>)<sup>−4</sup></td><td>56</td><td>binomial series</td></tr>
+      <tr><td>3<sup><em>n</em>+1</sup>−2<sup><em>n</em>+1</sup></td><td>1, 5, 19, 65, …</td><td>sequence example</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Exam checklist</h3>
+  <ol>
+    <li>Write the generating function from the allowed values of each item.</li>
+    <li>Keep initial terms when multiplying by <em>x</em> or <em>x</em><sup>2</sup>.</li>
+    <li>Use (1−<em>x</em>)<sup>−<em>r</em></sup> and its coefficient formula.</li>
+    <li>For a recurrence, factor the denominator before partial fractions.</li>
+    <li>State the final answer as a coefficient and, where possible, check it by brute force.</li>
+  </ol>
 </div>
 
 <h2>13. Footer</h2>

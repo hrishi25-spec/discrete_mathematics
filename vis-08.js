@@ -13,5 +13,3 @@
   var cap=document.createElement("p"); cap.className="vis-caption"; cap.innerHTML="<strong>What to notice:</strong> total paths are binomial. <strong>Try this:</strong> set a=0.";
   s.appendChild(cap);
 })();
-EOF
-node --check vis-08.js && echo ok
